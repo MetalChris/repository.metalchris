@@ -67,4 +67,25 @@
     <source></source>
   </extension>
 </addon>
+<addon id="plugin.video.how-stuff-works" name="How Stuff Works" version="3.0.4" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">How Stuff Works</summary>
+    <description lang="en">Watch videos from the How Stuff Works website.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+</addon>
 </addons>
