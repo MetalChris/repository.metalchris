@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="plugin.video.bigstar" name="BigStar Movies" version="0.1.4" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>   
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">BigStar Movies</summary>
+    <description lang="en">Stream movies instantly! Choose from thousands of independent, foreign and award-winning feature films and TV shows.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.discovery-channels" name="Discovery Channels" version="3.1.6" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="script.module.requests" version="2.9.1"/> 
+    <import addon="script.module.html5lib" version="0.999.0"/>   
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Discovery Channels</summary>
+    <description lang="en">Watch FREE full episodes and short videos from the various Discovery channels including Discovery, Discovery Science, Investigation Discovery, Animal Planet, and more.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.animalist" name="Animalist" version="3.0.2" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Animalist</summary>
+    <description lang="en">Animalist, a Discovery Digital Network, is all about animals…from cats to dinosaurs! Animalist is your destination for all things animal on the web. From the exotic to the domestic, from the cute to the weird, we cover the whole animal kingdom.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.how-stuff-works" name="How Stuff Works" version="3.0.4b" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">How Stuff Works</summary>
+    <description lang="en">Watch videos from How Stuff Works</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.audio.internetarchive" name="Internet Archive [Audio]" version="3.0.5" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>audio</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Internet Archive</summary>
+    <description lang="en">Internet Archive is a non-profit digital library.  Choose from thousands of recordings ranging from alternative news programming, to Grateful Dead concerts, to Old Time Radio shows, to book and poetry readings, to original music uploaded by our users.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.internetarchive" name="Internet Archive [Video]" version="3.0.6" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Internet Archive</summary>
+    <description lang="en">Internet Archive is a non-profit digital library.  Choose from thousands of digital movies uploaded by Archive users which range from classic full-length films, to daily alternative news broadcasts, to cartoons and concerts.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+</addons>
