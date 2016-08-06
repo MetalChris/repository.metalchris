@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<strings>
+    <string id="30003">Stream Quality</string>
+    <string id="30012">Display 'Now Playing' Notification</string>
+    <string id="30103">Stream Format</string>
+    <string id="30100">32k</string>
+    <string id="30105">128k</string>
+    <string id="30110">RTSP</string>
+    <string id="30115">HLS</string>
+</strings>

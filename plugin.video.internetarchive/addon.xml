@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.internetarchive" name="Internet Archive [Video]" version="3.0.6" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.2.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Internet Archive</summary>
+    <description lang="en">Internet Archive is a non-profit digital library.  Choose from thousands of digital movies uploaded by Archive users which range from classic full-length films, to daily alternative news broadcasts, to cartoons and concerts.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
+      <info>http://www.the-antinet.com/addons/addons.xml</info>
+      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
+      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
+  </extension>
+</addon>

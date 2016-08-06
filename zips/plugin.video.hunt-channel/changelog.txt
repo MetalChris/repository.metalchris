@@ -1,0 +1,11 @@
+Version 0.0.4
+- Code cleanup
+
+Version 0.0.3
+- Fix addon.xml
+
+Version 0.0.2
+- Added program info for live stream
+
+Version 0.0.1
+- Initial release

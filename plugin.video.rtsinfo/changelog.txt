@@ -1,0 +1,33 @@
+Version 0.1.1
+- Added RTS Info en continu
+
+Version 0.1.0
+- Scrape alternate url from RTS website if dead url is found
+- Add encoding and parsing options to add-on settings
+
+Version 0.0.9
+- Rename the two folders
+
+Version 0.0.8
+- Add-on renamed from "RTS Un / RTS Deux" to "RTS - Info"
+
+Version 0.0.7
+- Change icon and fanart
+
+Version 0.0.6
+- Add UTF-8 encoding
+
+Version 0.0.5
+- Extend check for dead urls to all
+
+Version 0.0.4
+- Fix error in feed url
+
+Version 0.0.3
+- Change add-on folder name to avoid conflicts
+
+Version 0.0.2
+- Add check for dead video urls
+
+Version 0.0.1
+- Initial release.

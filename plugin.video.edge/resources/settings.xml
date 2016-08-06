@@ -1,0 +1,5 @@
+<settings>
+        <category label="Playback">
+     		<setting id="quality" type="enum" label="30003" lvalues="30105|30110" enable="!eq(3,false)" default="1"/>
+        </category>
+</settings>

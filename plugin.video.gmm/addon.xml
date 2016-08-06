@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.gmm" name="GMM - Graspop Metal Meeting" version="0.0.1" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>  
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">GMM - Graspop Metal Meeting</summary>
+    <description lang="en">Watch videos from Graspop Metal Meeting, including full length concert sets.  GMM is an annual METAL festival in Dessel, Belgium that has taken place each year since 1996.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>

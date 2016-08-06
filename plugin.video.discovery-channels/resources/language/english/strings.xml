@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<strings>
+    <!-- Default strings -->
+    <string id="30003">Stream Quality</string>
+    <string id="30004">540p</string>
+    <string id="30005">720p</string>
+    <string id="30006">1080p</string>
+    <string id="30009">Discovery Channel</string>
+    <string id="30010">Animal Planet</string>
+    <string id="30011">Science Channel</string>
+    <string id="30012">Investigation Discovery</string>
+    <string id="30013">American Heroes</string>
+    <string id="30014">Discovery Life</string>
+    <string id="30015">Destination America</string>
+    <string id="30016">Velocity</string>
+    <string id="30017">TLC</string>
+    <string id="30018">Discovery Kids</string>
+    <string id="30020">Force Views</string>
+</strings>

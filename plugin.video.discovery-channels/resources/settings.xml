@@ -1,0 +1,18 @@
+<settings>
+        <category label="General">
+     		<setting id="quality" type="enum" label="30003" lvalues="30004|30005|30006" enable="!eq(3,false)" default="2"/>
+		<setting id="views" type="bool" label="30020" default="true"/>
+        </category>
+	<category label="Channels">
+            <setting id="dsc" type="bool"  label="30009"  default="true"/>
+            <setting id="ap" type="bool"  label="30010"  default="true"/>
+            <setting id="sci" type="bool"  label="30011"  default="true"/>
+            <setting id="idsc" type="bool"  label="30012"  default="true"/>
+            <setting id="dahn" type="bool"  label="30013"  default="False"/>
+            <setting id="dscl" type="bool"  label="30014"  default="False"/>
+            <setting id="dest" type="bool"  label="30015"  default="False"/>
+            <setting id="vel" type="bool"  label="30016"  default="False"/>
+            <setting id="tlc" type="bool"  label="30017"  default="False"/>
+            <setting id="dsck" type="bool"  label="30018"  default="False"/>
+	</category>
+</settings>

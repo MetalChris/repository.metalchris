@@ -1,0 +1,11 @@
+<settings>
+	<category label="Download">
+            <setting id="download" type="folder" source="files" label="30011"  option="writeable" default=""/>
+            <setting id="status" type="bool"  label="30012"  default="True"/>
+            <setting label="30013" type="slider" id="bsize" default="524288" range="32768,32768,2097152" option="int" />
+	</category>
+        <category label="Sort">
+            <setting id="dsort" type="enum" label="30002" lvalues="30004|30005|30006|30007" enable="!eq(3,false)" default="0"/>
+            <setting id="ssort" type="enum" label="30003" lvalues="30004|30005|30006|30007" enable="!eq(3,false)" default="0"/>
+        </category>
+</settings>

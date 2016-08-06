@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<strings>
+    <string id="30001">Login Details</string>
+    <string id="30003">Stream Quality</string>
+    <string id="30004">480</string>
+    <string id="30005">720</string>
+    <string id="30006">1080</string>
+    <string id="30020">Force Views</string>
+    <string id="30200">User Account</string>
+    <string id="30201">Username</string>
+    <string id="30202">Password</string>
+    <string id="30203">Hide Login Message</string>
+    <string id="32032">Bitrate</string>
+    <string id="32034">Views</string>
+
+</strings>
