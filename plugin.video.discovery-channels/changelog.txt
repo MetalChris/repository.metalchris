@@ -1,0 +1,30 @@
+Version 3.1.7
+- Added option is Settings to disable Forced Views
+
+Version 3.1.6
+- Fix for Mac and Android users
+- Change to Html5Lib for parser
+- Added Search function for short video clips
+- Appended expiration date for full episodes to description
+
+Version 3.1.5
+- Version bump to avoid conflicts
+
+Version 0.1.5
+- Added Discovery Kids
+
+Version 0.1.4
+- Fix for website changes
+
+Version 0.1.3
+- Changed the way url for full episodes is obtained to speed up loading
+
+Version 0.1.2
+- Added short video clips
+
+Version 0.1.1
+- Re-write for DiscoveryGo
+- Free Episodes Only
+
+Version 0.0.1
+- Initial release.

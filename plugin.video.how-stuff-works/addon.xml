@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.how-stuff-works" name="How Stuff Works" version="3.0.4" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">How Stuff Works</summary>
+    <description lang="en">Watch videos from How Stuff Works</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
+      <info>http://www.the-antinet.com/addons/addons.xml</info>
+      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
+      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
+  </extension>
+</addon>

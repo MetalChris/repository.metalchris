@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<strings>
+    <!-- Default strings -->
+    <string id="30000">Internet Archive [Audio]</string>
+    <string id="30002">Default</string>
+    <string id="30003">Search</string>
+    <string id="30004">Date</string>
+    <string id="30005">Title</string>
+    <string id="30006">Views</string>
+    <string id="30007">Creator</string>
+    <string id="30010">Select a location to download files.</string>
+    <string id="30011">Download Location</string>
+    <string id="30012">Display Ongoing Download Status Notification</string>
+    <string id="30013">Download Buffer Size</string>
+    <string id="30023">-date</string>
+    <string id="30022">titleSorter</string>
+    <string id="30021">-download</string>
+    <string id="30024">creatorSorter</string>
+    <string id="30030">4096</string>
+    <string id="30031">8192</string>
+    <string id="30032">16384</string>
+    <string id="30033">32768</string>
+    <string id="30034">65536</string>
+    <string id="30035">131072</string>
+    <string id="30036">262144</string>
+    <string id="30037">524288</string>
+    <string id="30038">1048576</string>
+    <string id="30039">2097152</string>
+    <string id="32032">Download</string>
+
+</strings>

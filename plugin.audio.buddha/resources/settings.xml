@@ -1,0 +1,7 @@
+<settings>
+        <category label="Playback">
+     		<setting id="quality" type="enum" label="30003" lvalues="30100|30105" enable="!eq(3,false)" default="1"/>
+     		<setting id="transport" type="enum" label="30103" lvalues="30110|30115" enable="!eq(3,false)" default="1"/>
+                <setting id="notify" type="bool"  label="30012"  default="true"/>
+        </category>
+</settings>

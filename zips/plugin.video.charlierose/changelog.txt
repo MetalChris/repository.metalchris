@@ -1,0 +1,8 @@
+Version 0.0.3
+- Remove unnecessary files
+
+Version 0.0.2
+- Fix for Collections where some streams were not found
+
+Version 0.0.1
+- Initial release

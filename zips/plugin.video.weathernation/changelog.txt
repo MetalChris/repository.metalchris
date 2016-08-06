@@ -1,0 +1,8 @@
+Version 0.0.3
+- Code cleanup
+
+Version 0.0.2
+- Added news and forecasts
+
+Version 0.0.1
+- Initial release - live stream only

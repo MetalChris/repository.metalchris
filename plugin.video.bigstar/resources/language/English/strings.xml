@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<strings>
+    <!-- Default strings -->
+    <string id="30001">Page</string>
+
+    <!-- Root menu entries -->
+    <string id="30100">Movies</string>
+    <string id="30105">Documentaries</string>
+    <string id="30110">TV Shows</string>
+</strings>
