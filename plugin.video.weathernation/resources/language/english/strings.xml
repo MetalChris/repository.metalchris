@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<strings>
+    <!-- Default strings -->
+    <string id="30002">Live Quality</string>
+    <string id="30003">Video Quality</string>
+    <string id="30004">540p</string>
+    <string id="30005">720p</string>
+    <string id="30006">1080p</string>
+</strings>

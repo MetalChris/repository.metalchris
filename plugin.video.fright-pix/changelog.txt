@@ -1,0 +1,5 @@
+Version 0.0.2
+- Complete code re-write
+
+Version 0.0.1
+- Initial Release

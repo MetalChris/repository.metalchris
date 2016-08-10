@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.filmrise"
+       name="FilmRise"
+       version="1.0.3"
+       provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+	<import addon="script.module.beautifulsoup" version="3.2.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0</license>
+        <summary lang="en">FilmRise</summary>
+        <description lang="en">Watch free TV shows and movies from FilmRise</description>
+        <disclaimer lang="en">Don't blame me if you have nightmares.</disclaimer>
+    </extension>
+</addon>

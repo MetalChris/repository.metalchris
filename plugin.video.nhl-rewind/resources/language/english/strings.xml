@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- English language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/en/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
+
+<strings>
+    <!-- Default strings -->
+    <string id="30001">Page</string>
+    <string id="30003">HD (3000k) or SD (~1500K)</string>
+    <string id="30004">SD</string>
+    <string id="30005">HD</string>
+    <string id="30010">NHL Rewind</string>
+    <string id="30016">Home</string>
+    <string id="30017">Away</string>
+    <!-- Root menu entries -->
+    <string id="30100">NHL Network - Latest Videos</string>
+    <string id="30101">Game Recaps - Last 7 Days</string>
+    <string id="30103">Condensed Game Replays - Last 7 Days</string>
+    <string id="30105">Hockey Fights - Drop the Gloves!</string>
+    <string id="30028">Cold Beer?</string>
+
+    <!-- Search -->
+    <string id="30200">Search for Videos</string>
+    <string id="30201">Title</string>
+
+    <!-- Dialog -->    
+    <string id="31300">NHL Rewind</string>
+    <string id="31310">Choose a feed</string>
+    <string id="31320">Home</string>
+    <string id="31330">Away</string>
+    <string id="31340">Stream not available</string>
+    <string id="31350">Please wait...</string>
+    <string id="31360">Choose a Date</string>
+
+    <string id="30310">Show Home/Away Dialog (Archived/Condensed Games)</string>
+    <string id="30320">Show Home/Away Dialog (Live Games)</string>
+    
+</strings>
