@@ -88,11 +88,6 @@
     <email></email>
     <source></source>
   </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
-  </extension>
 </addon>
 
 <addon id="plugin.video.animalist" name="Animalist" version="3.0.2" provider-name="MetalChris">
@@ -115,11 +110,6 @@
     <website></website>
     <email></email>
     <source></source>
-  </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
   </extension>
 </addon>
 
@@ -165,11 +155,6 @@
     <website></website>
     <email></email>
     <source></source>
-  </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
   </extension>
 </addon>
 
@@ -265,11 +250,6 @@
     <email></email>
     <source></source>
   </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
-  </extension>
 </addon>
 
 <addon id="plugin.video.discovery-channels" name="Discovery Channels" version="3.1.7" provider-name="MetalChris">
@@ -294,11 +274,6 @@
     <website></website>
     <email></email>
     <source></source>
-  </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
   </extension>
 </addon>
 
@@ -367,11 +342,6 @@
         <description lang="en">Watch free TV shows and movies from FilmRise</description>
         <disclaimer lang="en">Don't blame me if you have nightmares.</disclaimer>
     </extension>
-    <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-        <info>http://www.the-antinet.com/addons/addons.xml</info>
-        <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-        <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
-    </extension>
 </addon>
 
 <addon id="plugin.video.fright-pix"
@@ -394,11 +364,6 @@
         <summary lang="en">FrightPix</summary>
         <description lang="en">Watch HUNDREDS of feature length movies from FrightPix</description>
         <disclaimer lang="en">Don't blame me if you have nightmares.</disclaimer>
-    </extension>
-    <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-        <info>http://www.the-antinet.com/addons/addons.xml</info>
-        <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-        <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
     </extension>
 </addon>
 
@@ -495,11 +460,6 @@
     <email></email>
     <source></source>
   </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
-  </extension>
 </addon>
 
 <addon id="plugin.video.lifechurch" name="Life.Church" version="0.0.2" provider-name="MetalChris">
@@ -523,11 +483,6 @@
     <email></email>
     <source></source>
   </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
-  </extension>
 </addon>
 
 <addon id="plugin.video.moviezoot" name="MovieZoot" version="0.0.1" provider-name="MetalChris">
@@ -550,11 +505,6 @@
     <website></website>
     <email></email>
     <source></source>
-  </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
   </extension>
 </addon>
 
@@ -599,11 +549,6 @@
     <website></website>
     <email></email>
     <source></source>
-  </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
   </extension>
 </addon>
 
@@ -652,11 +597,6 @@
         <description lang="en">Watch the latest videos from the NHL Network, NBC Sports, MSG Network, Fox Sports, SportsNet.ca, ESPN, and Comcast SportsNet.  Watch full and condensed game replays from the last 7 days, plus Hockey Fights!</description>
         <disclaimer lang="en">This addon is a project for entertainment purposes only.  Not affiliated with, or endorsed by the NHL in any way shape or form.</disclaimer>
     </extension>
-    <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-        <info>http://www.the-antinet.com/addons/addons.xml</info>
-        <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-        <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
-    </extension>
 </addon>
 
 <addon id="plugin.video.reruncentury"
@@ -677,11 +617,6 @@
         <summary lang="en">RerunCentury</summary>
         <description lang="en">Free Videos and 20th Century TV</description>
         <disclaimer lang="en">Don't blame me if you have nightmares.</disclaimer>
-    </extension>
-    <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-        <info>http://www.the-antinet.com/addons/addons.xml</info>
-        <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-        <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
     </extension>
 </addon>
 

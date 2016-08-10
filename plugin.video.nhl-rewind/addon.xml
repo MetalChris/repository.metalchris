@@ -20,9 +20,4 @@
         <description lang="en">Watch the latest videos from the NHL Network, NBC Sports, MSG Network, Fox Sports, SportsNet.ca, ESPN, and Comcast SportsNet.  Watch full and condensed game replays from the last 7 days, plus Hockey Fights!</description>
         <disclaimer lang="en">This addon is a project for entertainment purposes only.  Not affiliated with, or endorsed by the NHL in any way shape or form.</disclaimer>
     </extension>
-    <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-        <info>http://www.the-antinet.com/addons/addons.xml</info>
-        <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-        <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
-    </extension>
 </addon>
