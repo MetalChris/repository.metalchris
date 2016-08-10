@@ -24,11 +24,14 @@ plugin = "WeatherNation TV"
 defaultimage = 'special://home/addons/plugin.video.weathernation/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.weathernation/fanart.jpg'
 defaulticon = 'special://home/addons/plugin.video.weathernation/icon.png'
+defaulturl = 'aHR0cDovL2NkbmFwaS5rYWx0dXJhLmNvbS9odG1sNS9odG1sNWxpYi92Mi40Mi9td0VtYmVkRnJhbWUucGhwPyZ3aWQ9XzkzMTcwMiZ1aWNvbmZfaWQ9Mjg0Mjg3NTEmZW50cnlfaWQ9'
+liveurl = 'aHR0cDovL2thbHNlZ3NlYy1hLmFrYW1haWhkLm5ldDo4MC9kYy0wL20vcGEtbGl2ZS1wdWJsaXNoNi9rTGl2ZS9zbWlsOjFfb29yeGNnZTJfYWxsLnNtaWwv'
 
 local_string = xbmcaddon.Addon(id='plugin.video.weathernation').getLocalizedString
 addon_handle = int(sys.argv[1])
 pluginhandle = int(sys.argv[1])
-#QUALITY = settings.getSetting(id="quality")
+QUALITY = settings.getSetting(id="quality")
+LIVE = settings.getSetting(id="live")
 confluence_views = [500,501,502,503,504,508,515]
 
 def categories():
@@ -45,28 +48,41 @@ def wn_videos(url):
 	soup = BeautifulSoup(response, 'html5lib').find_all('div',{'class':'carousel-block'})
 	for show in soup[1:16]:#.find_all("div",{"class":"pull-left"}):
 	    title = show.find('img')['alt'].title()
-	    url = (show.find('img')['data-src']).replace('cfvod.kaltura.com','cdnbakmi.kaltura.com').replace('thumbnail','raw').split('version')[0] + 'version/0'
-	    print url
+	    video_id = (show.find('img')['data-src']).split('/')
+	    url = defaulturl.decode('base64') + video_id[9]
             add_directory2(title, url, 636,   defaultfanart, defaultimage, plot='')
         xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
         xbmcplugin.endOfDirectory(addon_handle)
 
 
 #635
-def wn_live(url):
-	response = get_html(url)
-	stream = (re.compile('hls","url":"(.+?)"').findall(str(response))[0]).replace('\\','')
+def wn_live(name,url):
+	if LIVE =='1':
+	    stream = liveurl.decode('base64') + 'chunklist_b2096000.m3u8'
+	else:
+	    stream = liveurl.decode('base64') + 'chunklist_b987136.m3u8'
 	print stream
-	listitem = xbmcgui.ListItem('WeatherNation Live', iconImage=defaultimage, thumbnailImage=defaultimage)
+	listitem = xbmcgui.ListItem(name, iconImage=defaultimage, thumbnailImage=defaultimage)
         listitem.setProperty('IsPlayable', 'true')
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
         xbmcplugin.endOfDirectory(addon_handle)
 
 
-
+#636
 def play(url,name):
-	print url
+	#print url[-10:]
+	jdata = get_html(url)
+	data = re.compile('kalturaIframePackageData =(.+?);\n\t\t\tvar isIE8').findall(str(jdata))[0]
+	bitkeys = re.compile('2,"id":"(.+?)","entryId').findall(data)
+	#print bitkeys
+	if QUALITY =='1':
+	    bitkey = bitkeys[3]
+	elif QUALITY =='0':
+	    bitkey = bitkeys[2]
+	else:
+	    bitkey = bitkeys[5]
+	url = 'http://cfvod.kaltura.com/pd/p/931702/sp/93170200/serveFlavor/entryId/' + url[-10:] + '/v/32292/flavorId/' + bitkey
 	listitem = xbmcgui.ListItem(name, iconImage=defaultimage, thumbnailImage=defaultimage)
         listitem.setProperty('IsPlayable', 'true')
 	xbmc.Player().play( url, listitem )
@@ -115,7 +131,7 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot):
         if not fanart:
             fanart=''
         liz.setProperty('fanart_image',fanart)
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=15)
         return ok
 
 
@@ -249,7 +265,7 @@ elif mode==634:
 	wn_videos(url)
 elif mode==635:
         print "WeatherNation Live"
-	wn_live(url)
+	wn_live(name,url)
 elif mode==636:
         print "WeatherNation Play Videos"
 	play(url,name)

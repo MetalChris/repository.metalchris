@@ -1,0 +1,44 @@
+Version 0.1.4
+- Fix for NHL MLB changeover
+
+Version 0.1.3
+- Fix for 2015 MSG website changes
+
+Version 0.1.2
+- Updated urls for MSG and Comcast 
+
+Version 0.1.1
+- Fixes for Fox Sports and SportsNet.ca
+
+Version 0.1.0
+- Added Comcast Sportsnet - Latest NHL Videos
+
+Version 0.0.9
+- Added SportsNet.ca - Latest NHL Videos
+
+Version 0.0.8
+- Added NBC Sports - Latest NHL Videos
+
+Version 0.0.7
+- Added dialog to choose date of full or condensed games.
+- Removed fanart from Fox Sports since it didn't seem to work half the time.
+
+Version 0.0.6
+- Added Fox Sports - Latest NHL Videos
+
+Version 0.0.5
+- Added ESPN - Latest NHL Videos
+
+Version 0.0.4
+- Added Hockey Fights!
+
+Version 0.0.3
+- Added fanart, thumbnails, and icons.
+- Cleaned up menus and removed most unneeded code.
+
+Version 0.0.2
+- Added streams for full and condensed games.
+
+Version 0.0.1
+- Initial Release
+- NHL Network videos only.

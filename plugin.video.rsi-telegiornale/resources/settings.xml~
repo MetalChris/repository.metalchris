@@ -1,0 +1,6 @@
+<settings>
+        <category label="Text Display">
+     		<setting id="encoding" type="enum" label="30003" lvalues="30100|30105" enable="!eq(3,false)" default="0"/>
+     		<setting id="parser" type="enum" label="30013" lvalues="30200|30205" enable="!eq(3,false)" default="1"/>
+        </category>
+</settings>

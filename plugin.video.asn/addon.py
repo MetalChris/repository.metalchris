@@ -22,8 +22,6 @@ defaultfanart = 'special://home/addons/plugin.video.asn/fanart.jpg'
 defaultvideo = 'special://home/addons/plugin.video.asn/icon.png'
 defaulticon = 'special://home/addons/plugin.video.asn/icon.png'
 baseurl = 'http://americansportsnet.com'
-pre_smil = 'aHR0cDovL2xpbmsudGhlcGxhdGZvcm0uY29tL3MvbmdzL21lZGlhL2d1aWQvMjQyMzEzMDc0Ny8='
-post_smil = 'P21icj10cnVlJnBvbGljeT0xMjQ0MTM4NSZtYW5pZmVzdD1mNG0mZm9ybWF0PVNNSUwmVHJhY2tpbmc9dHJ1ZSZFbWJlZGRlZD10cnVlJmZvcm1hdHM9RjRNLE1QRUc0'
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'
 }
@@ -36,6 +34,7 @@ confluence_views = [500,501,502,503,504,508]
 def CATEGORIES():
 	addDir('Featured', 'http://www.americansportsnet.com/category/video/', 1, defaultimage)
 	addDir('Game Archive', 'http://americansportsnet.com/category/game-vault', 1, defaultimage)
+	addDir('Live Schedule', 'http://americansportsnet.com/schedule/', 3, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -76,6 +75,29 @@ def IFRAME(name,url):
 	sys.exit()
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+
+#3
+def LIVE(url):
+        html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib').find_all('tbody')[-1]
+	for item in soup:
+	    edate = str(re.compile('column-1">(.+?)</').findall(str(item)))[2:-2]
+	    if len(edate) <1:
+		continue
+	    sport = str(re.compile('column-2">(.+?)</').findall(str(item)))[2:-2]
+	    home = str(re.compile('column-3">(.+?)</').findall(str(item)))[2:-2]
+	    away = str(re.compile('column-4">(.+?)</').findall(str(item)))[2:-2]
+	    etime = str(re.compile('column-5">(.+?)</').findall(str(item)))[2:-2]
+	    link = str(re.compile('column-7">(.+?)</').findall(str(item)))[2:-2]
+	    if 'column-5' in away:
+		title = edate + ' [' + etime + ']' + ' - ' + sport + ' - ' + home
+	    else:
+	        title = edate + ' [' + etime + ']' + ' - ' + sport + ' - ' + home + ' @ ' + away
+	    url = baseurl + '/' + link.replace('<!---{','').replace('}--->','')
+	    print title
+	    print url
+	    addDir2(title, url, 2, defaultimage)
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 def striphtml(data):
@@ -217,6 +239,8 @@ elif mode == 1:
 elif mode == 2:
 	print "American Sports Network Play Video"
 	IFRAME(name,url)
+elif mode == 3:
+	print "American Sports Network Live"
+	LIVE(url)
+
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-

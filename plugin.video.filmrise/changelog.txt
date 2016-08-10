@@ -1,0 +1,12 @@
+Version 1.0.3
+- Fix for site update where stream urls are no longer in plain site
+
+Version 1.0.2
+- Version bump for Kodi
+
+Version 0.0.2
+- Rewrote code
+- Added more shows
+
+Version 0.0.1
+- Initial Release

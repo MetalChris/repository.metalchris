@@ -1,3 +1,8 @@
+Version 0.0.5
+- Fix live stream
+- Fix for website changes to show/episode listings - I hate vimeo!
+- Updated schedule
+
 Version 0.0.4
 - Code cleanup
 

@@ -1,0 +1,5 @@
+Version 0.0.2
+- Changed the way playlist (.m3u) files are obtained to avoid timeout errors.
+
+Version 0.0.1
+- Initial release.

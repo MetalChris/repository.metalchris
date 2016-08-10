@@ -43,7 +43,7 @@ confluence_views = [500,501,502,503,504,508,515]
 
 now = datetime.datetime.now(timezone('US/Eastern'))
 now_minus_30 = now + datetime.timedelta(minutes = -30)
-print now.year, now.month, now.day, now_minus_30.hour, now_minus_30.minute
+#print now.year, now.month, now.day, now_minus_30.hour, now_minus_30.minute
 if now.hour >12:
 	hour = now.hour - 12
 else:
@@ -66,7 +66,7 @@ for show in shows:
 
 #10
 def cats():
-	addDir2('Live Stream' + ': ' + program,'http://json.dacast.com/b/60923/c/82360',12,defaultimage)
+	addDir2('Live Stream' + ': ' + program,'http://json.dacast.com/b/60923/c/357769',12,defaultimage)
 	addDir('On Demand','http://www.huntchannel.tv',11,defaultimage)
         xbmcplugin.endOfDirectory(addon_handle)
 
@@ -122,10 +122,10 @@ def shows(url):
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
 	for item in soup:
 	    title = (item.find('a')['title']).encode('utf-8').strip()
-	    image = item.find('img')['src'] 
-	    show_id = image.split('/')
+	    #image = item.find('img')['src'] 
+	    #show_id = image.split('/')
 	    url = item.find('a')['href']
-	    add_directory2(title,url,20,defaultfanart,image,plot='')
+	    add_directory2(title,url,21,defaultfanart,defaultimage,plot='')
         #xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
         xbmcplugin.endOfDirectory(addon_handle)
 
@@ -144,16 +144,51 @@ def videos(url):
         xbmcplugin.endOfDirectory(addon_handle)
 
 
+#21
+def s_videos(url):
+	html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
+	for item in reversed(soup):
+	    title = (item.find('a')['title']).encode('utf-8').strip()
+	    image = item.find('img')['src'] 
+	    show_id = image.split('/')
+	    url = item.find('a')['href']
+	    add_directory2(title,url,31,defaultfanart,image,plot='')
+        #xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+        xbmcplugin.endOfDirectory(addon_handle)
+
+
 #30
 def streams(name,url):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html5lib').find_all('iframe')[0]
 	iframe = re.compile('src="(.+?)"').findall(str(soup))[0]
-	source = get_html(iframe)
+	source = get_iframe(iframe)
 	thumbnail = re.compile('base":"(.+?)"').findall(str(source))[-1]
 	m3u8 = (re.compile('"url":"(.+?)"').findall(str(source))[0]).split(',')
 	key = (m3u8[-1]).split('/')[0]
 	stream = (m3u8[0]).rpartition('/')[0] + '/' + key + '/playlist.m3u8?p=6'
+	print stream
+	listitem = xbmcgui.ListItem(name, thumbnailImage=thumbnail)
+	xbmc.Player().play( stream, listitem )
+	sys.exit()
+        xbmcplugin.endOfDirectory(addon_handle)
+
+
+#31
+def s_streams(name,url):
+	response = get_html(url)
+	soup = BeautifulSoup(response,'html5lib').find_all('iframe')[0]
+	iframe = re.compile('src="(.+?)"').findall(str(soup))[0]
+	source = get_iframe(iframe)
+	thumbnail = re.compile('base":"(.+?)"').findall(str(source))[-1]
+	m3u8 = (re.compile('"url":"(.+?)"').findall(str(source))[0]).split(',')
+	check = (m3u8[0])[-4:]
+	print check
+	if check == 'm3u8':
+	    stream = m3u8[0]
+	else:
+	    stream = m3u8[0] + '/master.m3u8'
 	listitem = xbmcgui.ListItem(name, thumbnailImage=thumbnail)
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
@@ -188,6 +223,21 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot):
 def get_html(url):
     req = urllib2.Request(url)
     req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
+
+    try:
+        response = urllib2.urlopen(req)
+        html = response.read()
+        response.close()
+    except urllib2.HTTPError:
+        response = False
+        html = False
+    return html
+
+def get_iframe(url):
+    req = urllib2.Request(url)
+    req.add_header('Host', 'player.vimeo.com')
+    req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
+    req.add_header('Referer', 'http://huntchannel.tv/')
 
     try:
         response = urllib2.urlopen(req)
@@ -356,6 +406,12 @@ elif mode==20:
 elif mode==30:
         print "Hunt Channel Streams"
 	streams(name,url)
+elif mode==21:
+        print "Hunt Channel Videos"
+	s_videos(url)
+elif mode==31:
+        print "Hunt Channel Streams"
+	s_streams(name,url)
 elif mode==40:
         print "Hunt Channel Live"
 	play(name,url,iconimage)

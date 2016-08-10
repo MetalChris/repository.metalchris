@@ -1,3 +1,6 @@
+Version 0.0.4
+- Add option in settings to choose bitrate of streams
+
 Version 0.0.3
 - Code cleanup
 

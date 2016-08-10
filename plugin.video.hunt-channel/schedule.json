@@ -1,434 +1,50 @@
 {
- "12:00 AM": {
-   "Monday":"O'Neil Outside",
-   "Tuesday":"RotoRazor",
-   "Wednesday":"Final Pursuit",
-   "Thursday":"Xtreme Christian Outdoor",
-   "Friday":"704 Outdoors",
-   "Saturday":"Heroes Hunting",
-   "Sunday":"Northern Michigan Outfitters"
- },
- "12:30 AM": {
-   "Monday":"RotoRazor",
-   "Tuesday":"HOG DAWGS",
-   "Wednesday":"WingShooting USA",
-   "Thursday":"History of the Gun",
-   "Friday":"Krappie Kings TV/Exteme Angler TV",
-   "Saturday":"Horn Stars Outdoors",
-   "Sunday":"Gone Huntin'"
- },
- "1:00 AM": {
-   "Monday":"Bonanza",
-   "Tuesday":"Bonanza",
-   "Wednesday":"Bonanza",
-   "Thursday":"Bonanza",
-   "Friday":"Bonanza",
-   "Saturday":"Bonanza",
-   "Sunday":"Bonanza"
- },
- "1:30 AM": {
-   "Monday":"Bonanza",
-   "Tuesday":"Bonanza",
-   "Wednesday":"Bonanza",
-   "Thursday":"Bonanza",
-   "Friday":"Bonanza",
-   "Saturday":"Bonanza",
-   "Sunday":"Bonanza"
- },
- "2:00 AM": {
-   "Monday":"Lone Ranger",
-   "Tuesday":"Lone Ranger",
-   "Wednesday":"Lone Ranger",
-   "Thursday":"Lone Ranger",
-   "Friday":"Lone Ranger",
-   "Saturday":"Lone Ranger",
-   "Sunday":"Lone Ranger"
- },
- "2:30 AM": {
-   "Monday":"Sgt. Preston",
-   "Tuesday":"Sgt. Preston",
-   "Wednesday":"Sgt. Preston",
-   "Thursday":"Sgt. Preston",
-   "Friday":"Sgt. Preston",
-   "Saturday":"Sgt. Preston",
-   "Sunday":"Sgt. Preston"
- },
- "3:00 AM": {
-   "Monday":"Roy Rogers",
-   "Tuesday":"Roy Rogers",
-   "Wednesday":"Roy Rogers",
-   "Thursday":"Roy Rogers",
-   "Friday":"Roy Rogers",
-   "Saturday":"Roy Rogers",
-   "Sunday":"Roy Rogers"
- },
- "3:30 AM": {
-   "Monday":"Bat Masterson",
-   "Tuesday":"Bat Masterson",
-   "Wednesday":"Bat Masterson",
-   "Thursday":"Bat Masterson",
-   "Friday":"Bat Masterson",
-   "Saturday":"Bat Masterson",
-   "Sunday":"Bat Masterson"
- },
- "4:00 AM": {
-   "Monday":"Rifleman",
-   "Tuesday":"Rifleman",
-   "Wednesday":"Rifleman",
-   "Thursday":"Rifleman",
-   "Friday":"Rifleman",
-   "Saturday":"Rifleman",
-   "Sunday":"Rifleman"
- },
- "4:30 AM": {
-   "Monday":"Death Valley",
-   "Tuesday":"Death Valley",
-   "Wednesday":"Death Valley",
-   "Thursday":"Death Valley",
-   "Friday":"Death Valley",
-   "Saturday":"Death Valley",
-   "Sunday":"Death Valley"
- },
- "5:00 AM": {
-   "Monday":"Bonanza",
-   "Tuesday":"Bonanza",
-   "Wednesday":"Bonanza",
-   "Thursday":"Bonanza",
-   "Friday":"Bonanza",
-   "Saturday":"Bonanza",
-   "Sunday":"Bonanza"
- },
- "5:30 AM": {
-   "Monday":"Bonanza",
-   "Tuesday":"Bonanza",
-   "Wednesday":"Bonanza",
-   "Thursday":"Bonanza",
-   "Friday":"Bonanza",
-   "Saturday":"Bonanza",
-   "Sunday":"Bonanza"
- },
- "6:00 AM": {
-   "Monday":"Lone Ranger",
-   "Tuesday":"Lone Ranger",
-   "Wednesday":"Lone Ranger",
-   "Thursday":"Lone Ranger",
-   "Friday":"Lone Ranger",
-   "Saturday":"Lone Ranger",
-   "Sunday":"Lone Ranger"
- },
- "6:30 AM": {
-   "Monday":"Sgt. Preston",
-   "Tuesday":"Sgt. Preston",
-   "Wednesday":"Sgt. Preston",
-   "Thursday":"Sgt. Preston",
-   "Friday":"Sgt. Preston",
-   "Saturday":"Sgt. Preston",
-   "Sunday":"Sgt. Preston"
- },
- "7:00 AM": {
-   "Monday":"Roy Rogers",
-   "Tuesday":"Roy Rogers",
-   "Wednesday":"Roy Rogers",
-   "Thursday":"Roy Rogers",
-   "Friday":"Roy Rogers",
-   "Saturday":"RotoRazor",
-   "Sunday":"Xtreme Christian Outdoor"
- },
- "7:30 AM": {
-   "Monday":"Bat Masterson",
-   "Tuesday":"Bat Masterson",
-   "Wednesday":"Bat Masterson",
-   "Thursday":"Bat Masterson",
-   "Friday":"Bat Masterson",
-   "Saturday":"World of Rush Outdoors",
-   "Sunday":"Southern Hog Slayers"
- },
- "8:00 AM": {
-   "Monday":"Lassie",
-   "Tuesday":"Lassie",
-   "Wednesday":"Lassie",
-   "Thursday":"Lassie",
-   "Friday":"Lassie",
-   "Saturday":"Wild Bout Huntin",
-   "Sunday":"704 Outdoors"
- },
- "8:30 AM": {
-   "Monday":"Lassie",
-   "Tuesday":"Lassie",
-   "Wednesday":"Lassie",
-   "Thursday":"Lassie",
-   "Friday":"Lassie",
-   "Saturday":"Indian Point Camp's The Real Deal",
-   "Sunday":"Krappie Kings TV/Exteme Angler TV"
- },
- "9:00 AM": {
-   "Monday":"O'Neil Outside",
-   "Tuesday":"Heroes Hunting",
-   "Wednesday":"Final Pursuit",
-   "Thursday":"Xtreme Christian Outdoor",
-   "Friday":"RotoRazor",
-   "Saturday":"RotoRazor",
-   "Sunday":"Xtreme Christian Outdoor"
- },
- "9:30 AM": {
-   "Monday":"RotoRazor",
-   "Tuesday":"Horn Stars Outdoors",
-   "Wednesday":"WingShooting USA",
-   "Thursday":"History of the Gun",
-   "Friday":"HOG DAWGS",
-   "Saturday":"World of Rush Outdoors",
-   "Sunday":"Southern Hog Slayers"
- },
- "10:00 AM": {
-   "Monday":"O'Neil Outside",
-   "Tuesday":"Heroes Hunting",
-   "Wednesday":"Final Pursuit",
-   "Thursday":"Xtreme Christian Outdoor",
-   "Friday":"RotoRazor",
-   "Saturday":"Wild Bout Huntin",
-   "Sunday":"704 Outdoors"
- },
- "10:30 AM": {
-   "Monday":"RotoRazor",
-   "Tuesday":"Horn Stars Outdoors",
-   "Wednesday":"WingShooting USA",
-   "Thursday":"History of the Gun",
-   "Friday":"HOG DAWGS",
-   "Saturday":"Indian Point Camp's The Real Deal",
-   "Sunday":"Krappie Kings TV/Exteme Angler TV"
- },
- "11:00 AM": {
-   "Monday":"THE BLITZ",
-   "Tuesday":"Backcountry Xtreme",
-   "Wednesday":"Dirt Road Outdoors",
-   "Thursday":"DeerSlayer TV",
-   "Friday":"Destiny Outdoors",
-   "Saturday":"704 Outdoors",
-   "Sunday":"THE BLITZ"
- },
- "11:30 AM": {
-   "Monday":"ASOB",
-   "Tuesday":"Pass'n It On Outdoors",
-   "Wednesday":"Down 2 Earth Bowhunting",
-   "Thursday":"Outdoor Adventures with Evolution Game Calls",
-   "Friday":"SOTV",
-   "Saturday":"Mid-MO Outdoorsmen",
-   "Sunday":"ASOB"
- },
- "12:00 PM": {
-   "Monday":"Larysa Unleashed",
-   "Tuesday":"Stop The Threat",
-   "Wednesday":"Hog Dawgs",
-   "Thursday":"Northern Michigan Outfitters",
-   "Friday":"Jimmy Houston Outdoors",
-   "Saturday":"Backwoods Heritage",
-   "Sunday":"Larysa Unleashed"
- },
- "12:30 PM": {
-   "Monday":"DeerSlayer TV",
-   "Tuesday":"Uncle Bucky's Outdoor Adventures",
-   "Wednesday":"Heroes Hunting",
-   "Thursday":"Gone Huntin'",
-   "Friday":"SOA",
-   "Saturday":"So You Think You Can Hunt",
-   "Sunday":"DeerSlayer TV"
- },
- "1:00 PM": {
-   "Monday":"ITLD: Kidnapped",
-   "Tuesday":"ITLD: Kidnapped",
-   "Wednesday":"ITLD: Kidnapped",
-   "Thursday":"ITLD: Kidnapped",
-   "Friday":"ITLD: Kidnapped",
-   "Saturday":"ITLD: Kidnapped",
-   "Sunday":"ITLD: Kidnapped"
- },
- "1:30 PM": {
-   "Monday":"",
-   "Tuesday":"",
-   "Wednesday":"",
-   "Thursday":"",
-   "Friday":"",
-   "Saturday":"",
-   "Sunday":""
- },
- "2:00 PM": {
-   "Monday":"",
-   "Tuesday":"",
-   "Wednesday":"",
-   "Thursday":"",
-   "Friday":"",
-   "Saturday":"",
-   "Sunday":""
- },
- "2:30 PM": {
-   "Monday":"Heroes Hunting",
-   "Tuesday":"RotoRazor",
-   "Wednesday":"Xtreme Christian Outdoor",
-   "Thursday":"O'Neil Outside",
-   "Friday":"Heroes Hunting",
-   "Saturday":"RotoRazor",
-   "Sunday":"Xtreme Christian Outdoor"
- },
- "3:00 PM": {
-   "Monday":"Horn Stars Outdoors",
-   "Tuesday":"World of Rush Outdoors",
-   "Wednesday":"Southern Hog Slayers",
-   "Thursday":"RotoRazor",
-   "Friday":"Horn Stars Outdoors",
-   "Saturday":"World of Rush Outdoors",
-   "Sunday":"Southern Hog Slayers"
- },
- "3:30 PM": {
-   "Monday":"Final Pursuit",
-   "Tuesday":"Wild Bout Huntin",
-   "Wednesday":"704 Outdoors",
-   "Thursday":"RotoRazor",
-   "Friday":"Final Pursuit",
-   "Saturday":"Wild Bout Huntin",
-   "Sunday":"704 Outdoors"
- },
- "4:00 PM": {
-   "Monday":"WingShooting USA",
-   "Tuesday":"Indian Point Camp's The Real Deal",
-   "Wednesday":"Krappie Kings TV/Exteme Angler TV",
-   "Thursday":"HOG DAWGS",
-   "Friday":"WingShooting USA",
-   "Saturday":"Indian Point Camp's The Real Deal",
-   "Sunday":"Krappie Kings TV/Exteme Angler TV"
- },
- "4:30 PM": {
-   "Monday":"ITLD: Kidnapped",
-   "Tuesday":"ITLD: Kidnapped",
-   "Wednesday":"ITLD: Kidnapped",
-   "Thursday":"ITLD: Kidnapped",
-   "Friday":"ITLD: Kidnapped",
-   "Saturday":"ITLD: Kidnapped",
-   "Sunday":"ITLD: Kidnapped"
- },
- "5:00 PM": {
-   "Monday":"",
-   "Tuesday":"",
-   "Wednesday":"",
-   "Thursday":"",
-   "Friday":"",
-   "Saturday":"",
-   "Sunday":""
- },
- "5:30 PM": {
-   "Monday":"",
-   "Tuesday":"",
-   "Wednesday":"",
-   "Thursday":"",
-   "Friday":"",
-   "Saturday":"",
-   "Sunday":""
- },
- "6:00 PM": {
-   "Monday":"Xtreme Christian Outdoor",
-   "Tuesday":"Dirt Road Outdoors",
-   "Wednesday":"DeerSlayer TV",
-   "Thursday":"Backcountry Xtreme",
-   "Friday":"Destiny Outdoors",
-   "Saturday":"RotoRazor",
-   "Sunday":"Destiny Outdoors"
- },
- "6:30 PM": {
-   "Monday":"History of the Gun",
-   "Tuesday":"Down 2 Earth Bowhunting",
-   "Wednesday":"Outdoor Adventures with Evolution Game Calls",
-   "Thursday":"Pass'n It On Outdoors",
-   "Friday":"SOTV",
-   "Saturday":"World of Rush Outdoors",
-   "Sunday":"SOTV"
- },
- "7:00 PM": {
-   "Monday":"RotoRazor",
-   "Tuesday":"Hog Dawgs",
-   "Wednesday":"Northern Michigan Outfitters",
-   "Thursday":"Stop The Threat",
-   "Friday":"Jimmy Houston Outdoors",
-   "Saturday":"Wild Bout Huntin",
-   "Sunday":"Jimmy Houston Outdoors"
- },
- "7:30 PM": {
-   "Monday":"HOG DAWGS",
-   "Tuesday":"Heroes Hunting",
-   "Wednesday":"Gone Huntin'",
-   "Thursday":"Uncle Bucky's Outdoor Adventures",
-   "Friday":"SOA",
-   "Saturday":"Indian Point Camp's The Real Deal",
-   "Sunday":"SOA"
- },
- "8:00 PM": {
-   "Monday":"Destiny Outdoors",
-   "Tuesday":"THE BLITZ",
-   "Wednesday":"Backcountry Xtreme",
-   "Thursday":"Dirt Road Outdoors",
-   "Friday":"704 Outdoors",
-   "Saturday":"DeerSlayer TV",
-   "Sunday":"704 Outdoors"
- },
- "8:30 PM": {
-   "Monday":"SOTV",
-   "Tuesday":"ASOB",
-   "Wednesday":"Pass'n It On Outdoors",
-   "Thursday":"Down 2 Earth Bowhunting",
-   "Friday":"Mid-MO Outdoorsmen",
-   "Saturday":"Outdoor Adventures with Evolution Game Calls",
-   "Sunday":"Mid-MO Outdoorsmen"
- },
- "9:00 PM": {
-   "Monday":"Jimmy Houston Outdoors",
-   "Tuesday":"Larysa Unleashed",
-   "Wednesday":"Stop The Threat",
-   "Thursday":"Hog Dawgs",
-   "Friday":"Backwoods Heritage",
-   "Saturday":"Northern Michigan Outfitters",
-   "Sunday":"Backwoods Heritage"
- },
- "9:30 PM": {
-   "Monday":"SOA",
-   "Tuesday":"DeerSlayer TV",
-   "Wednesday":"Uncle Bucky's Outdoor Adventures",
-   "Thursday":"Heroes Hunting",
-   "Friday":"So You Think You Can Hunt",
-   "Saturday":"Gone Huntin'",
-   "Sunday":"So You Think You Can Hunt"
- },
- "10:00 PM": {
-   "Monday":"704 Outdoors",
-   "Tuesday":"THE BLITZ",
-   "Wednesday":"Backcountry Xtreme",
-   "Thursday":"Dirt Road Outdoors",
-   "Friday":"Xtreme Christian Outdoor",
-   "Saturday":"DeerSlayer TV",
-   "Sunday":"O'Neil Outside"
- },
- "10:30 PM": {
-   "Monday":"Mid-MO Outdoorsmen",
-   "Tuesday":"ASOB",
-   "Wednesday":"Pass'n It On Outdoors",
-   "Thursday":"Down 2 Earth Bowhunting",
-   "Friday":"History of the Gun",
-   "Saturday":"Outdoor Adventures with Evolution Game Calls",
-   "Sunday":"RotoRazor"
- },
- "11:00 PM": {
-   "Monday":"Backwoods Heritage",
-   "Tuesday":"Larysa Unleashed",
-   "Wednesday":"Stop The Threat",
-   "Thursday":"Hog Dawgs",
-   "Friday":"Xtreme Christian Outdoor",
-   "Saturday":"Northern Michigan Outfitters",
-   "Sunday":"DeerSlayer TV"
- },
- "11:30 PM": {
-   "Monday":"So You Think You Can Hunt",
-   "Tuesday":"DeerSlayer TV",
-   "Wednesday":"Uncle Bucky's Outdoor Adventures",
-   "Thursday":"Heroes Hunting",
-   "Friday":"Southern Hog Slayers",
-   "Saturday":"Gone Huntin'",
-   "Sunday":"Outdoor Adventures with Evolution Game Calls"
- }
+	"12:00 AM": { "Monday":"Total Outdoor Pursuit", "Tuesday":"Rotorazor", "Wednesday":"Xtreme Christian Outdoor", "Thursday":"Boundless Hunting", "Friday":"Larysa Unleashed", "Saturday":"Double Lung Outdoors", "Sunday":"Swift-Waters"},
+	"12:30 AM": { "Monday":"WingShooting USA", "Tuesday":"Gone Fishing Pro TV", "Wednesday":"The Whitetail Obsession", "Thursday":"Outdoor Junkies", "Friday":"SOA", "Saturday":"Keepin' It In The Ozarks", "Sunday":"Rotorazor"},
+	"1:00 AM": { "Monday":"Bonanza", "Tuesday":"Bonanza", "Wednesday":"Bonanza", "Thursday":"Bonanza", "Friday":"Bonanza", "Saturday":"Bonanza", "Sunday":"Bonanza"},
+	"1:30 AM": { "Monday":"Bonanza", "Tuesday":"Bonanza", "Wednesday":"Bonanza", "Thursday":"Bonanza", "Friday":"Bonanza", "Saturday":"Bonanza", "Sunday":"Bonanza"},
+	"2:00 AM": { "Monday":"Lone Ranger", "Tuesday":"Lone Ranger", "Wednesday":"Lone Ranger", "Thursday":"Lone Ranger", "Friday":"Lone Ranger", "Saturday":"Lone Ranger", "Sunday":"Lone Ranger"},
+	"2:30 AM": { "Monday":"Sgt. Preston", "Tuesday":"Sgt. Preston", "Wednesday":"Sgt. Preston", "Thursday":"Sgt. Preston", "Friday":"Sgt. Preston", "Saturday":"Sgt. Preston", "Sunday":"Sgt. Preston"},
+	"3:00 AM": { "Monday":"Roy Rogers", "Tuesday":"Roy Rogers", "Wednesday":"Roy Rogers", "Thursday":"Roy Rogers", "Friday":"Roy Rogers", "Saturday":"Roy Rogers", "Sunday":"Roy Rogers"},
+	"3:30 AM": { "Monday":"Bat Masterson", "Tuesday":"Bat Masterson", "Wednesday":"Bat Masterson", "Thursday":"Bat Masterson", "Friday":"Bat Masterson", "Saturday":"Bat Masterson", "Sunday":"Bat Masterson"},
+	"4:00 AM": { "Monday":"Rifleman", "Tuesday":"Rifleman", "Wednesday":"Rifleman", "Thursday":"Rifleman", "Friday":"Rifleman", "Saturday":"Rifleman", "Sunday":"Rifleman"},
+	"4:30 AM": { "Monday":"Death Valley", "Tuesday":"Death Valley", "Wednesday":"Death Valley", "Thursday":"Death Valley", "Friday":"Death Valley", "Saturday":"Death Valley", "Sunday":"Death Valley"},
+	"5:00 AM": { "Monday":"Bonanza", "Tuesday":"Bonanza", "Wednesday":"Bonanza", "Thursday":"Bonanza", "Friday":"Bonanza", "Saturday":"Bonanza", "Sunday":"Bonanza"},
+	"5:30 AM": { "Monday":"Bonanza", "Tuesday":"Bonanza", "Wednesday":"Bonanza", "Thursday":"Bonanza", "Friday":"Bonanza", "Saturday":"Bonanza", "Sunday":"Bonanza"},
+	"6:00 AM": { "Monday":"Lone Ranger", "Tuesday":"Lone Ranger", "Wednesday":"Lone Ranger", "Thursday":"Lone Ranger", "Friday":"Lone Ranger", "Saturday":"Lone Ranger", "Sunday":"Lone Ranger"},
+	"6:30 AM": { "Monday":"Sgt. Preston", "Tuesday":"Sgt. Preston", "Wednesday":"Sgt. Preston", "Thursday":"Sgt. Preston", "Friday":"Sgt. Preston", "Saturday":"Sgt. Preston", "Sunday":"Sgt. Preston"},
+	"7:00 AM": { "Monday":"Roy Rogers", "Tuesday":"Roy Rogers", "Wednesday":"Roy Rogers", "Thursday":"Roy Rogers", "Friday":"Roy Rogers", "Saturday":"Runnin' N Gunnin'", "Sunday":"Xtreme Christian Outdoor"},
+	"7:30 AM": { "Monday":"Bat Masterson", "Tuesday":"Bat Masterson", "Wednesday":"Bat Masterson", "Thursday":"Bat Masterson", "Friday":"Bat Masterson", "Saturday":"Blue Collar Bowhunter", "Sunday":"Southern Hog Slayers"},
+	"8:00 AM": { "Monday":"Lassie", "Tuesday":"Lassie", "Wednesday":"Lassie", "Thursday":"Lassie", "Friday":"Lassie", "Saturday":"Mass Pursuit TV", "Sunday":"Pass'n It On Outdoors"},
+	"8:30 AM": { "Monday":"Lassie", "Tuesday":"Lassie", "Wednesday":"Lassie", "Thursday":"Lassie", "Friday":"Lassie", "Saturday":"Deer Hunter Fan", "Sunday":"Real South Hunting"},
+	"9:00 AM": { "Monday":"Rotorazor", "Tuesday":"Xtreme Christian Outdoor", "Wednesday":"Swift-Waters", "Thursday":"Vertical Descent Outdoors", "Friday":"Total Outdoor Pursuit", "Saturday":"Doggin' Predators TV", "Sunday":"Doggin' Predators TV"},
+	"9:30 AM": { "Monday":"Gone Fishing Pro TV", "Tuesday":"The Whitetail Obsession", "Wednesday":"Rotorazor", "Thursday":"Working Class Hunter", "Friday":"WingShooting USA", "Saturday":"Hunt Wicked Close", "Sunday":"Hunt Wicked Close"},
+	"10:00 AM": { "Monday":"Mojo Outdoors", "Tuesday":"Dirt Road Outdoors", "Wednesday":"Appalachian Trophy TV", "Thursday":"Mojo Outdoors", "Friday":"Dirt Road Outdoors/Deer Hunter Fan", "Saturday":"Outdoor Junkies", "Sunday":"Outdoor Junkies"},
+	"10:30 AM": { "Monday":"Backcountry Assassins TV", "Tuesday":"Changing Seezyns", "Wednesday":"Angling Virginia", "Thursday":"Backcountry Assassins TV", "Friday":"Changing Seezyns", "Saturday":"Double Lung Outdoors", "Sunday":"Double Lung Outdoors"},
+	"11:00 AM": { "Monday":"Fatal Intentions Outdoors", "Tuesday":"Hog Dawgs", "Wednesday":"Whitetail Journey", "Thursday":"Fatal Intentions Outdoors", "Friday":"Hog Dawgs", "Saturday":"Crazy On Outdoors", "Sunday":"Crazy On Outdoors"},
+	"11:30 AM": { "Monday":"So You Think You Can Hunt", "Tuesday":"Pass'n It On Outdoors", "Wednesday":"In the Blood", "Thursday":"So You Think You Can Hunt", "Friday":"Pass'n It On Outdoors", "Saturday":"Swift-Waters", "Sunday":"Swift-Waters"},
+	"12:00 PM": { "Monday":"Crazy On Outdoors", "Tuesday":"Hunt Wicked Close", "Wednesday":"Double Lung Outdoors", "Thursday":"Crazy On Outdoors", "Friday":"Hunt Wicked Close", "Saturday":"Boundless Hunting", "Sunday":"Boundless Hunting"},
+	"12:30 PM": { "Monday":"Hunt Wicked Close", "Tuesday":"Keepin' It In The Ozarks", "Wednesday":"Keepin' It In The Ozarks", "Thursday":"Hunt Wicked Close", "Friday":"Keepin' It In The Ozarks", "Saturday":"Team Fitzgerald - Keepin' It Real", "Sunday":"Team Fitzgerald - Keepin' It Real"},
+	"1:00 PM": { "Monday":"ITLD: Kidnapped", "Tuesday":"ITLD: Kidnapped", "Wednesday":"ITLD: Kidnapped", "Thursday":"ITLD: Kidnapped", "Friday":"ITLD: Kidnapped", "Saturday":"ITLD: Kidnapped", "Sunday":"ITLD: Kidnapped"},
+	"1:30 PM": {"Monday":"","Tuesday":"","Wednesday":"","Thursday":"","Friday":"","Saturday":"","Sunday":""},
+	"2:00 PM": {"Monday":"","Tuesday":"","Wednesday":"","Thursday":"","Friday":"","Saturday":"","Sunday":""},
+	"2:30 PM": { "Monday":"Full Draw Adrenaline", "Tuesday":"Runnin' N Gunnin'", "Wednesday":"Xtreme Christian Outdoor", "Thursday":"Vertical Descent Outdoors", "Friday":"Southern Drawl Outdoors", "Saturday":"Bonanza", "Sunday":"Roy Rogers"},
+	"3:00 PM": { "Monday":"The Blitz", "Tuesday":"Blue Collar Bowhunter", "Wednesday":"Southern Hog Slayers", "Thursday":"The Break TV", "Friday":"Trapping Time", "Saturday":"Bonanza", "Sunday":"Bat Masterson"},
+	"3:30 PM": { "Monday":"Larysa Unleashed", "Tuesday":"Mass Pursuit TV", "Wednesday":"Pass'n It On Outdoors", "Thursday":"Jimmy Houston Outdoors", "Friday":"ASOB", "Saturday":"Lone Ranger", "Sunday":"Lassie"},
+	"4:00 PM": { "Monday":"SOA", "Tuesday":"Deer Hunter Fan", "Wednesday":"Real South Hunting", "Thursday":"Rotorazor", "Friday":"Rotorazor", "Saturday":"Sgt. Preston", "Sunday":"Lassie"},
+	"4:30 PM": { "Monday":"ITLD: Kidnapped", "Tuesday":"ITLD: Kidnapped", "Wednesday":"ITLD: Kidnapped", "Thursday":"ITLD: Kidnapped", "Friday":"ITLD: Kidnapped", "Saturday":"ITLD: Kidnapped", "Sunday":"ITLD: Kidnapped"},
+	"5:00 PM": {"Monday":"","Tuesday":"","Wednesday":"","Thursday":"","Friday":"","Saturday":"","Sunday":""},
+	"5:30 PM": {"Monday":"","Tuesday":"","Wednesday":"","Thursday":"","Friday":"","Saturday":"","Sunday":""},	
+	"6:00 PM": { "Monday":"Runnin' N Gunnin'", "Tuesday":"Xtreme Christian Outdoor", "Wednesday":"Rotorazor", "Thursday":"Swift-Waters", "Friday":"Xtreme Christian Outdoor", "Saturday":"Total Outdoor Pursuit", "Sunday":"Full Draw Adrenaline"},
+	"6:30 PM": { "Monday":"Blue Collar Bowhunter", "Tuesday":"Southern Hog Slayers", "Wednesday":"Gone Fishing Pro TV", "Thursday":"Rotorazor", "Friday":"The Whitetail Obsession", "Saturday":"WingShooting USA", "Sunday":"The Blitz"},
+	"7:00 PM": { "Monday":"Mass Pursuit TV", "Tuesday":"Pass'n It On Outdoors", "Wednesday":"Doggin' Predators TV", "Thursday":"Vertical Descent Outdoors", "Friday":"Appalachian Trophy TV", "Saturday":"Lassie", "Sunday":"Larysa Unleashed"},
+	"7:30 PM": { "Monday":"Deer Hunter Fan", "Tuesday":"Real South Hunting", "Wednesday":"Hunt Wicked Close", "Thursday":"Working Class Hunter", "Friday":"Angling Virginia", "Saturday":"Lassie", "Sunday":"SOA"},
+	"8:00 PM": { "Monday":"Vertical Descent Outdoors", "Tuesday":"Southern Drawl Outdoors", "Wednesday":"Outdoor Junkies", "Thursday":"Dirt Road Outdoors/Deer Hunter Fan", "Friday":"Whitetail Journey", "Saturday":"Appalachian Trophy TV", "Sunday":"Mojo Outdoors"},
+	"8:30 PM": { "Monday":"The Break TV", "Tuesday":"Trapping Time", "Wednesday":"Double Lung Outdoors", "Thursday":"Changing Seezyns", "Friday":"In the Blood", "Saturday":"Doggin' Predators TV", "Sunday":"Backcountry Assassins TV"},
+	"9:00 PM": { "Monday":"Jimmy Houston Outdoors", "Tuesday":"ASOB", "Wednesday":"Crazy On Outdoors", "Thursday":"Hog Dawgs", "Friday":"Double Lung Outdoors", "Saturday":"Boundless Hunting", "Sunday":"Fatal Intentions Outdoors"},
+	"9:30 PM": { "Monday":"Rotorazor", "Tuesday":"Rotorazor", "Wednesday":"Swift-Waters", "Thursday":"Pass'n It On Outdoors", "Friday":"Keepin' It In The Ozarks", "Saturday":"Outdoor Junkies", "Sunday":"So You Think You Can Hunt"},
+	"10:00 PM": { "Monday":"Vertical Descent Outdoors", "Tuesday":"Southern Drawl Outdoors", "Wednesday":"Boundless Hunting", "Thursday":"Hunt Wicked Close", "Friday":"Appalachian Trophy TV", "Saturday":"Appalachian Trophy TV", "Sunday":"Crazy On Outdoors"},
+	"10:30 PM": { "Monday":"The Break TV", "Tuesday":"Trapping Time", "Wednesday":"Team Fitzgerald - Keepin' It Real", "Thursday":"Keepin' It In The Ozarks", "Friday":"Angling Virginia", "Saturday":"Doggin' Predators TV", "Sunday":"Hunt Wicked Close"},
+	"11:00 PM": { "Monday":"Jimmy Houston Outdoors", "Tuesday":"ASOB", "Wednesday":"Appalachian Trophy TV", "Thursday":"Full Draw Adrenaline", "Friday":"Whitetail Journey", "Saturday":"Boundless Hunting", "Sunday":"Vertical Descent Outdoors"},
+	"11:30 PM": { "Monday":"Rotorazor", "Tuesday":"Rotorazor", "Wednesday":"Doggin' Predators TV", "Thursday":"The Blitz", "Friday":"In the Blood", "Saturday":"Outdoor Junkies", "Sunday":"Working Class Hunter"}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.how-stuff-works" name="How Stuff Works" version="3.0.4" provider-name="MetalChris">
+<addon id="plugin.video.how-stuff-works" name="How Stuff Works" version="3.0.5" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -19,10 +19,5 @@
     <website></website>
     <email></email>
     <source></source>
-  </extension>
-  <extension point="xbmc.addon.repository" name="MetalChris's Add-on Repository">
-      <info>http://www.the-antinet.com/addons/addons.xml</info>
-      <checksum>http://www.the-antinet.com/addons/addons.xml.md5</checksum>
-      <datadir zip="true">http://www.the-antinet.com/addons/</datadir>
   </extension>
 </addon>

@@ -1,0 +1,9 @@
+<settings>
+        <category label="General">
+ 		<setting type="sep" />
+     		<setting id="live" type="enum" label="30002" lvalues="30004|30005" enable="!eq(3,false)" default="1"/>
+ 		<setting type="sep" />
+     		<setting id="quality" type="enum" label="30003" lvalues="30004|30005|30006" enable="!eq(3,false)" default="2"/>
+ 		<setting type="sep" />
+        </category>
+</settings>
