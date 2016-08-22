@@ -1,0 +1,8 @@
+Version 0.0.3
+- Fix addon.xml
+
+Version 0.0.2
+- Add stream quality options
+
+Version 0.0.1
+- Initial release.

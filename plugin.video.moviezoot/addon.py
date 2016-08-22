@@ -2,19 +2,11 @@
 #
 #
 # Written by MetalChris
-# Released under GPL(v2)
+# Released under GPL(v2) or Later
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
 import simplejson as json
-#import requests  
-#from lxml import html  
-#import urlparse
-#import time
-#import HTMLParser
 from bs4 import BeautifulSoup
-#import codecs
-#from wkRender import getHtml
-#from lxml import etree
 from urllib import urlopen
 import socket
 

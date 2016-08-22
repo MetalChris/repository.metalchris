@@ -1,3 +1,6 @@
+Version 3.0.3
+- Fix addon.xml
+
 Version 3.0.2
 - Code cleanup
 

@@ -1,0 +1,6 @@
+Version 0.0.2
+- Change method for getting video url
+- Code cleanup
+
+Version 0.0.1
+- Initial release.

@@ -46,6 +46,8 @@ now_minus_30 = now + datetime.timedelta(minutes = -30)
 #print now.year, now.month, now.day, now_minus_30.hour, now_minus_30.minute
 if now.hour >12:
 	hour = now.hour - 12
+elif now.hour < 1:
+	hour = '12'
 else:
 	hour = now.hour
 if now.minute < 29:
@@ -53,20 +55,46 @@ if now.minute < 29:
 else:
 	minute = '30'
 showday = now.strftime("%A")
+print showday
+today = int(now.strftime("%w"))
+if today <1:
+	today = 7
+print today
 nowstring = str(hour) + ':' + minute + ' ' + now.strftime("%p")
-schedpath = 'file://' + urllib.pathname2url(_addon_path) + '/schedule.json'
-data = json.load(urllib2.urlopen(schedpath))
-shows = data[nowstring]
-for show in shows:
-	if showday in show:
-		program = shows[showday]
-		if len(program) <2:
-			program = 'No Info Available'
+print nowstring
+program = 'No Info Currently Available'
+#schedpath = 'file://' + urllib.pathname2url(_addon_path) + '/schedule.json'
+#data = json.load(urllib2.urlopen(schedpath))
+#shows = data[nowstring]
+#for show in shows:
+#	if showday in show:
+#		program = shows[showday]
+
+
+def prog():
+	html = get_html('http://www.huntchannel.tv/schedule')
+	rows = BeautifulSoup(html,'html5lib').find_all('tr')
+	match = 0
+	for row in rows[1:45]:
+		row_split = (str(row)).split('</td>')
+		row_list = striphtml(str(row_split)).replace('\'','').replace('[','').replace(']','').split(',')
+		if nowstring == row_list[0]:
+		    match = 1
+		    print '==========================MATCH'
+		    program = str(row_list[today]).replace("\\","'")
+		    print program
+		    print row_list
+		    break
+
+		elif match <1:
+		    program = 'No Info Currently Available'
+	print match
+	cats(program)
 
 
 #10
-def cats():
-	addDir2('Live Stream' + ': ' + program,'http://json.dacast.com/b/60923/c/357769',12,defaultimage)
+def cats(program):
+	addDir2('Live Stream' + ': ' + program,'http://www.huntchannel.tv/live',12,defaultimage)
 	addDir('On Demand','http://www.huntchannel.tv',11,defaultimage)
         xbmcplugin.endOfDirectory(addon_handle)
 
@@ -80,12 +108,23 @@ def vod(url):
 
 
 #12
-def get_live(url,iconimage):
-        response = urllib2.urlopen(url)
+def get_live(name,url,iconimage):
+	html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'player-embed'})
+	iframe = (re.compile('src="(.+?)"').findall(str(soup))[0]).replace('iframe','json')
+	print iframe
+	tkurl = iframe.replace('http://json','https://services').replace('/b/','/token/z/b/') + '?'
+	print tkurl
+        response = urllib2.urlopen(iframe)
         jdata = json.load(response)
 	m3u8 = jdata['hls']
+        tresponse = urllib2.urlopen(tkurl)
+        tdata = json.load(tresponse)
+	token = tdata['token']
+	m3u8 = m3u8 + token#.replace('master.m3u8','index_1_av-p.m3u8?sd=6&rebase=on')
 	print m3u8
-	listitem = xbmcgui.ListItem('Hunt Channel Live Stream' + ': ' + program, thumbnailImage=defaulticon)
+	listitem = xbmcgui.ListItem('Hunt Channel' + ' ' + name, thumbnailImage=defaulticon)
+	listitem.setProperty('mimetype', 'video/x-mpegurl')
 	xbmc.Player().play( m3u8, listitem )
 	sys.exit()
         xbmcplugin.endOfDirectory(addon_handle)
@@ -382,15 +421,18 @@ print "Name: " + str(name)
 
 if mode == None or url == None or len(url) < 1:
     print "Generate Main Menu"
-    cats()
+    prog()
 elif mode == 4:
     print "Play Video"
+elif mode==10:
+        print 'Hunt Channel Categories'
+	cats(program)
 elif mode==11:
         print 'Hunt Channel VOD'
 	vod(url)
 elif mode==12:
         print 'Hunt Channel Live'
-	get_live(url,iconimage)
+	get_live(name,url,iconimage)
 elif mode==13:
         print 'Hunt Channel Featured'
 	get_vod(url)
@@ -415,5 +457,8 @@ elif mode==31:
 elif mode==40:
         print "Hunt Channel Live"
 	play(name,url,iconimage)
+elif mode==50:
+        print "Hunt Channel Program"
+	prog()
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from urllib import urlopen
 import cookielib
 from cookielib import CookieJar
+import json
 
 
 artbase = 'special://home/addons/plugin.audio.radionomy/resources/media/'
@@ -93,16 +94,73 @@ def r_sub_genres(url):
 #132
 def r_sub2_genres(url):
 
+	soheaders = {'Host':'www.radionomy.com',
+	'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0',
+	'Accept':'*/*',
+	'Accept-Language':'en-US,en;q=0.5',
+	'Accept-Encoding':'gzip, deflate',
+	'DNT':'1',
+	'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+	'X-Requested-With':'XMLHttpRequest',}
+
+	data = {'scrollOffset':'5'}
+	print data
+	so = requests.post(url,soheaders,data)
+	#print 'Params= ' + str(params)
+	#print so.text
+
+
+
 	r = requests.get(url)
 	print r.cookies
 	kookie1 = r.cookies
 	print ' Kookie1= ' + str(kookie1)
         print 'Kookie= ' + str(r.cookies)[54:-72]
 	kookie = str(r.cookies)[54:-72]
+
+	#session = requests.Session()
+	#resp    = session.get(url,headers=headers)
+	#cookies = requests.utils.cookiejar_from_dict(requests.utils.dict_from_cookiejar(session.cookies))
+	#resp    = session.post(url,headers=headers,data='scrollOffset=4',cookies = r.cookies)
+	#so = session.get(url)
+	#print 'SO= ' + str(so)
+
 	opener = urllib2.build_opener()
 	opener.addheaders.append(('Cookie', kookie))
+	#opener.addheaders.append(('scrollOffset', '3'))
 	f = opener.open(url)
         page = f.read()
+	page =  page + so.text
+	match = re.compile('href="(.+?)" rel="internal"><img class="radioCover" src="(.+?)" alt="(.+?)" ').findall(page)
+        for url,image,title in match:
+	    url = str(url).replace('/en/radio', 'http://listen.radionomy.com').replace('/index', '.m3u')
+            h = HTMLParser.HTMLParser()
+            try: title = h.unescape(title)	  
+	    except UnicodeDecodeError:
+		continue  
+	    #image = image.replace('s67.jpg', 's400.jpg')
+            try: add_directory3(title,url,140, defaultfanart ,image,plot='')
+	    except KeyError:
+	        continue
+            xbmcplugin.setContent(pluginhandle, 'songs')
+
+
+
+
+
+
+	#next = ''
+	#plot = so.text
+        #add_directory2('Next Page>>', next,133, defaultfanart , defaultimage,plot)
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[0])+")")
+        xbmcplugin.endOfDirectory(addon_handle)
+
+
+#133
+def r_next_page(plot):
+
+	print 'Next URL= ' + str(plot)
+        page = plot
 	match = re.compile('href="(.+?)" rel="internal"><img class="radioCover" src="(.+?)" alt="(.+?)" ').findall(page)
         for url,image,title in match:
 	    url = str(url).replace('/en/radio', 'http://listen.radionomy.com').replace('/index', '.m3u')
@@ -111,15 +169,17 @@ def r_sub2_genres(url):
 	    except UnicodeDecodeError:
 		continue  
 	    image = image.replace('s67.jpg', 's400.jpg')
-            try: add_directory3(title,url,133, defaultfanart ,image,plot='')
+            try: add_directory3(title,url,140, defaultfanart ,image,plot='')
 	    except KeyError:
 	        continue
-            xbmcplugin.setContent(pluginhandle, 'episodes')
+            xbmcplugin.setContent(pluginhandle, 'songs')
+	next = ''
+        add_directory2('Next Page>>', next,133, defaultfanart , defaultimage,plot=so.text)
         xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
         xbmcplugin.endOfDirectory(addon_handle)
 
 
-#133
+#140
 def r_play_url(url):
     
 	print 'SubGenre2URL= ' + str(url)
@@ -142,12 +202,13 @@ def add_directory3(name,url,mode,fanart,thumbnail,plot):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-        liz.setInfo( type="Video", infoLabels={ "Title": name,
+        liz.setInfo( type="Audio", infoLabels={ "Title": name,
                                                 "plot": plot} )
         if not fanart:
             fanart=''
         liz.setProperty('fanart_image',fanart)
-        liz.setProperty('IsPlayable', 'true')
+        liz.setProperty('IsPlayable', 'true')	
+        liz.setProperty('mimetype','audio/x-mpegurl   m3u')
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False, totalItems=100)
         return ok
 
@@ -301,6 +362,9 @@ elif mode==132:
         print "Radionomy Sub2 Genres"
 	r_sub2_genres(url)
 elif mode==133:
+        print "Radionomy Next Page"
+	r_next_page(plot)
+elif mode==140:
         print "Radionomy PlayURL"
 	r_play_url(url)
 

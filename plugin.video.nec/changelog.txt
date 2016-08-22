@@ -1,2 +1,7 @@
+Version 0.0.2
+- Fixes for 2016
+- Removed Archive since this feature is not currently working
+- Fix addon.xml
+
 Version 0.0.1
-- Initial release with archived video only
+- Initial release
