@@ -1,3 +1,6 @@
+Version 0.1.8
+- Add requests dependency to addon.xml
+
 Version 0.1.7
 - More Fixes for 2016 - FOX Sports
 

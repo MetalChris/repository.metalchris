@@ -169,7 +169,7 @@ def nbcsn_smil(name,url):
 	link = (re.compile('\\n(.+?)\\?').findall(str(html))[0]).split('index')[0] + 'master.m3u8'
 	print link
 	listItem = xbmcgui.ListItem(path=str(link))
-	listItem.setInfo('video', {name})
+	#listItem.setInfo('video', {name})
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
 
@@ -209,7 +209,7 @@ def msg_smil(name,url):
 	url = re.compile('<video src="(.+?)"').findall(html)[0]
 	#print 'SMIL URL= ' + str(url)
 	listItem = xbmcgui.ListItem(path=str(url))
-	listItem.setInfo('video', {name})
+	#listItem.setInfo('video', {name})
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
 
@@ -316,7 +316,7 @@ def nhl_stream(name,url):
         vid_data = json.load(response)
 	url = (vid_data["playbacks"][4]["url"]).replace('master_wired60.m3u8','asset_5000k.m3u8')
 	listItem = xbmcgui.ListItem(path=str(url))
-	listItem.setInfo('video', {name})
+	#listItem.setInfo('video', {name})
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
 
@@ -498,7 +498,7 @@ def csnchi_smil(name,url):
 	print 'SMIL URL= ' + str(url)
 	url = 'http' + str(url) + 'm3u8'
 	listItem = xbmcgui.ListItem(path=str(url))
-	listItem.setInfo('video', {name})
+	#listItem.setInfo('video', {name})
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
 

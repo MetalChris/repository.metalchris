@@ -115,10 +115,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.audio.radionomy" name="Radionomy" version="0.0.3" provider-name="MetalChris">
+<addon id="plugin.audio.radionomy" name="Radionomy" version="0.0.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.2.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.requests" version="2.6.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
@@ -163,12 +163,14 @@
 
 <addon id="plugin.video.nhl-rewind"
        name="NHL Rewind"
-       version="0.1.7"
+       version="0.1.8"
        provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
 	<import addon="script.module.beautifulsoup4" version="4.3.2"/>
+        <import addon="plugin.video.youtube" version="3.1.0" />
         <import addon="script.module.simplejson" version="3.3.0"/>
+        <import addon="script.module.requests" version="2.6.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource"
                library="addon.py">
@@ -176,9 +178,9 @@
     </extension>
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
+        <license>GPL 2.0</license>
         <summary lang="en">NHL Rewind</summary>
-        <description lang="en">Watch the latest videos from the NHL Network, NBC Sports, MSG Network, Fox Sports, SportsNet.ca, ESPN, and Comcast SportsNet</description>
+        <description lang="en">Watch the latest videos from the NHL Network, NBC Sports, MSG Network, Fox Sports, SportsNet.ca, ESPN, and Comcast SportsNet.</description>
         <disclaimer lang="en">This addon is a project for entertainment purposes only.  Not affiliated with, or endorsed by the NHL in any way shape or form.</disclaimer>
     </extension>
 </addon>
@@ -227,6 +229,25 @@
     <email></email>
     <source></source>
   </extension>
+</addon>
+
+<addon id="plugin.image.photo" name="Photo.net Galleries" version="0.0.1" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>image</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <disclaimer></disclaimer>
+        <summary lang="en">Photo.net Galleries</summary>
+        <description lang="en">Photo.net is an online community with hundreds of thousands of active members and many more casual viewers visiting daily. We started in 1993 and strive to be the best peer-to-peer educational system for people who wish to become better photographers. </description>
+        <license>GPL (v2) or Later</license>
+        <language/>
+        <website></website>
+        <email></email>
+    </extension>
 </addon>
 
 <addon id="plugin.video.rsi-telegiornale" name="RSI - Telegiornale" version="0.0.1" provider-name="MetalChris">
@@ -693,6 +714,26 @@
     <email></email>
     <source></source>
   </extension>
+</addon>
+
+<addon id="plugin.image.apod" name="Astronomy Picture of the Day" version="0.0.2" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+        <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>image</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <disclaimer></disclaimer>
+        <summary lang="en">Astronomy Picture of the Day</summary>
+        <description lang="en">A different astronomy and space science related image is featured each day.</description>
+        <license>GPL (v2) or Later</license>
+        <language/>
+        <website></website>
+        <email></email>
+    </extension>
 </addon>
 
 <addon id="plugin.video.docstorm" name="Documentary Storm" version="0.0.2" provider-name="MetalChris">
