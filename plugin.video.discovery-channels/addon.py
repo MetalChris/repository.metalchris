@@ -2,7 +2,7 @@
 #
 #
 # Written by MetalChris
-# Released under GPL(v2)
+# Released under GPL(v2) or Later
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
 import requests  
@@ -45,16 +45,16 @@ def CATEGORIES():
     print platform.system(), platform.release()
     dsc = settings.getSetting(id="dsc")
     if dsc!='false':
-        addDir2('Discovery Channel', 'https://www.discoverygo.com/discovery/', 530, artbase + 'discovery.png')
+        addDir2('Discovery Channel', 'https://www.discoverygo.com/free-preview-on-discovery/', 520, artbase + 'discovery.png')
     ap = settings.getSetting(id="ap")
     if ap!='false':
-        addDir2('Animal Planet', 'https://www.discoverygo.com/animal-planet/', 530, artbase + 'animalplanet.jpg')
+        addDir2('Animal Planet', 'https://www.animalplanetgo.com/free-preview-on-animal-planet/', 520, artbase + 'animalplanet.jpg')
     sci = settings.getSetting(id="sci")
     if sci!='false':
-        addDir2('Discovery Science', 'http://www.discoverygo.com/science/', 530, artbase + 'sciencechannel.png')
+        addDir2('Discovery Science', 'https://www.sciencechannelgo.com/free-preview-on-science/', 520, artbase + 'sciencechannel.png')
     idsc = settings.getSetting(id="idsc")
     if idsc!='false':
-        addDir2('Investigation Discovery', 'http://www.discoverygo.com/investigation-discovery/', 530, artbase + 'investigationdiscovery.jpg')
+        addDir2('Investigation Discovery', 'https://www.investigationdiscoverygo.com/free-preview-on-id/', 520, artbase + 'investigationdiscovery.jpg')
     dahn = settings.getSetting(id="dahn")
     if dahn!='false':
         addDir2('American Heroes', 'https://www.discoverygo.com/ahc/', 530, artbase + 'ahctv.jpg')
@@ -66,7 +66,7 @@ def CATEGORIES():
         addDir2('Destination America', 'https://www.discoverygo.com/destination-america/', 530, artbase + 'destinationamerica.jpg')
     tlc = settings.getSetting(id="tlc")
     if tlc!='false':
-        addDir2('TLC', 'https://www.discoverygo.com/tlc/', 530, artbase + 'tlc.jpg')
+        addDir2('TLC', 'https://www.discoverygo.com/tlc/', 525, artbase + 'tlc.jpg')
     dscl = settings.getSetting(id="dscl")
     if dscl!='false':
         addDir2('Discovery Life', 'https://www.discoverygo.com/discovery-life/', 530, artbase + 'discoverylife.jpg')
@@ -79,14 +79,116 @@ def CATEGORIES():
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
-#530
-def discovery_menu(url):
+def uniq(input):
+	output = []
+	for x in input:
+	    if x not in output:
+	        output.append(x)
+	return output
+
+
+#520
+def dsc_free(url):
 	site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com/videos/'
 	r = requests.get(url)
 	opener = urllib2.build_opener()
 	opener.addheaders.append(('Cookie', r.cookies))
 	f = opener.open(url)
-        page = f.read()
+	page = f.read()
+	soup = BeautifulSoup(page,'html.parser').find_all('span',{'class':'flex'})
+	scripts = BeautifulSoup(page,'html.parser').find_all('script',{'type':'application/ld+json'}); i=1
+	for item in soup:
+	    show = item.find('h3',{'class':'brand-text-secondary show-name js-show-link'}).text.encode('utf-8')
+	    ep = item.find('h3',{'class':'content-title'}).text.encode('utf-8')
+	    title = show + ' - ' + ep
+	    url = 'http://www.discoverygo.com' + item.find('a')['href']
+	    icon = item.find('img')['src']
+	    description = item.find('p',{'class':'content-description'}).text.encode('utf-8')
+	    runtime = item.find('span',{'class':'content-duration'}).text.encode('utf-8').replace('Duration', '').strip()
+	    expiry = str(re.compile('availabilityEnds" : "(.+?)"').findall(str(scripts[i]))).split('T')
+	    add_directory3(title, url, 531, artbase + 'fanart2.jpg', icon, plot=description + ' (' + runtime + ') ' + str(expiry[0])[2:])  
+	    i = i + 1
+	if not 'tlc.com' in site:
+            addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
+	else:
+            addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
+        xbmcplugin.setContent(pluginhandle, 'episodes')
+        views = settings.getSetting(id="views")
+	if views != 'false':
+            xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+        xbmcplugin.endOfDirectory(addon_handle)
+
+
+#525
+def tlc_menu(url):
+    site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com/videos/'
+    r = requests.get(url)
+    opener = urllib2.build_opener()
+    opener.addheaders.append(('Cookie', r.cookies))
+    f = opener.open(url)
+    page = f.read()
+    soup = BeautifulSoup(page,'html5lib').find_all('div',{'class':'carousel-wrapper'})
+    for item in soup[2:3]:
+	ctitle = item.find('h3')
+	if ctitle is not None and 'Unlocked' in ctitle:
+	    print '====================MATCH'
+	auth = re.compile(r'<div class="content-overlay">(.+?)\s/', re.DOTALL).findall(str(item))
+	plot = re.compile('data-description="(.+?)"').findall(str(item)); i = 0
+	shows = re.compile('data-show-title="(.+?)"').findall(str(item))
+	titles = re.compile('data-episode-title="(.+?)"').findall(str(item))
+	images = re.compile('src="(.+?)width').findall(str(item))
+	duration = re.compile('data-duration="(.+?)"').findall(str(item))
+	dataslug = re.compile('data-slug="(.+?)"').findall(str(item))
+	datashowslug = re.compile('data-show-slug="(.+?)"').findall(str(item))
+	collection = re.compile('collection-type"(.+?)",').findall(str(item))
+	expires = re.compile('data-expiration="(.+?)"').findall(str(item))
+	diff = len(shows) - len(expires)
+	for item in titles:
+	    title = (shows[i] + ' - ' + titles[i]).replace('&amp;', '&').replace('&#x27;','\'').replace('&quot;','\'').replace('&rsquo;','\'')
+	    expire = (expires[i].split('T')[0]).split('-')
+	    year = expire[0]; month = expire[1]; day = (int(expire[2]) - 1)
+	    month = month.lstrip('0')
+	    expiry = str(month) + '/' + str(day) + '/' + str(year)
+	    key = datashowslug[i] + '/' + dataslug[i]
+	    url = 'http://www.discoverygo.com/' + str(key)
+	    try: description = plot[i]
+	    except IndexError:
+	        description = 'No Description Available' #plot[-1]
+	    description = description.replace('&amp;', '&').replace('&#x27;','\'').replace('&quot;','\'').replace('&rsquo;','\'')
+	    try: icon = images[i] + 'width=900&key=d06c34d5fa5f5bd74bc83'
+	    except IndexError:
+		icon = images[-1] + 'width=900&key=d06c34d5fa5f5bd74bc83'
+	    icon = icon.replace('&amp;', '&')
+	    try: runtime = GetInHMS(int(duration[i]))
+	    except IndexError:
+		runtime = GetInHMS(int(duration[-1]))
+	    add_directory3(title, url, 531, artbase + 'fanart2.jpg', icon, plot=description + ' (' + runtime.replace('00:','') + ') ' + expiry)  
+	    i = i + 1
+	if not 'tlc.com' in site:
+            addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
+	else:
+            addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
+        xbmcplugin.setContent(pluginhandle, 'episodes')
+        views = settings.getSetting(id="views")
+	if views != 'false':
+            xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+        xbmcplugin.endOfDirectory(addon_handle)
+
+
+#530
+def discovery_menu(url):
+    site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com/videos/'
+    r = requests.get(url)
+    opener = urllib2.build_opener()
+    opener.addheaders.append(('Cookie', r.cookies))
+    f = opener.open(url)
+    page = f.read()
+    soup = BeautifulSoup(page).find_all('div',{'class':'carousel-wrapper'})
+    print len(soup)
+    for item in soup:
+	ctitle = item.find('h3')
+	if ctitle is not None and 'Unlocked' in ctitle:
+	    print '====================MATCH'
 	auth = re.compile(r'<div class="content-overlay">(.+?)\s/', re.DOTALL).findall(str(page))
 	plot = re.compile('data-description="(.+?)"').findall(str(page)); i = 0
 	shows = re.compile('data-show-title="(.+?)"').findall(str(page))
@@ -102,9 +204,9 @@ def discovery_menu(url):
 	    if not 'icon-preview-with-circle' in authkey:
 		i = i + 1
 		continue
-	    if not 'recommended' in collection[i]:
-	       i = i + 1
-	       continue
+	    #if not 'recommended' in collection[i]:
+	       #i = i + 1
+	       #continue
 	    title = (shows[i] + ' - ' + titles[i]).replace('&amp;', '&').replace('&#x27;','\'').replace('&quot;','\'').replace('&rsquo;','\'')
 	    expire = (expires[i].split('T')[0]).split('-')
 	    year = expire[0]; month = expire[1]; day = (int(expire[2]) - 1)
@@ -559,6 +661,12 @@ elif mode == 4:
 elif mode == 6:
     print "Get Episodes"
     get_episodes(url)
+elif mode==520:
+        print "Discovery Menu"
+	dsc_free(url)
+elif mode==525:
+        print "TLC Menu"
+	tlc_menu(url)
 elif mode==530:
         print "Discovery Menu"
 	discovery_menu(url)

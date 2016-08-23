@@ -11,13 +11,13 @@ from urllib import urlopen
 #import lxml.html
 #import socket
 
-settings = xbmcaddon.Addon(id="plugin.audio.internetarchive")
+settings = xbmcaddon.Addon(id="plugin.video.internetarchive")
 artbase = 'special://home/addons/plugin.audio.internetarchive/resources/media/'
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
 selfAddon = xbmcaddon.Addon(id='plugin.audio.internetarchive')
 translation = selfAddon.getLocalizedString
-local_string = xbmcaddon.Addon(id='plugin.audio.internetarchive').getLocalizedString
+local_string = xbmcaddon.Addon(id='plugin.video.internetarchive').getLocalizedString
 dsort = settings.getSetting(id="dsort")
 ssort = settings.getSetting(id="ssort")
 download = settings.getSetting(id="download")
@@ -181,7 +181,7 @@ def ia_audio_files(url):
                 li.setInfo(type = 'music', infoLabels = infoLabels)
                 commands = []
                 commands.append
-                    #li.addContextMenuItems([('Download File', 'XBMC.RunScript(special://home/addons/plugin.audio.internetarchive/downloader.py)',)])
+                    #li.addContextMenuItems([('Download File', 'XBMC.RunScript(special://home/addons/plugin.video.internetarchive/downloader.py)',)])
                 li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url))])
                 xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=70)
                 xbmcplugin.setContent(addon_handle, 'episodes')

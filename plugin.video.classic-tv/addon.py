@@ -2,7 +2,7 @@
 #
 #
 # Written by MetalChris
-# Released under GPL(v2)
+# Released under GPL(v2) or Later
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
 import urlparse

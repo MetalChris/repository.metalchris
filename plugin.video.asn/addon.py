@@ -89,6 +89,8 @@ def LIVE(url):
 	    away = str(re.compile('column-4">(.+?)</').findall(str(item)))[2:-2]
 	    etime = str(re.compile('column-5">(.+?)</').findall(str(item)))[2:-2]
 	    link = str(re.compile('column-7">(.+?)</').findall(str(item)))[2:-2]
+	    if len(link) < 1:
+		continue
 	    if 'column-5' in away:
 		title = edate + ' [' + etime + ']' + ' - ' + sport + ' - ' + home
 	    else:

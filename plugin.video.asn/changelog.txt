@@ -1,3 +1,6 @@
+Version 0.0.3
+- Added a check to skip events in the schedule that do not have a streaming link
+
 Version 0.0.2
 - Added Live Events
 

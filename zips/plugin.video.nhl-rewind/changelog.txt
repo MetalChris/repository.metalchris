@@ -1,3 +1,13 @@
+Version 0.1.7
+- More Fixes for 2016 - FOX Sports
+
+Version 0.1.6
+- Added videos from all team sites
+- Fix addon.xml
+
+Version 0.1.5
+- Fixes for 2016 - MSG Network, NBC Sports
+
 Version 0.1.4
 - Fix for NHL MLB changeover
 

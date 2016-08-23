@@ -11,7 +11,6 @@ import HTMLParser
 from bs4 import BeautifulSoup
 from urllib import urlopen
 import html5lib
-import simplejson as json
 
 live = 'aHR0cDovL29veWFsYWhkMi1mLmFrYW1haWhkLm5ldC9pL25ld3NtYXgwMl9kZWxpdmVyeUAxMTk1NjgvbWFzdGVyLm0zdTg/aGRjb3JlPTIuMTAuMyZnPVdVVFlWRlNWSUVVWQ=='
 pre = 'aHR0cDovL3BsYXllci5vb3lhbGEuY29tL3Nhcy9wbGF5ZXJfYXBpL3YxL2F1dGhvcml6YXRpb24vZW1iZWRfY29kZS9Ka2NXczZ2NTNsc1JkR2Z3bENTd2dfYTVDVU12Lw=='
@@ -319,4 +318,5 @@ elif mode==25:
 elif mode==30:
         print "Newsmax Streams"
 	streams(name,url)
+
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

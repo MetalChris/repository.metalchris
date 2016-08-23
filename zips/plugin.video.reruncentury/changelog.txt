@@ -1,0 +1,6 @@
+Version 0.0.2
+- Change from default.py to addon.py
+- Fix addon.xml
+
+Version 0.0.1
+- Initial release
