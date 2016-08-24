@@ -1,5 +1,8 @@
+Version 0.1.9
+- Fix for Android and Mac OS
+
 Version 0.1.8
-- Add requests dependency to addon.xml
+- Add requests to dependencies in 
 
 Version 0.1.7
 - More Fixes for 2016 - FOX Sports

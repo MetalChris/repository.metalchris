@@ -12,7 +12,7 @@ from datetime import date, datetime, timedelta as td
 from bs4 import BeautifulSoup
 import HTMLParser
 import simplejson as json
-import xml.etree.ElementTree as ET
+#import xml.etree.ElementTree as ET
 from urllib import urlopen
 import socket
 import requests
