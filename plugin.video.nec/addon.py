@@ -11,8 +11,6 @@ import HTMLParser
 from bs4 import BeautifulSoup
 from urllib import urlopen
 from datetime import date, datetime, timedelta as td
-import m3u8
-import os.path
 
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
@@ -79,7 +77,7 @@ def date_generator():
 #70
 def nec_schedule(name, url):
         html = get_html(url)
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = BeautifulSoup(html, 'html5lib')
         for item in soup.find_all('tr'):
             for link in item.find_all('a'):
                 url = link.get('href')
@@ -107,7 +105,7 @@ def nec_control(url):
 	filename = 'nec.m3u8'
         addon_handle = int(sys.argv[1])
         html = get_html(url)
-	soup = BeautifulSoup(html,'html.parser').find_all('td', {'class':'tdwidder'})
+	soup = BeautifulSoup(html,'html5lib').find_all('td', {'class':'tdwidder'})
 	for item in soup:
 	    title = item.find('p').text
 	    image = defaultimage
@@ -157,7 +155,7 @@ def nec_live_events(url):
 	    url = 'http://necfrontrow.com/webcast' + str(url)	
 	    print 'Live URL= ' + str(url)
             html = get_html(url)
-	    frame = BeautifulSoup(html,'html.parser').find_all('iframe')
+	    frame = BeautifulSoup(html,'html5lib').find_all('iframe')
 	    print '=========IFRAME ' + str(frame[1])
 	    try: iframe =re.compile('src="(.+?)"').findall(str(frame[1]))[0]
 	    except IndexError:
@@ -213,7 +211,7 @@ def nec_sports(url,name):
 #40
 def nec_events(url,name):
         html = get_html(url)
-	soup = BeautifulSoup(html, 'html.parser')
+	soup = BeautifulSoup(html, 'html5lib')
         for item in soup.find_all('tr'):
             for link in item.find_all('a'):
                 url = link.get('href')

@@ -1,3 +1,6 @@
+Version 0.0.6
+- Remove unnecessary dependencies from addon.py
+
 Version 0.0.5
 - Fix addon.xml (again)
 
