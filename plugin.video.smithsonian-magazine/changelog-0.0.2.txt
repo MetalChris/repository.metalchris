@@ -1,0 +1,5 @@
+Version 0.0.2
+- Add options in Settings to choose bitrate and force Media Info 2
+
+Version 0.0.1
+- Initial release.
