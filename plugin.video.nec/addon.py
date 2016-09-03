@@ -91,7 +91,7 @@ def nec_schedule(name, url):
 		sport = item[1].split('>',-1)[-1]
 		event = item[2].replace('\n<td valign="top">', '')[:-12]
 		etime = item[3].split('\n', -1)[-1].upper()
-		title = str(etime) + ' - ' + str(event) + ' (' + str(sport) + ')'
+		title = str(etime) + ' - ' + str(striphtml(event)).strip() + ' (' + str(sport) + ')'
 		if str(name) in str(edate):
                     li = xbmcgui.ListItem(title, iconImage=defaultimage, thumbnailImage=defaultimage)
                     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
@@ -118,7 +118,7 @@ def nec_control(url):
 	        try: streamurl = re.compile('m3u8_url":"(.+?)","secure').findall(html)[-1]
 	        except IndexError:     
 		    continue
-	    if 'packnetwork' in iframe:
+	    else:
 		try: streamurl = re.compile('src : "(.+?)"').findall(str(html))[1]
 	        except IndexError:     
 		    continue

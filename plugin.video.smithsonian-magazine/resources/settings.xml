@@ -1,0 +1,8 @@
+<settings>
+        <category label="General">
+ 		<setting type="sep" />
+     		<setting id="quality" type="enum" label="30003" lvalues="30100|30105|30110" enable="!eq(3,false)" default="2"/>
+		<setting id="views" type="bool" label="30020" default="true"/>
+ 		<setting type="sep" />
+        </category>
+</settings>
