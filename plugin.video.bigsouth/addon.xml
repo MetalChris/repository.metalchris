@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.asn"
-       name="American Sports Network" version="0.0.4" provider-name="MetalChris">
+<addon id="plugin.video.bigsouth" name="Big South Sports" version="0.0.1" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.html5lib" version="0.999.0"/> 
-    <import addon="script.module.requests" version="2.9.1"/> 
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
     </requires>
     <extension point="xbmc.python.pluginsource"
                library="addon.py">
@@ -14,8 +14,8 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <license>GPL 2.0 or Later</license>
-        <summary lang="en">American Sports Network</summary>
-        <description lang="en">Watch videos and live events from the American Sports Network.</description>
+        <summary lang="en">Big South Sports</summary>
+        <description lang="en">Watch live and on demand events from the Big South Conference, a collegiate athletic conference affiliated with the NCAA's Division I.</description>
         <disclaimer lang="en"></disclaimer>
     </extension>
 </addon>
