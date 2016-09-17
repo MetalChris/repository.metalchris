@@ -26,8 +26,6 @@ local_string = xbmcaddon.Addon(id='plugin.audio.buddha').getLocalizedString
 defaultimage = 'special://home/addons/plugin.audio.buddha/icon.png'
 
 
-
-
 def now_playing():
 	if n != 'true':
 	    print '===Notification Off==='
@@ -36,11 +34,12 @@ def now_playing():
 	    info = (re.compile('title">(.+?)</h3').findall(html)[0]).replace('&#39;', '\'').replace('&amp;', '&')
 	    print info
             xbmcgui.Dialog().notification('Now Playing on Buddha Radio', info, defaultimage, 7500, False)	
-	    if xbmc.Player().isPlaying():
-	        time.sleep(60)
-	        now_playing()
-	    else:
-	        sys.exit()
+	    for i in range(60):
+	        if xbmc.Player().isPlaying():
+	            time.sleep(1)
+	        else:
+	            sys.exit()
+	    now_playing()
 
 
 def get_html(url):
@@ -67,13 +66,10 @@ if t == '1':
 else:
 	pre = 'rtsp'; post = '.stream'
 
-
 url = pre + base + key + post
-listitem = xbmcgui.ListItem(thumbnailImage=defaultimage)
-xbmc.Player().play( url, listitem );time.sleep(15); now_playing()
+
+item = xbmcgui.ListItem(thumbnailImage=defaultimage)
+xbmc.Player().play( url, item );time.sleep(10); now_playing()
 sys.exit()
-
-
-
 
 xbmcplugin.endOfDirectory(addon_handle)

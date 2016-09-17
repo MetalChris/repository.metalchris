@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.audio.buddha" name="Buddha Radio" version="1.0.2" provider-name="MetalChris">
+<addon id="plugin.audio.buddha" name="Buddha Radio" version="1.0.3" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>  
   </requires>
