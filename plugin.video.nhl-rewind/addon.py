@@ -12,7 +12,7 @@ from datetime import date, datetime, timedelta as td
 from bs4 import BeautifulSoup
 import HTMLParser
 import simplejson as json
-#import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET
 from urllib import urlopen
 import socket
 import requests
@@ -58,7 +58,6 @@ def CATEGORIES():
     mode = 1
 
     addDir('NHL.tv', 'https://www.nhl.com/video/', 16, defaultimage)
-    #addDir('Fox Sports', 'http://feed.theplatform.com/f/BKQ29B/foxsports-all?byCustomValue={primary}{nhl}&sort=pubDate|desc&form=rss&range=1-18', 50, defaultimage)
     addDir('Fox Sports', 'http://feed.theplatform.com/f/BKQ29B/foxsports-all?byCustomValue={primary}{nhl}&sort=pubDate|desc&form=rss&range=1-18', 51, defaultimage)
     addDir('NBC Sports', 'http://www.nbcsports.com/video/league/nhl', 89, defaultimage)
     addDir('MSG Network', 'http://www.msgnetworks.com/teams/rangers.html', 80, defaultimage)
@@ -66,17 +65,12 @@ def CATEGORIES():
     addDir('ESPN', 'http://espn.go.com/video/format/libraryPlaylist?categoryid=2459791', 90, defaultimage)
     addDir('Comcast SportsNet', 'http://feeds.the-antinet.com/nhl/csn', 95, defaultimage)
     addDir('All Teams', 'https://www.nhl.com/info/teams', 30, defaultimage)
-    #addDir('Game Recaps', 'http://feeds.the-antinet.com/nhl/csn', 99, defaultimage)
-    #addDir('Full Game Replays', 'http://feeds.the-antinet.com/nhl/nhlfull.xml', mode, defaultimage)
-    #addDir('Condensed Games', 'http://feeds.the-antinet.com/nhl/nhlsched.xml', mode, defaultimage)
-    #addDir('Hockey Fights', 'http://feeds.the-antinet.com/nhl/hockeyfights.xml', mode, defaultimage)
-    ##addDir('FC Hockey Fights', 'http://feeds.the-antinet.com/movies/yt/ytfcfightlog.php', 52, defaultimage)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #30
 def teams(url):
-	print url
+	#print url
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html.parser')
         for item in soup.find_all(attrs={'class': 'ticket-team_name h3'}):
@@ -85,26 +79,26 @@ def teams(url):
 	    title = city + ' ' + team
 	    url = 'http://www.nhl.com/' + team.lower() + '/video'
 	    add_directory2(title, url, 31, defaultfanart, defaultimage,plot='')
-	print url
+	#print url
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #31
 def team_sub(url):
-	print url
+	#print url
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html.parser')
         for item in soup.find_all(attrs={'class': 'section-banner__tray-item'}):
 	    title = item.find('a').text.encode('utf-8')
 	    url = 'http://www.nhl.com' + item.find('a')['href']
 	    add_directory2(title, url, 32, defaultfanart, defaultimage,plot='')
-	print url
+	#print url
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #32
 def team_sub2(url):
-	print url
+	#print url
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html.parser')
 	keys = re.compile('data-asset-id="(.+?)"').findall(str(html))
@@ -114,7 +108,7 @@ def team_sub2(url):
             nhldata = json.load(response)
 	    title = str(nhldata["title"])
 	    add_directory3(title, url, 12, defaultfanart, defaultimage,plot='')
-	print url
+	#print url
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
@@ -122,8 +116,8 @@ def team_sub2(url):
 def fox_sports2(url):
 	s = requests.Session()
 	r = s.get(url, headers=headers)
-	print r.cookies.values()
-	print r.cookies
+	#print r.cookies.values()
+	#print r.cookies
 	html = (r.text.encode('utf-8'))
         html = get_html(url)
 	soup = BeautifulSoup(html,'html.parser')
@@ -147,14 +141,13 @@ def fox_sports2(url):
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
-
 #89
 def nbcsn_nhl(url):
         html = get_html(url)
 	titles = re.compile('\\{"title":"(.+?)"').findall(str(html))
-	print len(titles)
+	#print len(titles)
 	keys = re.compile('pid":"(.+?)"').findall(str(html))
-	print len(keys)
+	#print len(keys)
         for title, key in zip(titles, keys):
 	    title = title.replace("\u0027", "'")
             smil = 'http://link.theplatform.com/s/BxmELC/media/' + str(key)
@@ -167,7 +160,7 @@ def nbcsn_smil(name,url):
 	html = get_html(url)
 	#print html
 	link = (re.compile('\\n(.+?)\\?').findall(str(html))[0]).split('index')[0] + 'master.m3u8'
-	print link
+	#print link
 	listItem = xbmcgui.ListItem(path=str(link))
 	#listItem.setInfo('video', {name})
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
@@ -222,7 +215,7 @@ def play_url(url):
 
 #16
 def nhl_all(url):
-	print url
+	#print url
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html.parser')
         for item in soup.find_all(attrs={'class': 'section-banner__tray-item'}):#[37:54]:
@@ -233,66 +226,17 @@ def nhl_all(url):
 	    key = ((item.find('a')['href']).split('-'))[-1]
 	    url = 'https://search-api.svc.nhl.com/svc/search/v2/nhl_global_en/topic/' + key + '?page=1&sort=new&type=video&hl=true&expand=image.cuts.640x360%2Cimage.cuts.1136x640'
             add_directory2(title,url,11, defaultfanart,defaultimage,plot='')
-	print url
-        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
-
-
-def get_cookies(url):
-    #Create a CookieJar object to hold the cookies
-    cj = cookielib.CookieJar()
-    #Create an opener to open pages using the http protocol and to process cookies.
-    opener = build_opener(HTTPCookieProcessor(cj), HTTPHandler())
-
-    #create a request object to be used to get the page.
-    req = Request(url)
-    f = opener.open(req)
-
-    #see the first few lines of the page
-    html = f.read()
-    print html[:50]
-
-    #Check out the cookies
-    print "the cookies are: "
-    for cookie in cj:
-        print cookie
-
-
-#14
-def date_generator():
-	thisday = datetime.now()
-        week_ago = str(thisday - td(days=8)).split(' ')[0]
-	print 'week_ago= ' + str(week_ago)
-	today = str(datetime.utcnow() - td(hours=5)).split(' ')[0]
-	print 'today= ' + str(today)
-	current = datetime.utcnow() - td(hours=5)
-	year = (today)[:4]
-	month = (today)[5:7]
-	day = (today)[8:10]
-	year2 = (week_ago)[:4]
-	month2 = (week_ago)[5:7]
-	day2 = (week_ago)[8:10]
-	d2 = date(int(year), int(month), int(day))
-	d1 = date(int(year2), int(month2), int(day2))
-	delta = d2 - d1
-	for i in range(delta.days - 1, 0, -1):
-	    gamedate = str(d1 + td(days=i))
-	    url = 'http://statsapi.web.nhl.com/api/v1/schedule?date='+gamedate+'&expand=schedule.game.content.media.epg,schedule.teams'
-	    print 'game url= ' + str(url)
-	    s = gamedate.replace('-','')
-	    title = datetime(year=int(s[0:4]), month=int(s[4:6]), day=int(s[6:8]))
-	    title = title.strftime("%A %B %d, %Y")
-	    title = str(title.replace(' 0', ' '))
-            add_directory2(title,url,99, defaultfanart,defaultimage,plot='')
+	#print url
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #11
 def nhl_video(url):
 	nextlink = (url.split('?'))[0]
-	print nextlink
+	#print nextlink
 	page = (url.split('=')[1])
 	page = int(page.split('&')[0]) + 1
-	print page
+	#print page
         response = urllib2.urlopen(url)
         nhldata = json.load(response)
         i=0
@@ -364,7 +308,7 @@ def sn_video(url):
                     title = title.replace('&amp;','&').replace("&#8217;","'")
                     video = video.split('=',1)[-1]
                     url = 'http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=' +str(video)
-                    print 'Video= ' + str(video)
+                    #print 'Video= ' + str(video)
                     li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
                     li.setProperty('fanart_image',  image)
                     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=18)
@@ -385,7 +329,7 @@ def sn_highlights(url):
                     title = title.replace('&amp;','&').replace("&#8217;","'")
                     video = video.split('=',1)[-1]
                     url = 'http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=' +str(video)
-                    print 'Video= ' + str(video)
+                    #print 'Video= ' + str(video)
                     li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
                     li.setProperty('fanart_image',  image)
                     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=18)
@@ -405,7 +349,7 @@ def sn_top(url):
                     title = title.replace('&amp;','&').replace("&#8217;","'")
                     video = video.split('=',1)[-1]
                     url = 'http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=' +str(video)
-                    print 'Video= ' + str(video)
+                    #print 'Video= ' + str(video)
                     li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
                     li.setProperty('fanart_image',  image)
                     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=18)
@@ -495,7 +439,7 @@ def csn_chi(url):
 def csnchi_smil(name,url):
         html = get_html(url)
 	url = re.compile('http(.+?)m3u8').findall(html)[0]
-	print 'SMIL URL= ' + str(url)
+	#print 'SMIL URL= ' + str(url)
 	url = 'http' + str(url) + 'm3u8'
 	listItem = xbmcgui.ListItem(path=str(url))
 	#listItem.setInfo('video', {name})
@@ -516,11 +460,11 @@ def csn_nhl(url):
                 continue
             title = title[-1].replace('&#039;',"'")
             videokey=re.compile('media-theplatform/(.+?).jpg').findall(html)[i]
-            print 'videokey= ' + str(videokey)
+            #print 'videokey= ' + str(videokey)
             smil = 'http://link.theplatform.com/s/pcPFDC/' + str(videokey)
-	    print 'videolink= ' + str(smil)
+	    #print 'videolink= ' + str(smil)
             i = i + 1
-	    add_directory3(title,smil,86, defaultfanart ,defaultimage,plot='')
+	    add_directory3(title,smil,85, defaultfanart ,defaultimage,plot='')
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
         
 
@@ -753,9 +697,6 @@ elif mode == 96:
 elif mode == 97:
     print "Get CSN Philly Video"
     csn_phi(url)
-elif mode == 99:
-    print "Get Game Recaps"
-    game_recaps(url)
 elif mode==100:
         print "PlayURL"
 	play_url(url)
