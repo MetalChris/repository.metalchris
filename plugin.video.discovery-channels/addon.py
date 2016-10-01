@@ -57,19 +57,19 @@ def CATEGORIES():
         addDir2('Investigation Discovery', 'https://www.investigationdiscoverygo.com/free-preview-on-id/', 520, artbase + 'investigationdiscovery.jpg')
     dahn = settings.getSetting(id="dahn")
     if dahn!='false':
-        addDir2('American Heroes', 'https://www.discoverygo.com/ahc/', 530, artbase + 'ahctv.jpg')
+        addDir2('American Heroes', 'https://www.ahctvgo.com/free-preview-on-american-heroes-channel/', 520, artbase + 'ahctv.jpg')
     vel = settings.getSetting(id="vel")
     if vel!='false':
-        addDir2('Velocity', 'https://www.discoverygo.com/velocity/', 530, artbase + 'velocity.png')
+        addDir2('Velocity', 'https://www.velocitychannelgo.com/free-preview-on-velocity/', 520, artbase + 'velocity.png')
     dest = settings.getSetting(id="dest")
     if dest!='false':
-        addDir2('Destination America', 'https://www.discoverygo.com/destination-america/', 530, artbase + 'destinationamerica.jpg')
+        addDir2('Destination America', 'https://www.destinationamericago.com/free-preview-on-destination-america/', 520, artbase + 'destinationamerica.jpg')
     tlc = settings.getSetting(id="tlc")
     if tlc!='false':
         addDir2('TLC', 'https://www.discoverygo.com/tlc/', 525, artbase + 'tlc.jpg')
     dscl = settings.getSetting(id="dscl")
     if dscl!='false':
-        addDir2('Discovery Life', 'https://www.discoverygo.com/discovery-life/', 530, artbase + 'discoverylife.jpg')
+        addDir2('Discovery Life', 'https://www.discoverylifego.com/free-preview-on-dlf/', 520, artbase + 'discoverylife.jpg')
     dsck = settings.getSetting(id="dsck")
     if dsck!='false':
         addDir2('Discovery Kids', 'http://discoverykids.com/videos/', 535, artbase + 'discoverykids.jpg')
