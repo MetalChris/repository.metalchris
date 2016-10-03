@@ -12,11 +12,18 @@ import requests
 import simplejson as json
 
 
+settings = xbmcaddon.Addon(id="plugin.video.nautilus")
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
 selfAddon = xbmcaddon.Addon(id='plugin.video.nautilus')
+addon = xbmcaddon.Addon(id="plugin.video.nautilus")
 translation = selfAddon.getLocalizedString
 #usexbmc = selfAddon.getSetting('watchinxbmc')
+translation = selfAddon.getLocalizedString
+local_string = xbmcaddon.Addon(id='plugin.video.nautilus').getLocalizedString
+download = settings.getSetting(id="download")
+
+plugin = "Nautilus Live"
 
 defaultimage = 'special://home/addons/plugin.video.nautilus/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.nautilus/fanart.jpg'
@@ -29,20 +36,29 @@ headers = {
 
 pluginhandle = int(sys.argv[1])
 addon_handle = int(sys.argv[1])
-confluence_views = [500,501,502,503,504,508]
+confluence_views = [500,501,502,503,504,508,510,514]
+window_id = xbmcgui.getCurrentWindowId()
+print window_id
 
 
 def CATEGORIES():
-	addDir('Channel 1', 'http://nautiluslive.org/live/channel-1', 1, defaultimage)
-	addDir('Channel 2', 'http://nautiluslive.org/live/channel-2', 1, defaultimage)
-	addDir('Quad', 'http://nautiluslive.org/live/quad', 1, defaultimage)
+	if window_id == 10025:
+	    addDir('Channel 1', 'http://nautiluslive.org/live/channel-1', 1, defaultimage)
+	    addDir('Channel 2', 'http://nautiluslive.org/live/channel-2', 1, defaultimage)
+	    addDir('Quad', 'http://nautiluslive.org/live/quad', 1, defaultimage)
+	else:
+	    get_albums('http://nautiluslive.org/albums')
+	    #addDir('Photo Albums', 'http://nautiluslive.org/albums', 5, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #1
 def INDEX(name,url):
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('iframe',{'id':'playerIFrame'})
+	try: soup = BeautifulSoup(html,'html5lib').find_all('iframe',{'id':'playerIFrame'})
+	except TypeError:                
+	    xbmcgui.Dialog().notification(plugin + ' ' +name, 'Expedition 2016 has ended.  Check back in April 2017.', defaultimage, 5000, False)
+	    sys.exit()
 	for item in soup:
 	    url = item.get('src')
 	    urlkey = re.compile('s=(.+?)&').findall(url)[-1]
@@ -55,6 +71,87 @@ def INDEX(name,url):
 	    xbmc.Player().play( streamurl, listitem )
 	    sys.exit()
 	    xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
+#5
+def get_albums(url):
+	html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'media-widget media-photo-click'})
+	for item in soup:
+	    title = item.find('h3').text
+	    url = baseurl + item.find('a')['href']
+	    image = re.compile('url\\((.+?)\\)').findall(str(item))[-1]
+            addDir(title, url, 10, image)
+	xbmcplugin.endOfDirectory(handle=addon_handle, succeeded=True, updateListing=False, cacheToDisc=True)
+
+
+#10
+def get_photos(name,url):
+	html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'views-content-php'})
+	for item in soup:
+	    title = name
+	    image = baseurl + item.find('img')['src']
+	    url = unicode(image.replace('photo_thumbnail','photo_display_large'))
+	    url = ((url.split('itok'))[0])[:-1]
+	    liz=xbmcgui.ListItem(unicode(name), iconImage=unicode(image),thumbnailImage=unicode(image))
+	    liz.setInfo( type="Image", infoLabels={ "Title": name }) 
+            commands = []
+            commands.append
+            liz.addContextMenuItems([('Download Image', 'XBMC.RunPlugin(%s?mode=80&url=%s&name=%s)' % (sys.argv[0], url, title))])
+	    #xbmcplugin.setContent(addon_handle, 'picture')
+	    xbmcplugin.addDirectoryItem(handle=addon_handle,url=unicode(url),listitem=liz,isFolder=False)
+	#xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
+	print url
+	xbmcplugin.endOfDirectory(handle=addon_handle, succeeded=True, updateListing=False, cacheToDisc=True)
+
+
+def downloader(name,url):   
+        path = addon.getSetting('download')
+        if path == "":
+            xbmc.executebuiltin("XBMC.Notification(%s,%s,10000,%s)"
+                    %(translation(30000), translation(30010), defaulticon))
+            addon.openSettings()
+            path = addon.getSetting('download')
+        if path == "":
+            return
+        file_name = name + '-' + url.split('/')[-1]
+        dlsn = settings.getSetting(id="status")
+        bsize = settings.getSetting(id="bsize")
+        print 'Buffer Size= ' + str(bsize)
+        ret = xbmcgui.Dialog().yesno("Internet Archive [Video]", 'Download Selected File?', str(file_name))
+        if ret == False:
+            return get_photos
+        else:
+            xbmcgui.Dialog().notification('Nautilus Live', 'Download Started.', xbmcgui.NOTIFICATION_INFO, 5000)
+        print 'URL= ' + str(url)
+        print 'Filename= ' + str(file_name)
+        print 'Download Location= ' + str(download)
+	u = urllib2.urlopen(url)
+	f = open(download+file_name, 'wb')
+	meta = u.info()
+	file_size = float(meta.getheaders("Content-Length")[0])
+        file_sizeMB = float(file_size/(1024*1024))
+	print "Downloading: %s %s MB" % (file_name, "%.2f" % file_sizeMB)
+	file_size_dl = 0
+	block_sz = int(bsize)
+	while True:
+	    buffer = u.read(block_sz)
+	    if not buffer:
+	        break
+	    file_size_dl += float(len(buffer))
+            file_size_dlMB = float(file_size_dl/(1024*1024)) 
+	    f.write(buffer)
+	    status = "%.2f  [%3.2f%%]" % (file_size_dlMB, file_size_dl * 100. / file_size)
+ 	    status = status + chr(8)*(len(status)+1)
+            if dlsn!='false':
+                xbmcgui.Dialog().notification('Nautilus Live Download in Progress', str(status) + ' of ' + ("%.2f" % float(file_sizeMB)) + ' MB', xbmcgui.NOTIFICATION_INFO, 2500)
+            else:
+                pass
+	f.close()
+        xbmcgui.Dialog().notification('Nautilus Live', 'Download Completed.', xbmcgui.NOTIFICATION_INFO, 5000)
+        print 'Download Completed'
+
 
 
 def striphtml(data):
@@ -104,34 +201,6 @@ def get_params():
 
     return param
 
-
-def addLink(name, url, mode, iconimage, fanart=False, infoLabels=True):
-    u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
-    ok = True
-    liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-    liz.setInfo(type="Video", infoLabels={"Title": name})
-    liz.setProperty('IsPlayable', 'true')
-    if not fanart:
-        fanart=defaultfanart
-    liz.setProperty('fanart_image',fanart)
-    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz,isFolder=False)
-    return ok
-
-def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=True ):
-    _log("add_item action=["+action+"] title=["+title+"] url=["+url+"] thumbnail=["+thumbnail+"] folder=["+str(folder)+"]")
-
-    listitem = xbmcgui.ListItem( title, iconImage="DefaultVideo.png", thumbnailImage=thumbnail )
-    listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot } )
-    
-    if url.startswith("plugin://"):
-        itemurl = url
-        listitem.setProperty('IsPlayable', 'true')
-        xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem)
-    else:
-        itemurl = '%s?action=%s&title=%s&url=%s&thumbnail=%s&plot=%s' % ( sys.argv[ 0 ] , action , urllib.quote_plus( title ) , urllib.quote_plus(url) , urllib.quote_plus( thumbnail ) , urllib.quote_plus( plot ))
-        xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem, isFolder=folder)
-        return ok
-
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
     ok = True
@@ -143,18 +212,6 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     liz.setProperty('fanart_image',fanart)
     ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
     return ok
-
-
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        if not fanart:
-            fanart=defaultfanart
-        liz.setProperty('fanart_image',fanart)
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
-        return ok
 
 def unescape(s):
     p = htmllib.HTMLParser(None)
@@ -191,5 +248,14 @@ if mode == None or url == None or len(url) < 1:
 elif mode == 1:
 	print "Nautilus Live Play Video"
 	INDEX(name,url)
+elif mode == 5:
+	print "Nautilus Photo Albums"
+	get_albums(url)
+elif mode == 10:
+	print "Nautilus Photos"
+	get_photos(name,url)
+elif mode == 80:
+   print "Download File"
+   downloader(name,url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

@@ -12,8 +12,6 @@ from bs4 import BeautifulSoup
 from urllib import urlopen
 from urllib2 import Request, build_opener, HTTPCookieProcessor, HTTPHandler
 import html5lib
-#from html5lib import sanitizer
-#from html5lib import treebuilders
 
 h = HTMLParser.HTMLParser()
 artbase = 'special://home/addons/plugin.video.discovery-channels/resources/media/'
@@ -90,6 +88,8 @@ def uniq(input):
 #520
 def dsc_free(url):
 	site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com/videos/'
+	if 'velocity' in site:
+	    site = site.replace('videos','videos-2')
 	r = requests.get(url)
 	opener = urllib2.build_opener()
 	opener.addheaders.append(('Cookie', r.cookies))
@@ -108,8 +108,10 @@ def dsc_free(url):
 	    expiry = str(re.compile('availabilityEnds" : "(.+?)"').findall(str(scripts[i]))).split('T')
 	    add_directory3(title, url, 531, artbase + 'fanart2.jpg', icon, plot=description + ' (' + runtime + ') ' + str(expiry[0])[2:])  
 	    i = i + 1
-	if not 'tlc.com' in site:
-            addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
+	#if not 'tlc.com' in site:
+            #addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
+	if 'velocity' in site:
+            addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')	 
 	else:
             addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
         xbmcplugin.setContent(pluginhandle, 'episodes')
@@ -175,69 +177,6 @@ def tlc_menu(url):
         xbmcplugin.endOfDirectory(addon_handle)
 
 
-#530
-def discovery_menu(url):
-    site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com/videos/'
-    r = requests.get(url)
-    opener = urllib2.build_opener()
-    opener.addheaders.append(('Cookie', r.cookies))
-    f = opener.open(url)
-    page = f.read()
-    soup = BeautifulSoup(page).find_all('div',{'class':'carousel-wrapper'})
-    print len(soup)
-    for item in soup:
-	ctitle = item.find('h3')
-	if ctitle is not None and 'Unlocked' in ctitle:
-	    print '====================MATCH'
-	auth = re.compile(r'<div class="content-overlay">(.+?)\s/', re.DOTALL).findall(str(page))
-	plot = re.compile('data-description="(.+?)"').findall(str(page)); i = 0
-	shows = re.compile('data-show-title="(.+?)"').findall(str(page))
-	titles = re.compile('data-episode-title="(.+?)"').findall(str(page))
-	images = re.compile('img src="(.+?)"').findall(str(page))
-	duration = re.compile('data-duration="(.+?)"').findall(str(page))
-	dataslug = re.compile('data-slug="(.+?)"').findall(str(page))
-	datashowslug = re.compile('data-show-slug="(.+?)"').findall(str(page))
-	collection = re.compile('collection-type"(.+?)",').findall(str(page))
-	expires = re.compile('data-expiration="(.+?)"').findall(str(page))
-	diff = len(shows) - len(expires)
-	for authkey in auth:
-	    if not 'icon-preview-with-circle' in authkey:
-		i = i + 1
-		continue
-	    #if not 'recommended' in collection[i]:
-	       #i = i + 1
-	       #continue
-	    title = (shows[i] + ' - ' + titles[i]).replace('&amp;', '&').replace('&#x27;','\'').replace('&quot;','\'').replace('&rsquo;','\'')
-	    expire = (expires[i].split('T')[0]).split('-')
-	    year = expire[0]; month = expire[1]; day = (int(expire[2]) - 1)
-	    month = month.lstrip('0')
-	    expiry = str(month) + '/' + str(day) + '/' + str(year)
-	    key = datashowslug[i] + '/' + dataslug[i]
-	    url = 'http://www.discoverygo.com/' + str(key)
-	    try: description = plot[i]
-	    except IndexError:
-	        description = 'No Description Available' #plot[-1]
-	    description = description.replace('&amp;', '&').replace('&#x27;','\'').replace('&quot;','\'').replace('&rsquo;','\'')
-	    try: icon = images[i]
-	    except IndexError:
-		icon = images[-1]
-	    icon = icon.replace('&amp;', '&')
-	    try: runtime = GetInHMS(int(duration[i]))
-	    except IndexError:
-		runtime = GetInHMS(int(duration[-1]))
-	    add_directory3(title, url, 531, artbase + 'fanart2.jpg', icon, plot=description + ' (' + runtime.replace('00:','') + ') ' + expiry)  
-	    i = i + 1
-	if not 'tlc.com' in site:
-            addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
-	else:
-            addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
-        xbmcplugin.setContent(pluginhandle, 'episodes')
-        views = settings.getSetting(id="views")
-	if views != 'false':
-            xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
-        xbmcplugin.endOfDirectory(addon_handle)
-
-
 #531
 def discovery_shows(name,url):
 	    r = requests.get(url)
@@ -270,34 +209,7 @@ def discovery_clips(url, iconimage):
 	except ValueError:                
 	    xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
 	    return
-        i=0
-	if not 'nextVideosList' in dscdata:            
-	    xbmcgui.Dialog().notification(name, ' No Streams Found - Try the Search Function', iconimage, 5000, False)
-	    return
-        for title in dscdata["nextVideosList"]:
-	    title = (dscdata["nextVideosList"][i]["post_title"])
-	    description = (dscdata["nextVideosList"][i]["video"]["description"])
-	    iconimage = (dscdata["nextVideosList"][i]["video"]["thumbnailUrl"])
-	    duration = (dscdata["nextVideosList"][i]["video"]["duration"])
-	    url = (dscdata["nextVideosList"][i]["video"]["src"])
-	    if QUALITY =='1':
-	        url = url.replace('4500k,', '')
-	    elif QUALITY =='0':
-	        url = url.replace('2200k,3000k,4500k,', '')
-	    i = i + 1
-            infoLabels = {'title':title,
-                          'tvshowtitle':title,
-                          'plot':description}
-            li = xbmcgui.ListItem(title, iconImage= iconimage, thumbnailImage= iconimage)
-            li.setProperty('fanart_image', artbase + 'fanart2.jpg')
-            li.setInfo(type="Video", infoLabels=infoLabels)
-	    li.addStreamInfo('video', { 'duration': duration })
-            xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=15)
-            xbmcplugin.setContent(pluginhandle, 'episodes')
-        views = settings.getSetting(id="views")
-        if views != 'false':
-            xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
-        xbmcplugin.endOfDirectory(addon_handle)
+	list_clips(dscdata)
 	    
 
 #533
@@ -311,10 +223,14 @@ def other_shows(url, iconimage):
 	    if not 'tlc.com' in url:
 	        link = url.replace('videos', 'tv-shows') + show.get('data-ssid').split('/')[-1] + '?flat=1'
 		mode = 532
+		if 'velocity' in url:
+		    link = velocity_clips(link)
+		    mode = 542
 	    else:
 	        link = url.replace('videos', 'tv-shows') + show.get('data-ssid').split('/')[-1] + '?flat=2'		
 		mode = 534
 	    add_directory2(tvshow, link, mode, artbase + 'fanart2.jpg', iconimage,plot='')
+	print link
         views = settings.getSetting(id="views")
         if views != 'false':
             xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
@@ -396,7 +312,10 @@ def kids_stream(name,url):
 
 #538
 def search(url):
+	print url
 	print iconimage
+	if 'velocity' in url:
+	    url=url.replace('videos-2/', 'search/?q=')
 	url = url.replace('videos/', 'search/?q=')
 	print url
         keyb = xbmc.Keyboard('', 'Search')
@@ -449,6 +368,58 @@ def search_streams(url):
 	print m3u8
 	play(m3u8)
 		
+
+#541
+def velocity_clips(url):
+	key = url.split('/')[-1]
+	#key = key.replace('?flat=1','-2')
+	link = url.replace('?flat=1', '/').replace('-2/','/')
+	return link
+
+
+#542
+def get_json(url):
+	html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib')
+	data = re.compile('var initialVideoData = (.+?);</script>').findall(str(soup))[-1]
+	print len(str(data))
+        try: dscdata = json.loads(data)
+	except ValueError:                
+	    xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
+	    return
+	list_clips(dscdata)
+	
+
+def list_clips(dscdata):
+        i=0
+	if not 'nextVideosList' in dscdata:            
+	    xbmcgui.Dialog().notification(name, ' No Streams Found - Try the Search Function', iconimage, 5000, False)
+	    return
+        for title in dscdata["nextVideosList"]:
+	    title = (dscdata["nextVideosList"][i]["post_title"])
+	    description = (dscdata["nextVideosList"][i]["video"]["description"])
+	    iconimage = (dscdata["nextVideosList"][i]["video"]["thumbnailUrl"])
+	    duration = (dscdata["nextVideosList"][i]["video"]["duration"])
+	    url = (dscdata["nextVideosList"][i]["video"]["src"])
+	    if QUALITY =='1':
+	        url = url.replace('4500k,', '')
+	    elif QUALITY =='0':
+	        url = url.replace('2200k,3000k,4500k,', '')
+	    i = i + 1
+            infoLabels = {'title':title,
+                          'tvshowtitle':title,
+                          'plot':description}
+            li = xbmcgui.ListItem(title, iconImage= iconimage, thumbnailImage= iconimage)
+            li.setProperty('fanart_image', artbase + 'fanart2.jpg')
+            li.setInfo(type="Video", infoLabels=infoLabels)
+	    li.addStreamInfo('video', { 'duration': duration })
+            xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=15)
+            xbmcplugin.setContent(pluginhandle, 'episodes')
+        views = settings.getSetting(id="views")
+        if views != 'false':
+            xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+        xbmcplugin.endOfDirectory(addon_handle)
+
 
 def GetInHMS(seconds):
     hours = seconds / 3600
@@ -700,6 +671,12 @@ elif mode==539:
 elif mode==540:
         print "Search Streams"
 	search_streams(url)
+elif mode==541:
+	print "Velocity Clips"
+	velocity_clips(url)
+elif mode==542:
+	print "Velocity JSON"
+	get_json(url)
 elif mode==330:
         print "Discovery Science Menu"
 	discovery_sci_menu(url)
