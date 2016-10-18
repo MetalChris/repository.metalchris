@@ -5,31 +5,21 @@
 # Released under GPL(v2) or Later
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
-import time
-import datetime
-from datetime import date, timedelta
-from datetime import date, datetime, timedelta as td
 from bs4 import BeautifulSoup
 import HTMLParser
 import simplejson as json
-import xml.etree.ElementTree as ET
 from urllib import urlopen
 import socket
 import requests
-import cookielib
-from cookielib import CookieJar
 from urllib2 import Request, build_opener, HTTPCookieProcessor, HTTPHandler
-
-#today = datetime.date.today()
-#today = today.strftime("%m/%d")
-#days7 = date.today() - timedelta(days=7)
-#day7 = days7.strftime("%m/%d")
+import urlparse
+import httplib
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'
 }
 
-time_var = str(int(round(time.time()*1000)))
+
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
 selfAddon = xbmcaddon.Addon(id='plugin.video.nhl-rewind')
@@ -63,7 +53,7 @@ def CATEGORIES():
     addDir('MSG Network', 'http://www.msgnetworks.com/teams/rangers.html', 80, defaultimage)
     addDir('SportsNet.ca', 'http://www.sportsnet.ca/videos/leagues/nhl-video/', 20, defaultimage)
     addDir('ESPN', 'http://espn.go.com/video/format/libraryPlaylist?categoryid=2459791', 90, defaultimage)
-    addDir('Comcast SportsNet', 'http://feeds.the-antinet.com/nhl/csn', 95, defaultimage)
+    addDir('Comcast SportsNet', 'http://www.comcastsportsnet.com/', 95, defaultimage)
     addDir('All Teams', 'https://www.nhl.com/info/teams', 30, defaultimage)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -169,47 +159,87 @@ def nbcsn_smil(name,url):
 
 #80
 def msg_cat():
-        addDir('MSG: Rangers', 'http://www.msgnetworks.com/teams/rangers.html', 84, artbase + 'msgnyr.jpg')
-        addDir('MSG: Islanders', 'http://www.msgnetworks.com/teams/islanders.html', 84, artbase + 'msg.jpg')
-        #addDir('MSG: Sabres', 'http://www.msg.com/content/msgsite/en/videos.1.html?tag=Buffalo-Sabres', 81, artbase + 'msg.jpg')
-        addDir('MSG: Devils', 'http://www.msgnetworks.com/teams/devils.html', 84, artbase + 'msgnjd.jpg')
+        addDir('MSG: Rangers', 'http://www.msgnetworks.com/teams/rangers/', 84, artbase + 'msgnyr.jpg')
+        addDir('MSG: Islanders', 'http://www.msgnetworks.com/teams/islanders/', 84, artbase + 'msg.jpg')
+        addDir('MSG: Sabres', 'http://www.msgnetworks.com/teams/sabres/', 84, artbase + 'msg.jpg')
+        addDir('MSG: Devils', 'http://www.msgnetworks.com/teams/devils/', 84, artbase + 'msgnjd.jpg')
 
 
 #84
 def msg_network(url):
-	msgbase = 'http://cdn.msgnetwork.com'
 	html = get_html(url)
-	if 'rangers' in url:
-	    titles = re.compile('data-alt="(.+?)"').findall(str(html))[41:59]
-	elif 'islanders' in url:
-	    titles = re.compile('data-alt="(.+?)"').findall(str(html))[39:51]
-	elif 'devils' in url:
-	    titles = re.compile('data-alt="(.+?)"').findall(str(html))[43:52]
-	keys = re.compile('data-id="(.+?)"').findall(str(html))
-	images = re.compile('data-thumbnailUrl="(.+?)"').findall(str(html))
-	for title, key, image in zip(titles, keys, images):
-	    smil = 'http://feed.theplatform.com/f/TZlbt/raiMSG1-akamai/?form=rss&byId=' + key
-	    html = get_html(smil)
-	    url = re.compile('url="(.+?)"').findall(str(html))[0]
-	    image = msgbase + image + '/jcr:content/renditions/cq5dam.thumbnail.640.360.png'
+	soup = BeautifulSoup(html,'html.parser').find_all('article',{'class':'video-post'})
+	next = BeautifulSoup(html,'html.parser').find_all('div',{'class','load-more'})
+	for link in next:
+	    next_page = link.find('a')['href']
+	for item in soup:
+	    title = item.find('h2').text.encode('utf-8').strip()
+	    url = item.find('a',{'class':'title_link'})['href'] + 'embed/?'
+	    image = str(re.compile("url\\(\\'(.+?)\\'\\)").findall(str(item)))[2:-2]
 	    add_directory3(title, url, 85, image, image, plot='')
+	addDir('Next Page', next_page, 86, image)
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #85
 def msg_smil(name,url):
 	html = get_html(url)
-	url = re.compile('<video src="(.+?)"').findall(html)[0]
-	#print 'SMIL URL= ' + str(url)
+	playurl = 'http:' + str(re.compile('releaseUrl="(.+?)"').findall(html)[0]).split('?player')[0]
+	url = (resolve_http_redirect(playurl))#.replace('1896k_1280','5128k_1920')
+	#url = url.replace('232k_416','664k_640')
 	listItem = xbmcgui.ListItem(path=str(url))
-	#listItem.setInfo('video', {name})
+	listItem.setInfo('video', {name})
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
+	#play_url(url)
+	#sys.exit()
+
+#86
+def msg_pages(url):
+	page = int(url.split('=')[-1])
+	next_page = (url.split('='))[0] + '=' + str(page +1)
+        req = urllib2.Request(url)
+        req.add_header('User-Agent','Mozilla/5.0 (iPad; CPU OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B410 Safari/600.1.4')
+        response = urllib2.urlopen(req, timeout=60)
+        html = response.read()
+	print len(str(html))
+        response.close()
+	soup = BeautifulSoup(html,'html.parser').find_all('article',{'class':'video-post'})
+	print len(soup)
+	for item in soup:
+	    title = item.find('h2').text.encode('utf-8').strip()
+	    url = item.find('a',{'class':'title_link'})['href'] + 'embed/?'
+	    image = str(re.compile("url\\(\\'(.+?)\\'\\)").findall(str(item)))[2:-2]
+	    add_directory3(title, url, 85, image, image, plot='')
+	addDir('Next Page', next_page, 86, image)
+        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+
+	
 
 
-def play_url(url):
+# Recursively follow redirects until there isn't a location header
+def resolve_http_redirect(url, depth=0):
+    if depth > 10:
+        raise Exception("Redirected "+depth+" times, giving up.")
+    o = urlparse.urlparse(url,allow_fragments=True)
+    conn = httplib.HTTPConnection(o.netloc)
+    path = o.path
+    if o.query:
+        path +='?'+o.query
+    conn.request('HEAD', path, headers={"User-Agent": "Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; .NET CLR 1.1.4322)"})
+    res = conn.getresponse()
+    headers = dict(res.getheaders())
+    if headers.has_key('location') and headers['location'] != url:
+        return resolve_http_redirect(headers['location'], depth+1)
+    else:
+        return url
+
+
+def play_url(name,url):
+	listitem =xbmcgui.ListItem (name,thumbnailImage=defaultimage)
 	print 'URL= ' + str(url)
-	xbmc.Player().play( url )
+	xbmc.Player().play( url, listitem )
+	sys.exit()	
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -284,190 +314,88 @@ def espn_nhl(url):
 
 #20
 def sportsnet():
-    addDir('Hockey News', 'http://www.sportsnet.ca/videos/leagues/nhl-video/', 21,
-           defaultimage)
-    addDir('Game Highlights', 'http://www.sportsnet.ca/videos/leagues/nhl-video/', 22,
-           defaultimage)
-    addDir('NHL Top Plays', 'http://www.sportsnet.ca/videos/leagues/nhl-video/', 23,
-           defaultimage)
-    addDir('Hockey Central', 'http://www.sportsnet.ca/videos/leagues/nhl-video/', 24,
-           defaultimage)
+        response = urllib2.urlopen(url)
+	soup = BeautifulSoup(response).find_all('div',{'id':'video_strip_group_container'})
+	json_data = str(re.compile('baseData = (.+?);</script>').findall(str(soup)))[2:-2]
+        sn_data = json.loads(json_data);i=0
+	for header in sn_data['data']:
+	    title = (sn_data['data'][i]['header'])
+	    addDir(title, 'http://www.sportsnet.ca/videos/leagues/nhl-video/&' + str(i), 21,defaultimage);i = i + 1
+
+
+def remove_crap(data):
+	data = data.replace("&colon;",":").replace("&rsquo;","'").replace("&quest;","?").replace("&apos;","'").replace("&comma;",",").replace("&excl;","!")
+	return data
 
 
 #21
 def sn_video(url):
-            i = 0
-            html = get_html(url)
-	    soup = BeautifulSoup(html,'html.parser')
-            for item in soup.find_all(attrs={'class': 'thumbnail'})[0:18]:
-	        url = item.find('a')['href']
-		i = i + 1
-                html = get_html(url)
-                match=re.compile('twitter:title" content="(.+?)">\n<meta name="twitter:image:src" content="(.+?)">\n<meta name="twitter:player" content="(.+?)&').findall(html)
-                for title,image,video in match:
-                    title = title.replace('&amp;','&').replace("&#8217;","'")
-                    video = video.split('=',1)[-1]
-                    url = 'http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=' +str(video)
-                    #print 'Video= ' + str(video)
-                    li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
-                    li.setProperty('fanart_image',  image)
-                    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=18)
-                    xbmcplugin.setContent(pluginhandle, 'episodes')
-                xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[1])+")")
-
-
-
-#22
-def sn_highlights(url):
-            html = get_html(url)
-	    soup = BeautifulSoup(html,'html.parser')
-            for item in soup.find_all(attrs={'class': 'thumbnail'})[19:36]:
-	        url = item.find('a')['href']
-                html = get_html(url)
-                match=re.compile('twitter:title" content="(.+?)">\n<meta name="twitter:image:src" content="(.+?)">\n<meta name="twitter:player" content="(.+?)&').findall(html)
-                for title,image,video in match:
-                    title = title.replace('&amp;','&').replace("&#8217;","'")
-                    video = video.split('=',1)[-1]
-                    url = 'http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=' +str(video)
-                    #print 'Video= ' + str(video)
-                    li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
-                    li.setProperty('fanart_image',  image)
-                    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=18)
-                    xbmcplugin.setContent(pluginhandle, 'episodes')
-                xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[1])+")")
-
-
-#23
-def sn_top(url):
-            html = get_html(url)
-	    soup = BeautifulSoup(html,'html.parser')
-            for item in soup.find_all(attrs={'class': 'thumbnail'})[37:54]:
-	        url = item.find('a')['href']
-                html = get_html(url)
-                match=re.compile('twitter:title" content="(.+?)">\n<meta name="twitter:image:src" content="(.+?)">\n<meta name="twitter:player" content="(.+?)&').findall(html)
-                for title,image,video in match:
-                    title = title.replace('&amp;','&').replace("&#8217;","'")
-                    video = video.split('=',1)[-1]
-                    url = 'http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=' +str(video)
-                    #print 'Video= ' + str(video)
-                    li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
-                    li.setProperty('fanart_image',  image)
-                    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=18)
-                    xbmcplugin.setContent(pluginhandle, 'episodes')
-                xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[1])+")")
-
-
-#24
-def sn_hc(url):
-            html = get_html(url)
-	    soup = BeautifulSoup(html,'html.parser')
-            for item in soup.find_all(attrs={'class': 'thumbnail'})[55:72]:
-	        url = item.find('a')['href']
-                html = get_html(url)
-                match=re.compile('twitter:title" content="(.+?)">\n<meta name="twitter:image:src" content="(.+?)">\n<meta name="twitter:player" content="(.+?)&').findall(html)
-                for title,image,video in match:
-                    title = title.replace('&amp;','&').replace("&#8217;","'")
-                    video = video.split('=',1)[-1]
-                    url = 'http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=' +str(video)
-                    #print 'Video= ' + str(video)
-                    li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
-                    li.setProperty('fanart_image',  image)
-                    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=18)
-                    xbmcplugin.setContent(pluginhandle, 'episodes')
-                xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[1])+")")
-
-
-def csn_cat(url):
-        addDir('Bay Area', 'http://www.csnbayarea.com/show/sharks', 96, defaultimage)
-        addDir('Chicago', 'http://feed.theplatform.com/f/VHZQDC/7VkEePgNHeD1?form=json', 94, defaultimage)
-        addDir('Philadelphia', 'http://www.csnphilly.com/philadelphia-flyers', 97, defaultimage)
-
-#97
-def csn_phi(url):
-        html = get_html(url)
-	soup = BeautifulSoup(html,'html.parser')
-        for item in soup.find_all(attrs={'class': 'vod-content__event'}):
-	    title = item.find('span', {'class':'media-thumb__title'}).text.encode('utf-8')
-	    url = 'http://www.csnphilly.com' + item.find('a')['href']
-	    html = get_html(url)
-	    soup = BeautifulSoup(html,'html.parser')
-	    link = (soup.find('meta', attrs={'name':'twitter:player:stream'})['content'])
-	    image = (soup.find('meta', attrs={'property':'og:image'})['content'])
-	    #html = get_html(link)
-	    url = (get_redirected_url(link)).replace('LOWVIDEO','BESTVIDEO3').replace('300k','1400k')
+	i = int(url.split('&')[-1])
+        url = url.split('&')[0]
+        response = urllib2.urlopen(url)
+	soup = BeautifulSoup(response).find_all('div',{'id':'video_strip_group_container'})
+	json_data = str(re.compile('baseData = (.+?);</script>').findall(str(soup)))[2:-2]
+        sn_data = json.loads(json_data);x=0
+        for item in (sn_data['data'][i]['header']):
+	    title = sn_data['data'][i]['clips'][x]['video_title']
+	    title = remove_crap(title)
+	    bc_video_id = sn_data['data'][i]['clips'][x]['bc_video_id']
+	    image = (sn_data['data'][i]['clips'][x]['thumb_src']).replace('\\','')
+	    x = x + 1
+            url = 'http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=' +str(bc_video_id)
+                #print 'Video= ' + str(video)
             li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
             li.setProperty('fanart_image',  image)
             xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=18)
             xbmcplugin.setContent(pluginhandle, 'episodes')
+	print image
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[1])+")")
+
+
+def csn_cat(url):
+        addDir('Bay Area', 'http://www.csnbayarea.com/sharks', 97, defaultimage)
+        addDir('Chicago', 'http://www.csnchicago.com/blackhawks', 97, defaultimage)
+        addDir('Mid-Atlantic', 'http://www.csnmidatlantic.com/washington-capitals', 97, defaultimage)
+        addDir('New England', 'http://www.csnne.com/boston-bruins', 97, defaultimage)
+        addDir('Philadelphia', 'http://www.csnphilly.com/philadelphia-flyers', 97, defaultimage)
+
+#97
+def csn_phi(url):
+	r = requests.get(url)
+	opener = urllib2.build_opener()
+	opener.addheaders.append(('Cookie', r.cookies))
+	f = opener.open(url)
+	page = f.read()
+	soup = BeautifulSoup(page,'html.parser')
+	print len(str(soup))
+        for item in soup.find_all(attrs={'class': 'vod-content__event'}):
+	    title = item.find('span', {'class':'media-thumb__title'}).text.encode('utf-8')
+	    url = item.find('a')['href']
+	    image = defaultimage
+	    addDir(title, url, 98,defaultimage)
+            xbmcplugin.setContent(pluginhandle, 'episodes')
+	print url
 	xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[1])+")")
 
 
-def get_redirected_url(url):
-	opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
-	request = opener.open(url)
-	#print 'Redirect' + str(request.url)
-	#playthis = (request.url).replace('300k','2200k')
-	#play(playthis)
-	return request.url
-
-
-#94
-def csn_chi(url):
-        response = urllib2.urlopen(url)
-        msgdata = json.load(response)
-        i=0
-	#while i < 100:
-        for title in msgdata["entries"]:
-            i = i + 1
-	    try: image = (msgdata["entries"][i]["plmedia$defaultThumbnailUrl"])
-	    except IndexError:
-		continue
-            try: title = str(msgdata["entries"][i]["title"])
-	    except UnicodeError:
-		continue
-	    if 'Blackhawks' in title:
-		pass
-	    else:
-		continue
-            smil = (msgdata["entries"][i]["media$content"][0]["plfile$url"]).split('?')[0]
-	    mediatype = (msgdata["entries"][i]["media$categories"][0]["media$name"])
-	    add_directory3(title,smil,87, image ,image,plot='')
-        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
-
-
-#87
-def csnchi_smil(name,url):
-        html = get_html(url)
-	url = re.compile('http(.+?)m3u8').findall(html)[0]
-	#print 'SMIL URL= ' + str(url)
-	url = 'http' + str(url) + 'm3u8'
-	listItem = xbmcgui.ListItem(path=str(url))
-	#listItem.setInfo('video', {name})
-	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
-	return
-
-
-#96
-def csn_nhl(url):
-        html = get_html(url)
-        if 'philly' in url:
-            i = 1
-        else:
-            i = 0
-        while i < 15:
-            try:title=re.compile('<a href="/show(.+?)">(.+?)</a>').findall(html)[i]
-            except IndexError:
-                continue
-            title = title[-1].replace('&#039;',"'")
-            videokey=re.compile('media-theplatform/(.+?).jpg').findall(html)[i]
-            #print 'videokey= ' + str(videokey)
-            smil = 'http://link.theplatform.com/s/pcPFDC/' + str(videokey)
-	    #print 'videolink= ' + str(smil)
-            i = i + 1
-	    add_directory3(title,smil,85, defaultfanart ,defaultimage,plot='')
-        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
-        
-
+#98
+def csn_video(name,url):
+	r = requests.get(url)
+	opener = urllib2.build_opener()
+	opener.addheaders.append(('Cookie', r.cookies))
+	f = opener.open(url)
+	page = f.read()
+	soup = BeautifulSoup(page,'html.parser')
+	image = (soup.find('meta', attrs={'property':'og:image'})['content'])
+	title = (soup.find('meta', attrs={'property':'og:title'})['content'])
+	url = (soup.find('meta', attrs={'name':'twitter:player:stream'})['content'])
+	url = resolve_http_redirect(url)
+	url = url.replace('WEBLOWVIDEO','WEBBESTVIDEO3').replace('WEBBESTVIDEO2','WEBBESTVIDEO3').replace('300k','2200k')
+	play_url(name,url)
+	sys.exit()
+        #item = xbmcgui.ListItem(path=url)
+        #item.setProperty('IsPlayable', 'true')
+        #xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, xbmcgui.ListItem(path=url))
 
 
 def get_html(url):
@@ -673,9 +601,9 @@ elif mode == 84:
 elif mode == 85:
     print "Get MSG SMIL"
     msg_smil(name,url)
-elif mode == 87:
-    print "Get CSNCHI SMIL"
-    csnchi_smil(name,url)
+elif mode == 86:
+    print "Get MSG Pages"
+    msg_pages(url)
 elif mode == 89:
     print "Get NBC Sports NHL Video"
     nbcsn_nhl(url)
@@ -697,9 +625,12 @@ elif mode == 96:
 elif mode == 97:
     print "Get CSN Philly Video"
     csn_phi(url)
+elif mode == 98:
+    print "Get CSN Video"
+    csn_video(name,url)
 elif mode==100:
         print "PlayURL"
-	play_url(url)
+	play_url(name,url)
 elif mode==101:
         print "Get Cookies"
 	get_cookies(url)
