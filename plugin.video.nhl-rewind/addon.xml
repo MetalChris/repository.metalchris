@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nhl-rewind" name="NHL Rewind" version="0.2.1" provider-name="MetalChris">
+<addon id="plugin.video.nhl-rewind" name="NHL Rewind" version="0.2.3" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
 	<import addon="script.module.beautifulsoup4" version="4.3.2"/>
-        <import addon="script.module.simplejson" version="3.3.0"/>
-        <import addon="script.module.requests" version="2.6.0"/>       
+        <import addon="script.module.html5lib" version="0.999.0"/>
+        <import addon="script.module.simplejson" version="3.3.0"/> 
+        <import addon="script.module.requests" version="2.6.0"/>   
     </requires>
     <extension point="xbmc.python.pluginsource"
                library="addon.py">
@@ -14,7 +15,7 @@
         <platform>all</platform>
         <license>GPL 2.0 or Later</license>
         <summary lang="en">NHL Rewind</summary>
-        <description lang="en">Watch the latest videos from the NHL Network, NBC Sports, MSG Network, Fox Sports, SportsNet.ca, ESPN, and Comcast SportsNet</description>
+        <description lang="en">Watch the latest videos from the NHL Network, NBC Sports, MSG Network, Fox Sports, SportsNet.ca, ESPN, and Comcast SportsNet.</description>
         <disclaimer lang="en">This addon is a project for entertainment purposes only.  Not affiliated with, or endorsed by the NHL in any way shape or form.</disclaimer>
     </extension>
 </addon>

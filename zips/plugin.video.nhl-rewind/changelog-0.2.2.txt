@@ -1,6 +1,3 @@
-Version 0.2.3
-- Fix for Android (should have fixed this in the previous version)
-
 Version 0.2.2
 - Fix for Mac OS
 

@@ -14,6 +14,7 @@ import requests
 from urllib2 import Request, build_opener, HTTPCookieProcessor, HTTPHandler
 import urlparse
 import httplib
+import html5lib
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'
@@ -152,7 +153,7 @@ def nbcsn_smil(name,url):
 	link = (re.compile('\\n(.+?)\\?').findall(str(html))[0]).split('index')[0] + 'master.m3u8'
 	#print link
 	listItem = xbmcgui.ListItem(path=str(link))
-	#listItem.setInfo('video', {name})
+	#listItem.setInfo('video', name)
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
 
@@ -169,7 +170,7 @@ def msg_cat():
 def msg_network(url):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html.parser').find_all('article',{'class':'video-post'})
-	next = BeautifulSoup(html,'html.parser').find_all('div',{'class','load-more'})
+	next = BeautifulSoup(html,'html.parser').find_all('div',{'class':'load-more'})
 	for link in next:
 	    next_page = link.find('a')['href']
 	for item in soup:
@@ -188,7 +189,7 @@ def msg_smil(name,url):
 	url = (resolve_http_redirect(playurl))#.replace('1896k_1280','5128k_1920')
 	#url = url.replace('232k_416','664k_640')
 	listItem = xbmcgui.ListItem(path=str(url))
-	listItem.setInfo('video', {name})
+	listItem.setInfo('video', name)
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
 	#play_url(url)
@@ -290,7 +291,7 @@ def nhl_stream(name,url):
         vid_data = json.load(response)
 	url = (vid_data["playbacks"][4]["url"]).replace('master_wired60.m3u8','asset_5000k.m3u8')
 	listItem = xbmcgui.ListItem(path=str(url))
-	#listItem.setInfo('video', {name})
+	#listItem.setInfo('video', name)
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
 
@@ -324,7 +325,7 @@ def sportsnet():
 
 
 def remove_crap(data):
-	data = data.replace("&colon;",":").replace("&rsquo;","'").replace("&quest;","?").replace("&apos;","'").replace("&comma;",",").replace("&excl;","!")
+	data = data.replace("&colon;",":").replace("&rsquo;","'").replace("&quest;","?").replace("&apos;","'").replace("&comma;",",").replace("&excl;","!").replace("&amp;","&").replace("&period;",".")
 	return data
 
 
@@ -366,7 +367,7 @@ def csn_phi(url):
 	opener.addheaders.append(('Cookie', r.cookies))
 	f = opener.open(url)
 	page = f.read()
-	soup = BeautifulSoup(page,'html.parser')
+	soup = BeautifulSoup(page,'html5lib')
 	print len(str(soup))
         for item in soup.find_all(attrs={'class': 'vod-content__event'}):
 	    title = item.find('span', {'class':'media-thumb__title'}).text.encode('utf-8')
@@ -385,7 +386,7 @@ def csn_video(name,url):
 	opener.addheaders.append(('Cookie', r.cookies))
 	f = opener.open(url)
 	page = f.read()
-	soup = BeautifulSoup(page,'html.parser')
+	soup = BeautifulSoup(page,'html5lib')
 	image = (soup.find('meta', attrs={'property':'og:image'})['content'])
 	title = (soup.find('meta', attrs={'property':'og:title'})['content'])
 	url = (soup.find('meta', attrs={'name':'twitter:player:stream'})['content'])
