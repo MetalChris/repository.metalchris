@@ -316,7 +316,7 @@ def espn_nhl(url):
 #20
 def sportsnet():
         response = urllib2.urlopen(url)
-	soup = BeautifulSoup(response).find_all('div',{'id':'video_strip_group_container'})
+	soup = BeautifulSoup(response,'html5lib').find_all('div',{'id':'video_strip_group_container'})
 	json_data = str(re.compile('baseData = (.+?);</script>').findall(str(soup)))[2:-2]
         sn_data = json.loads(json_data);i=0
 	for header in sn_data['data']:
@@ -334,7 +334,7 @@ def sn_video(url):
 	i = int(url.split('&')[-1])
         url = url.split('&')[0]
         response = urllib2.urlopen(url)
-	soup = BeautifulSoup(response).find_all('div',{'id':'video_strip_group_container'})
+	soup = BeautifulSoup(response,'html5lib').find_all('div',{'id':'video_strip_group_container'})
 	json_data = str(re.compile('baseData = (.+?);</script>').findall(str(soup)))[2:-2]
         sn_data = json.loads(json_data);x=0
         for item in (sn_data['data'][i]['header']):
