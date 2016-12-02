@@ -39,7 +39,6 @@ def categories():
     mode = 1
 
     addDir('WeatherNation Live', 'http://cdnapi.kaltura.com/html5/html5lib/v2.34/mwEmbedFrame.php?&wid=_931702&uiconf_id=28428751&entry_id=1_oorxcge2', 635, defaultimage)#1_o06v504o
-    #addDir('WeatherNation Videos', 'http://www.weathernationtv.com/on_tv/?play=1', 634, defaultimage)
     addDir('WeatherNation Videos', 'http://www.weathernationtv.com/video/', 634, defaultimage)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -62,7 +61,7 @@ def wn_videos(url):
 #635
 def wn_live(name,url):
 	response = get_html(url)
-	stream = (re.compile('hls","url":"(.+?)"').findall(str(response))[0]).replace('\\','')
+	stream = (re.compile('applehttp_to_mc","url":"(.+?)"').findall(str(response))[0]).replace('\\','')
 	listitem = xbmcgui.ListItem(name, iconImage=defaultimage, thumbnailImage=defaultimage)
         listitem.setProperty('IsPlayable', 'true')
 	xbmc.Player().play( stream, listitem )

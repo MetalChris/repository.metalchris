@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.weathernation" name="WeatherNation TV" version="0.0.5" provider-name="MetalChris">
+<addon id="plugin.video.weathernation" name="WeatherNation TV" version="0.0.6" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -11,7 +11,7 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">WeatherNation</summary>
+    <summary lang="en">24/7 Live Weather + Regional Forecast VOD</summary>
     <description lang="en">Delivers the latest in-depth local, regional and national weather video, forecasts, maps, radar, news, satellite maps and alerts on WeatherNation.</description>
     <disclaimer lang="en"></disclaimer>
     <language>English</language>
