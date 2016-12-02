@@ -9,8 +9,13 @@ from bs4 import BeautifulSoup
 import HTMLParser
 import html5lib
 import requests
-import simplejson as json
+import json
+#import simplejson as json
+import urlparse
 
+num_digits = 32
+myhex = os.urandom(num_digits / 2).encode('hex')
+print myhex
 
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
@@ -30,19 +35,24 @@ headers = {
 pluginhandle = int(sys.argv[1])
 addon_handle = int(sys.argv[1])
 confluence_views = [500,501,502,503,504,508]
+plugin = 'American Sports Network'
 
 
 def CATEGORIES():
+	addDir('ASN Live Stream', 'http://livevideostatus.sinclairstoryline.com/status/ASN1', 5, defaultimage)
+	addDir('Live Schedule', 'http://americansportsnet.com/schedule/', 3, defaultimage)
 	addDir('Featured', 'http://www.americansportsnet.com/category/video/', 1, defaultimage)
 	addDir('Game Archive', 'http://americansportsnet.com/category/game-vault', 1, defaultimage)
-	addDir('Live Schedule', 'http://americansportsnet.com/schedule/', 3, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #1
 def INDEX(url):
 	s = requests.Session()
+	#s.get('http://www.americansportsnet.com/category/video/')
 	r = s.get(url, headers=headers)
+	#print(r.text.encode('utf-8'))[0:200]
+	#print r.cookies
 	html = (r.text.encode('utf-8'))
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'post-inner-content Video'})
 	for item in soup:
@@ -59,23 +69,12 @@ def INDEX(url):
 #2
 def IFRAME(name,url):
         html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'embed-container'})[-1]
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'embed-container'})[0]
 	iframe = re.compile('src="(.+?)"').findall(str(soup))[-1]
-	print iframe
-	if 'sinclair' in iframe:
-	    key = (iframe.rpartition('/')[-1]).replace('.html','')
-	    jurl = 'http://livevideostatus.sinclairstoryline.com/status/' + key
-	    print jurl
-            jgresponse = urllib2.urlopen(jurl)
-            jgdata = json.load(jgresponse)
-	    jkey = (jgdata['assetId'])
-	    jstuff = (jgdata['assetSignature'])
-	    channel = (jgdata['channelId'])
-	    purl = 'http://livevideostatus.sinclairstoryline.com/HLSproxy/variant/proxy.m3u8?manifestURL=http://content-ausw2.uplynk.com/' + jkey + '.m3u8?' + jstuff# + '&pbs=' + channel
-	    stream = 'http://content.uplynk.com/' + jkey + '.m3u8?' + jstuff# + '&pbs=' + channel
-	else:
-	    content = get_html(iframe)
-	    stream = re.compile("main_url = '(.+?)'").findall(str(content))[-1]
+	print 'iframe = ' + str(iframe)
+	content = get_html(iframe)
+	stream = re.compile("main_url = '(.+?)'").findall(str(content))[-1]
+	print stream
 	listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
@@ -91,7 +90,9 @@ def LIVE(url):
 	    if len(edate) <1:
 		continue
 	    sport = str(re.compile('column-2">(.+?)</').findall(str(item)))[2:-2]
+	    #home = str(re.compile('column-3">(.+?)</').findall(str(item)))[2:-2]
 	    hteam = item.find('td', {'class':'column-3'}).text.strip()
+	    #away = str(re.compile('column-4">(.+?)</').findall(str(item)))[2:-2]
 	    ateam = item.find('td', {'class':'column-4'}).text.strip()
 	    etime = str(re.compile('column-5">(.+?)</').findall(str(item)))[2:-2]
 	    link = str(re.compile('column-7">(.+?)</').findall(str(item)))[2:-2]
@@ -104,8 +105,74 @@ def LIVE(url):
 	    url = baseurl + '/' + link.replace('<!---{','').replace('}--->','')
 	    print title
 	    print url
-	    addDir2(title, url, 2, defaultimage)
+	    addDir2(title, url, 4, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
+#4
+def LIVE_IFRAME(name,url):
+	html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'embed-container'})[0]
+	iframe = re.compile('src="(.+?)"').findall(str(soup))[-1]
+	print 'iframe = ' + str(iframe)
+	if 'sinclair' in iframe:
+	    key = (iframe.rpartition('/')[-1]).replace('.html','')
+	    print key
+	    jurl = 'http://livevideostatus.sinclairstoryline.com/status/' + key
+	    print jurl
+            jgresponse = urllib2.urlopen(jurl)
+            jgdata = json.load(jgresponse)
+	    jkey = (jgdata['assetId'])
+	    print jkey
+	    jstuff = (jgdata['assetSignature'])
+	    print jstuff
+	    channel = (jgdata['channelId'])
+	    print channel
+	    purl = 'http://content.uplynk.com/preplay/channel/' + channel + '.json'
+            jpresponse = urllib2.urlopen(purl)
+            jpdata = json.load(jpresponse)
+	    stream = (jpdata['playURL'])
+	    s = requests.Session()
+	    r = s.get(stream, headers=headers)
+	    print r
+	    parsed = urlparse.urlparse(stream)
+	    print '--------' +str(urlparse.parse_qs(parsed.query)['pbs'])
+	else:
+	    content = get_html(iframe)
+	    stream = re.compile("main_url = '(.+?)'").findall(str(content))[-1]
+	print stream
+	listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
+	xbmc.Player().play( stream, listitem )
+	sys.exit()
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
+#5
+def LIVE_STREAM(name,url):
+        jresponse = urllib2.urlopen(url)
+        jdata = json.load(jresponse)
+	isLive = (jdata['isLive'])
+	if str(isLive) != 'False':
+	    assetId = (jdata['assetId'])
+	    jstuff = (jdata['assetSignature'])
+	    purl = 'http://content.uplynk.com/preplay/' + assetId + '.json'
+            jpresponse = urllib2.urlopen(purl)
+            jpdata = json.load(jpresponse)
+	    playURL = (jpdata['playURL'])
+	    stream = playURL + '?' + jstuff
+	    listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
+	    xbmc.Player().play( stream, listitem )
+	    sys.exit()
+	else:                
+	    print 'No Live Broadcast Available'
+	    line1 = "Live Stream Currently Unavailable"
+	    line2 = "Check the Live Schedule for More Info"
+	    xbmcgui.Dialog().ok(plugin, line1, line2)
+	    #xbmcgui.Dialog().notification(plugin, 'No Live Broadcast Available.', defaultimage, 5000, False)
+	    #sys.exit()
+	    LIVE('http://americansportsnet.com/schedule/')
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
 
 
 def striphtml(data):
@@ -271,5 +338,11 @@ elif mode == 2:
 elif mode == 3:
 	print "American Sports Network Live"
 	LIVE(url)
+elif mode == 4:
+	print "American Sports Network Play Live Event"
+	LIVE_IFRAME(name,url)
+elif mode == 5:
+	print "American Sports Network Play Live Stream"
+	LIVE_STREAM(name,url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
