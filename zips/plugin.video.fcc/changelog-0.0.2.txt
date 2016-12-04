@@ -1,0 +1,7 @@
+Version 0.0.2
+- Add check for live broadcast
+- Add archived sermons
+- Add fanart
+
+Version 0.0.1
+- Initial Release
