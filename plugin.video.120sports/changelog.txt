@@ -1,0 +1,11 @@
+Version 0.0.4
+- Adjust stream url for compatibility with Isengard and Jarvis
+
+Version 0.0.3
+- Fix dependencies in addon.xml
+
+Version 0.0.2
+- Added Live Stream
+
+Version 0.0.1
+- Initial Release
