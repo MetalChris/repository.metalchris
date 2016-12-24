@@ -52,7 +52,6 @@ def CATEGORIES():
 def INDEX(url):
         jresponse = urllib2.urlopen(url)
         jdata = json.load(jresponse);i=0
-	item_dict = jdata
 	count = jdata['count']
 	xbmc.log(str(count))
 	if count <1:
@@ -80,7 +79,7 @@ def INDEX(url):
 	if edate > now:
 	    xbmc.log('NOT YET')
 	else:
-	    xbmc.log('OK')	
+	    xbmc.log('OK')
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -146,7 +145,6 @@ def date_generator():
 	today = str(datetime.utcnow() - td(hours=5)).split(' ')[0]
 	current = datetime.utcnow() - td(hours=5)
 	date2 = str(current + td(days=10)).split(' ')[0]
-	#date2 = date2.split('-')
 	year = (today)[:4]
 	month = (today)[5:7]
 	day = (today)[8:10]
@@ -154,10 +152,6 @@ def date_generator():
 	month2 = (date2)[5:7]
 	day2 = (date2)[8:10]
 	d1 = date(int(year), int(month), int(day))
-	d2 = date(int(year2), int(month2), int(day2))
-	#d2 = date(2016, 2, 29)
-	#delta = d2 - d1
-	#for i in range(delta.days + 1):
 	for i in range(1,13):
 	    title = str(d1 + td(days=i))
 	    s = title.replace('-','')
@@ -240,14 +234,14 @@ def get_data(url):
             response = urllib2.urlopen(req)
 	    code = response.getcode()
 	    xbmc.log('CODE: ' + str(code))
-	    if code == 403:              
+	    if code == 403:
 	        xbmcgui.Dialog().notification(name, translation(30001), defaultimage, 5000, False)
-	        sys.exit()	    
+	        sys.exit()
 	    data = response.read()
             response.close()
-        except urllib2.URLError:              
+        except urllib2.URLError:
 	    xbmcgui.Dialog().notification(name, translation(30002), defaultimage, 5000, False)
-	    sys.exit()	 
+	    sys.exit()
         return data
 
 
