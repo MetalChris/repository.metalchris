@@ -4,24 +4,28 @@
 # Written by MetalChris
 # Released under GPL(v2 or Later)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
+import xbmcaddon, urllib, xbmcgui, xbmcplugin, urllib2, re, sys
 from bs4 import BeautifulSoup
-import HTMLParser
 import html5lib
-import requests
 import json
-#import simplejson as json
-import urlparse
-#import datetime
+import time
 from datetime import date, datetime, timedelta as td
 
 now = str(datetime.utcnow() - td(hours=5)).split(' ')[0]
+xbmc.log('NOW: ' + str(now))
+nowplus = str(datetime.utcnow() + td(days=1)).split(' ')[0]
+xbmc.log('NOW PLUS: ' + str(nowplus))
+epoch = datetime.now()
+xbmc.log('EPOCH: ' + str(epoch))
+epochplus = datetime.now() + td(days=1)
+xbmc.log('EPOCH PLUS: ' + str(epochplus))
+unix = time.mktime(epoch.timetuple())
+xbmc.log('UNIX: ' + str(unix))
+unixplus = time.mktime(epochplus.timetuple())
+xbmc.log('UNIX PLUS: ' + str(unixplus))
 
-_addon = xbmcaddon.Addon()
-_addon_path = _addon.getAddonInfo('path')
 selfAddon = xbmcaddon.Addon(id='plugin.video.campus-insiders')
 translation = selfAddon.getLocalizedString
-#usexbmc = selfAddon.getSetting('watchinxbmc')
 
 defaultimage = 'special://home/addons/plugin.video.campus-insiders/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.campus-insiders/fanart.jpg'
@@ -29,9 +33,6 @@ defaultvideo = 'special://home/addons/plugin.video.campus-insiders/icon.png'
 defaulticon = 'special://home/addons/plugin.video.campus-insiders/icon.png'
 baseurl = 'http://campusinsiders.com'
 ooyala = 'http://player.ooyala.com/sas/player_api/v2/authorization/embed_code/None/'
-headers = {'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','Host':'campusinsiders.com','Referer':'https://campusinsiders.com/','Upgrade-Insecure-Requests':'1',
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:50.0) Gecko/20100101 Firefox/50.0'
-}
 
 pluginhandle = int(sys.argv[1])
 addon_handle = int(sys.argv[1])
@@ -52,25 +53,34 @@ def INDEX(url):
         jresponse = urllib2.urlopen(url)
         jdata = json.load(jresponse);i=0
 	item_dict = jdata
-	count = len(item_dict['playbook']['live_events']['value'])
+	count = jdata['count']
+	xbmc.log(str(count))
+	if count <1:
+	    xbmcgui.Dialog().notification(name, translation(30003), defaultimage, 5000, False)
+	    sys.exit()
 	for item in jdata['playbook']['live_events']['value'][0]['scheduled_events']['value']:
-	    title = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['title']['value']
+	    title = (jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['title']['value']).replace('&amp;','&')
 	    sport = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['category']['value']
 	    etime = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['timestamp']['value']
 	    isLive = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['isLive']['value']
 	    #dtime = (etime.split(' ',1)[-1]).split(' ',1)[0]
-	    #print 'dtime= ' + str(dtime)
 	    edate = etime.split(' ',1)[0]
+	    xbmc.log('EDATE: ' + str(edate))
 	    etime = etime.split(' ',1)[-1].upper().lstrip("0")
 	    if isLive != False:
 		etime = 'LIVE'
 	    url = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['permalink']['value']
 	    if len(sport) < 1:
 	        title = etime + ' - ' + title
-	    else:		
+	    else:
 	        title = etime + ' - ' + title + ' - ' + sport
 	    i=i+1
-	    addDir2(title, url, 2, defaultimage)
+	    infoLabels={ 'Title': title, 'Plot': sport }
+	    addDir2(title, url, 2, defaultimage, defaultfanart, infoLabels={ 'Title': title, 'Plot': sport })
+	if edate > now:
+	    xbmc.log('NOT YET')
+	else:
+	    xbmc.log('OK')	
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -83,8 +93,8 @@ def IFRAME(name,url):
 	    iframe = 'http:' + item.find('iframe')['src']
             data = get_data(iframe)
 	    try: stream = re.compile('m3u8_url":"(.+?)"').findall(str(data))[-1]
-	    except IndexError:               
-	        xbmcgui.Dialog().notification(name, 'Stream Not Available', defaultimage, 5000, False)
+	    except IndexError:
+	        xbmcgui.Dialog().notification(name, translation(30000), defaultimage, 5000, False)
 	        sys.exit()
 	    listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
 	    xbmc.Player().play( stream, listitem )
@@ -146,7 +156,7 @@ def date_generator():
 	d1 = date(int(year), int(month), int(day))
 	d2 = date(int(year2), int(month2), int(day2))
 	#d2 = date(2016, 2, 29)
-	delta = d2 - d1
+	#delta = d2 - d1
 	#for i in range(delta.days + 1):
 	for i in range(1,13):
 	    title = str(d1 + td(days=i))
@@ -169,7 +179,7 @@ def conferences(url):
 	    url = 'https://campusinsiders.com/videos/categories/' + conf + '/'
 	    addDir(title, url, 3, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-	    
+
 
 #7
 def archives():
@@ -178,11 +188,11 @@ def archives():
     	    aday = str(current - td(days=i)).split(' ')[0]
 	    s = aday.replace('-','')
 	    title = datetime(year=int(s[0:4]), month=int(s[4:6]), day=int(s[6:8]))
-	    day = title.strftime ("%Y-%m-%d")
+	    #day = title.strftime ("%Y-%m-%d")
 	    title = title.strftime("%B %d, %Y")
 	    title = str(title.replace(' 0', ' '))
             url = 'https://campusinsiders.com/wp-json/events/v1/upcoming?date=' + aday + '&posts_per_page=100&return_format=playbook'
-            addDir(title,url,1, defaultimage)    
+            addDir(title,url,1, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -208,6 +218,7 @@ def get_html(url):
 
     try:
         response = urllib2.urlopen(req)
+	response.getcode()
         html = response.read()
         response.close()
     except urllib2.HTTPError:
@@ -224,11 +235,19 @@ def get_data(url):
                             ("Content-type", "text/html; charset=UTF-8"),
                             ("Connection", "keep-alive"),
                             ("Referer", "http://livestream.com/live/"),
-                            ("User-Agent",'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36')]       
-
-        response = urllib2.urlopen(req)
-	data = response.read()
-        response.close()
+                            ("User-Agent",'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36')]
+	try:
+            response = urllib2.urlopen(req)
+	    code = response.getcode()
+	    xbmc.log('CODE: ' + str(code))
+	    if code == 403:              
+	        xbmcgui.Dialog().notification(name, translation(30001), defaultimage, 5000, False)
+	        sys.exit()	    
+	    data = response.read()
+            response.close()
+        except urllib2.URLError:              
+	    xbmcgui.Dialog().notification(name, translation(30002), defaultimage, 5000, False)
+	    sys.exit()	 
         return data
 
 
@@ -291,14 +310,14 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     return ok
 
 
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
+def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=True):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         if not fanart:
             fanart=defaultfanart
-        liz.setProperty('fanart_image',fanart)
+        liz.setProperty('fanart_image',defaultfanart)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
         return ok
 
@@ -307,7 +326,7 @@ def unescape(s):
     p = htmllib.HTMLParser(None)
     p.save_bgn()
     p.feed(s)
-    return p.save_end()	
+    return p.save_end()
 
 
 params = get_params()
@@ -329,33 +348,33 @@ try:
 except:
     pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode))
+xbmc.log("URL: " + str(url))
+xbmc.log("Name: " + str(name))
 
 if mode == None or url == None or len(url) < 1:
-	print "Campus Insiders Menu"
+	xbmc.log("Campus Insiders Menu")
 	CATEGORIES()
 elif mode == 1:
-	print "Campus Insiders Live"
+	xbmc.log("Campus Insiders Live")
 	INDEX(url)
 elif mode == 2:
-	print "Campus Insiders Play  Live Event"
+	xbmc.log("Campus Insiders Play  Live Event")
 	IFRAME(name,url)
 elif mode == 3:
-	print "Campus Insiders Videos"
+	xbmc.log("Campus Insiders Videos")
 	VIDEOS(url)
 elif mode == 4:
-	print "Campus Insiders Play Video"
+	xbmc.log("Campus Insiders Play Video")
 	PLAY_VIDEO(name,url)
 elif mode == 5:
-	print "Campus Insiders Upcoming Schedule"
+	xbmc.log("Campus Insiders Upcoming Schedule")
 	date_generator()
 elif mode == 6:
-	print "Campus Insiders Conferences"
+	xbmc.log("Campus Insiders Conferences")
 	conferences(url)
 elif mode == 7:
-	print "Campus Insiders Archives"
+	xbmc.log("Campus Insiders Archives")
 	archives()
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
