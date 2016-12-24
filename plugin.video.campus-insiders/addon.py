@@ -4,15 +4,10 @@
 # Written by MetalChris
 # Released under GPL(v2 or Later)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
-import HTMLParser
 import html5lib
-import requests
 import json
-#import simplejson as json
-import urlparse
-#import datetime
 from datetime import date, datetime, timedelta as td
 
 now = str(datetime.utcnow() - td(hours=5)).split(' ')[0]
@@ -67,7 +62,7 @@ def INDEX(url):
 	    url = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['permalink']['value']
 	    if len(sport) < 1:
 	        title = etime + ' - ' + title
-	    else:		
+	    else:	
 	        title = etime + ' - ' + title + ' - ' + sport
 	    i=i+1
 	    addDir2(title, url, 2, defaultimage)
@@ -83,7 +78,7 @@ def IFRAME(name,url):
 	    iframe = 'http:' + item.find('iframe')['src']
             data = get_data(iframe)
 	    try: stream = re.compile('m3u8_url":"(.+?)"').findall(str(data))[-1]
-	    except IndexError:               
+	    except IndexError:
 	        xbmcgui.Dialog().notification(name, 'Stream Not Available', defaultimage, 5000, False)
 	        sys.exit()
 	    listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
@@ -136,7 +131,6 @@ def date_generator():
 	today = str(datetime.utcnow() - td(hours=5)).split(' ')[0]
 	current = datetime.utcnow() - td(hours=5)
 	date2 = str(current + td(days=10)).split(' ')[0]
-	#date2 = date2.split('-')
 	year = (today)[:4]
 	month = (today)[5:7]
 	day = (today)[8:10]
@@ -145,9 +139,6 @@ def date_generator():
 	day2 = (date2)[8:10]
 	d1 = date(int(year), int(month), int(day))
 	d2 = date(int(year2), int(month2), int(day2))
-	#d2 = date(2016, 2, 29)
-	delta = d2 - d1
-	#for i in range(delta.days + 1):
 	for i in range(1,13):
 	    title = str(d1 + td(days=i))
 	    s = title.replace('-','')
@@ -169,7 +160,7 @@ def conferences(url):
 	    url = 'https://campusinsiders.com/videos/categories/' + conf + '/'
 	    addDir(title, url, 3, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-	    
+
 
 #7
 def archives():
@@ -182,7 +173,7 @@ def archives():
 	    title = title.strftime("%B %d, %Y")
 	    title = str(title.replace(' 0', ' '))
             url = 'https://campusinsiders.com/wp-json/events/v1/upcoming?date=' + aday + '&posts_per_page=100&return_format=playbook'
-            addDir(title,url,1, defaultimage)    
+            addDir(title,url,1, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -224,7 +215,7 @@ def get_data(url):
                             ("Content-type", "text/html; charset=UTF-8"),
                             ("Connection", "keep-alive"),
                             ("Referer", "http://livestream.com/live/"),
-                            ("User-Agent",'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36')]       
+                            ("User-Agent",'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36')]
 
         response = urllib2.urlopen(req)
 	data = response.read()
@@ -307,7 +298,7 @@ def unescape(s):
     p = htmllib.HTMLParser(None)
     p.save_bgn()
     p.feed(s)
-    return p.save_end()	
+    return p.save_end()
 
 
 params = get_params()
