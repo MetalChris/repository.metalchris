@@ -90,6 +90,29 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.120sports" name="120 Sports" version="0.0.4" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.pytz" version="2014.2"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">Up-to-the-moment commentary on all trending sports topics.</summary>
+        <description lang="en">120 Sports is the ultimate destination for up-to-the-moment commentary on all trending sports topics. The digital-only broadcast network offers 50 hours of live content, plus more than 1,200 on-demand video clips, each week.
+
+120 Sports is a first-of-its-kind network partnership involving multiple leagues and media properties created for the digital generation and the devices it uses most.</description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
 <addon id="plugin.video.airspace" name="Air &amp; Space Smithsonian" version="0.0.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -764,6 +787,25 @@
     </extension>
 </addon>
 
+<addon id="plugin.video.powernationtv" name="PowerNation TV" version="0.0.1" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">PowerNation TV is the source of how-to television for auto enthusiasts.</summary>
+        <description lang="en">PowerNation TV brings you in-depth how-to shows to cater to your automotive interests, featuring Xtreme Off-Road, Detroit Muscle, Truck Tech, Engine Power and more!</description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
 <addon id="plugin.video.reruncentury" name="RerunCentury" version="0.0.2" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
@@ -905,15 +947,15 @@
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris's Repository" version="2.1.9" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.2.0" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
         <datadir zip="true">http://raw.github.com/MetalChris/repository.metalchris/master/zips</datadir>
     </extension>
     <extension point="xbmc.addon.metadata">
-		<summary>MetalChris's Kodi addons</summary>
-		<description>MetalChris's Kodi addons</description>
+		<summary>MetalChris' Kodi addons</summary>
+		<description>MetalChris' Kodi addons</description>
         <platform>all</platform>
     </extension>
 </addon>
