@@ -6,10 +6,9 @@
 
 import xbmcaddon, urllib, xbmcgui, xbmcplugin, urllib2, re, sys
 from bs4 import BeautifulSoup
-import HTMLParser
 import html5lib
 import json
-from datetime import date, datetime, timedelta as td
+from datetime import datetime, timedelta as td
 
 now = (str(datetime.utcnow() - td(hours=5)).split(' ')[0]).replace('-','/')
 cbcnow = now.split('/')
@@ -79,7 +78,7 @@ def IFRAME(name,url):
 	xbmc.log('url: ' + str(url))
         data = get_html(url)
 	try: mediaId = re.compile("mediaId': '(.+?)'").findall(str(data))[0]
-	except IndexError:               
+	except IndexError:
 	    xbmcgui.Dialog().notification(name, translation(30000), defaultimage, 5000, False)
 	    return
 	furl = basefeed + mediaId
@@ -110,7 +109,7 @@ def VIDEOS(url):
 	    addDir2(title, url, 7, image);i=i+1
 	xbmc.log('url:' + str(url))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-	    
+
 
 #7
 def GET_STREAM(name,url):
@@ -172,17 +171,17 @@ def get_data(url):
                             ("Content-type", "text/html; charset=UTF-8"),
                             ("Connection", "keep-alive"),
                             ("Referer", "http://livestream.com/live/"),
-                            ("User-Agent",'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36')]       
+                            ("User-Agent",'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36')]
 	try:
             response = urllib2.urlopen(req)
 	    code = response.getcode()
 	    xbmc.log('CODE: ' + str(code))
-	    if code == 403:              
+	    if code == 403:
 	        xbmcgui.Dialog().notification(name, translation(30001), defaultimage, 5000, False)
-	        sys.exit()	    
+	        sys.exit()
 	    data = response.read()
             response.close()
-        except urllib2.URLError:              
+        except urllib2.URLError:
 	    xbmcgui.Dialog().notification(name, translation(30002), defaultimage, 5000, False)
 	    sys.exit()	 
         return data
@@ -236,7 +235,7 @@ def unescape(s):
     p = htmllib.HTMLParser(None)
     p.save_bgn()
     p.feed(s)
-    return p.save_end()	
+    return p.save_end()
 
 
 params = get_params()
