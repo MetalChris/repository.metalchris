@@ -4,10 +4,8 @@
 # Written by MetalChris
 # Released under GPL(v2)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
-from urllib import urlopen
-import simplejson as json
 
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
@@ -36,18 +34,16 @@ QUALITY = settings.getSetting(id="quality")
 confluence_views = [500,501,502,503,504,508,515]
 
 def categories():
-    mode = 1
-
-    addDir('WeatherNation Live', 'http://cdnapi.kaltura.com/html5/html5lib/v2.34/mwEmbedFrame.php?&wid=_931702&uiconf_id=28428751&entry_id=1_oorxcge2', 635, defaultimage)#1_o06v504o
-    addDir('WeatherNation Videos', 'http://www.weathernationtv.com/video/', 634, defaultimage)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	addDir('WeatherNation Live', 'http://cdnapi.kaltura.com/html5/html5lib/v2.34/mwEmbedFrame.php?&wid=_931702&uiconf_id=28428751&entry_id=1_oorxcge2', 635, defaultimage)#1_o06v504o
+	addDir('WeatherNation Videos', 'http://www.weathernationtv.com/video/', 634, defaultimage)
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #634
 def wn_videos(url):
 	response = get_html(url)
 	soup = BeautifulSoup(response, 'html5lib').find_all('div',{'class':'col-md-4 video-item'})
-	print len(soup)
+	xbmc.log(str(len(soup)))
 	for show in soup[0:15]:#.find_all("div",{"class":"pull-left"}): 0:15, 15:30, 30:56, 56:72
 	    title = show.find('h4').text.title().encode('utf-8')#('img')['alt'].title()
 	    image = 'http://www.weathernationtv.com' + show.find('img')['data-src']
@@ -61,13 +57,20 @@ def wn_videos(url):
 #635
 def wn_live(name,url):
 	response = get_html(url)
-	stream = (re.compile('applehttp_to_mc","url":"(.+?)"').findall(str(response))[0]).replace('\\','')
+	stream = (re.compile('hls","url":"(.+?)"').findall(str(response))[0]).replace('\\','')
+	url = get_redirected_url(stream)
 	listitem = xbmcgui.ListItem(name, iconImage=defaultimage, thumbnailImage=defaultimage)
         listitem.setProperty('IsPlayable', 'true')
-	xbmc.Player().play( stream, listitem )
+	xbmc.Player().play( url, listitem )
 	sys.exit()
         xbmcplugin.endOfDirectory(addon_handle)
 
+
+def get_redirected_url(url):
+	opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
+	request = opener.open(url)
+	playthis = request.url
+	return request.url
 
 
 def play(url,name):
@@ -152,8 +155,6 @@ def unescape(s):
     p.feed(s)
     return p.save_end()
 
-	
-
 
 params = get_params()
 url = None
@@ -179,29 +180,29 @@ try:
 except:
     pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode))
+xbmc.log("URL: " + str(url))
+xbmc.log("Name: " + str(name))
 
 if mode == None or url == None or len(url) < 1:
-        print "Generate Main Menu"
+        xbmc.log("Generate Main Menu")
         categories()
 elif mode == 1:
-        print "Indexing Videos"
+        xbmc.log("Indexing Videos")
         INDEX(url)
 elif mode == 4:
-        print "Play Video"
+        xbmc.log("Play Video")
 elif mode == 6:
-        print "Get Episodes"
+        xbmc.log("Get Episodes")
         get_episodes(url)
 elif mode==634:
-        print "WeatherNation Videos"
+        xbmc.log("WeatherNation Videos")
 	wn_videos(url)
 elif mode==635:
-        print "WeatherNation Live"
+        xbmc.log("WeatherNation Live")
 	wn_live(name,url)
 elif mode==636:
-        print "WeatherNation Play Videos"
+        xbmc.log("WeatherNation Play Videos")
 	play(url,name)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
