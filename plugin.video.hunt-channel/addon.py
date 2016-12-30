@@ -2,14 +2,10 @@
 #
 #
 # Written by MetalChris
-# Released under GPL(v2)
+# Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
-import requests  
-import urlparse
-import HTMLParser
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, os, platform, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
-from urllib import urlopen
 import html5lib
 import simplejson as json
 import datetime
@@ -22,7 +18,6 @@ selfAddon = xbmcaddon.Addon(id='plugin.video.hunt-channel')
 self = xbmcaddon.Addon(id='plugin.video.hunt-channel')
 translation = selfAddon.getLocalizedString
 usexbmc = selfAddon.getSetting('watchinxbmc')
-#settings = xbmcaddon.Addon(id="plugin.video.hunt-channel")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 confluence_views = [500,501,502,503,504,508]
@@ -38,12 +33,10 @@ schedule = 'special://home/addons/plugin.video.hunt-channel/resources/media/sche
 local_string = xbmcaddon.Addon(id='plugin.video.hunt-channel').getLocalizedString
 addon_handle = int(sys.argv[1])
 pluginhandle = int(sys.argv[1])
-#q = settings.getSetting(id="quality")
 confluence_views = [500,501,502,503,504,508,515]
 
 now = datetime.datetime.now(timezone('US/Eastern'))
 now_minus_30 = now + datetime.timedelta(minutes = -30)
-#print now.year, now.month, now.day, now_minus_30.hour, now_minus_30.minute
 if now.hour >12:
 	hour = now.hour - 12
 elif now.hour < 1:
@@ -55,20 +48,14 @@ if now.minute < 29:
 else:
 	minute = '30'
 showday = now.strftime("%A")
-print showday
+xbmc.log(str(showday))
 today = int(now.strftime("%w"))
 if today <1:
 	today = 7
-print today
+xbmc.log(str(today))
 nowstring = str(hour) + ':' + minute + ' ' + now.strftime("%p")
-print nowstring
+xbmc.log(str(nowstring))
 program = 'No Info Currently Available'
-#schedpath = 'file://' + urllib.pathname2url(_addon_path) + '/schedule.json'
-#data = json.load(urllib2.urlopen(schedpath))
-#shows = data[nowstring]
-#for show in shows:
-#	if showday in show:
-#		program = shows[showday]
 
 
 def prog():
@@ -80,21 +67,21 @@ def prog():
 		row_list = striphtml(str(row_split)).replace('\'','').replace('[','').replace(']','').split(',')
 		if nowstring == row_list[0]:
 		    match = 1
-		    print '==========================MATCH'
+		    xbmc.log('==========================MATCH')
 		    program = str(row_list[today]).replace("\\","'")
-		    print program
-		    print row_list
+		    xbmc.log(str(program))
+		    xbmc.log(str(row_list))
 		    break
 
 		elif match <1:
 		    program = 'No Info Currently Available'
-	print match
+	xbmc.log(str(match))
 	cats(program)
 
 
 #10
 def cats(program):
-	addDir2('Live Stream' + ': ' + program,'http://www.huntchannel.tv/live',12,defaultimage)
+	addDir2('Live Stream' + ': ' + program,'http://www.huntchannel.tv/live/',12,defaultimage)
 	addDir('On Demand','http://www.huntchannel.tv',11,defaultimage)
         xbmcplugin.endOfDirectory(addon_handle)
 
@@ -111,18 +98,12 @@ def vod(url):
 def get_live(name,url,iconimage):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'player-embed'})
-	iframe = (re.compile('src="(.+?)"').findall(str(soup))[0]).replace('iframe','json')
-	print iframe
-	tkurl = iframe.replace('http://json','https://services').replace('/b/','/token/z/b/') + '?'
-	print tkurl
-        response = urllib2.urlopen(iframe)
-        jdata = json.load(response)
-	m3u8 = jdata['hls']
-        tresponse = urllib2.urlopen(tkurl)
-        tdata = json.load(tresponse)
-	token = tdata['token']
-	m3u8 = m3u8 + token#.replace('master.m3u8','index_1_av-p.m3u8?sd=6&rebase=on')
-	print m3u8
+	iframe = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2]
+	if 'http:' not in iframe:
+	    iframe = 'http:' + iframe
+	xbmc.log('IFRAME: ' + str(iframe))
+	html = get_html(iframe)
+	m3u8 = str(re.compile('file": "(.+?)"').findall(str(html)))[2:-2]#[0])
 	listitem = xbmcgui.ListItem('Hunt Channel' + ' ' + name, thumbnailImage=defaulticon)
 	listitem.setProperty('mimetype', 'video/x-mpegurl')
 	xbmc.Player().play( m3u8, listitem )
@@ -139,7 +120,6 @@ def get_vod(url):
 	    url = str(re.compile('href=(.+?)>').findall(str(title)))[3:-3]
 	    title = striphtml(title)
 	    add_directory2(title,url,30,defaultfanart,defaultimage,plot='')
-        #xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
         xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -151,7 +131,6 @@ def recent(url):
 	    title = item.find('title').string.encode('utf-8').title()
 	    url = item.find('comments').string.split('#')[0]
 	    add_directory2(title,url,30,defaultfanart,defaultimage,plot='')
-        #xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
         xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -161,11 +140,10 @@ def shows(url):
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
 	for item in soup:
 	    title = (item.find('a')['title']).encode('utf-8').strip()
-	    #image = item.find('img')['src'] 
+	    #image = item.find('img')['src']
 	    #show_id = image.split('/')
 	    url = item.find('a')['href']
 	    add_directory2(title,url,21,defaultfanart,defaultimage,plot='')
-        #xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
         xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -175,16 +153,14 @@ def videos(url):
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
 	for item in reversed(soup):
 	    title = (item.find('a')['title']).encode('utf-8').strip()
-	    image = item.find('img')['src'] 
-	    show_id = image.split('/')
+	    image = item.find('img')['src']
 	    url = item.find('a')['href']
 	    add_directory2(title,url,30,defaultfanart,image,plot='')
-        #xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
         xbmcplugin.endOfDirectory(addon_handle)
 
 
 #21
-def s_videos(url):
+def sc_videos(name,url):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
 	for item in reversed(soup):
@@ -193,12 +169,42 @@ def s_videos(url):
 	    show_id = image.split('/')
 	    url = item.find('a')['href']
 	    add_directory2(title,url,31,defaultfanart,image,plot='')
-        #xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+	xbmc.log('NAME: ' + str(name))
         xbmcplugin.endOfDirectory(addon_handle)
 
 
+def s_videos(name,url):
+	xbmc.log('Vimeo Search Module')
+	name = name.replace(' ','+')
+	response = get_html('https://vimeo.com/search?q=' + name); i = 0
+	json_data = re.compile('\\"data\\":(.+?),\\"search_id\\"').findall(str(response))[-1]
+	jdata = json.loads(json_data)
+	for item in jdata:
+	    title = (jdata[i]['clip']['name']).encode('utf-8')
+	    #url = 'https://player.vimeo.com/video/' + (jdata[i]['clip']['link']).split('/')[-1]
+	    url = 'https://vimeo.com/' + (jdata[i]['clip']['link']).split('/')[-1]
+	    image = (jdata[i]['clip']['pictures']['sizes'][0]['link'])#[:-6]
+	    duration = (jdata[i]['clip']['duration'])
+	    description = ''
+	    #image = defaultimage# item.find('img')['src']
+	    add_directory2(title,url,638,image,image,plot=description); i = i + 1
+        xbmcplugin.setContent(pluginhandle, 'episodes')
+	xbmc.log(str(duration))
+        xbmcplugin.endOfDirectory(addon_handle)
+
+
+#638
+def streams(name,url,iconimage):
+	html = get_html(url)
+	url = re.compile('"GET","(.+?)"').findall(str(html))[-1]
+        jresponse = urllib2.urlopen(url)
+        jdata = json.load(jresponse)
+	stream = (jdata['request']['files']['progressive'][0]['url'])
+	hplay(name,stream,iconimage)
+
+
 #30
-def streams(name,url):
+def hstreams(name,url):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html5lib').find_all('iframe')[0]
 	iframe = re.compile('src="(.+?)"').findall(str(soup))[0]
@@ -207,7 +213,7 @@ def streams(name,url):
 	m3u8 = (re.compile('"url":"(.+?)"').findall(str(source))[0]).split(',')
 	key = (m3u8[-1]).split('/')[0]
 	stream = (m3u8[0]).rpartition('/')[0] + '/' + key + '/playlist.m3u8?p=6'
-	print stream
+	xbmc.log(str(stream))
 	listitem = xbmcgui.ListItem(name, thumbnailImage=thumbnail)
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
@@ -217,18 +223,23 @@ def streams(name,url):
 #31
 def s_streams(name,url):
 	response = get_html(url)
-	soup = BeautifulSoup(response,'html5lib').find_all('iframe')[0]
-	iframe = re.compile('src="(.+?)"').findall(str(soup))[0]
-	source = get_iframe(iframe)
-	thumbnail = re.compile('base":"(.+?)"').findall(str(source))[-1]
+	xbmc.log(str(url))
+	vsoup = BeautifulSoup(response,'html5lib').find_all('input',{'name':'main_video_url'})
+	vkey = str(re.compile('value="(.+?)"').findall(str(vsoup)))[2:-2]
+	vurl = 'https://player.vimeo.com/video/' + vkey
+	xbmc.log('VURL: ' + str(vurl))
+	#iframe = re.compile('src="(.+?)"').findall(str(soup))[0]
+	source = get_iframe(vurl)
+	#xbmc.log('SOURCE: ' + str(source))
+	#thumbnail = re.compile('base":"(.+?)"').findall(str(source))[-1]
 	m3u8 = (re.compile('"url":"(.+?)"').findall(str(source))[0]).split(',')
 	check = (m3u8[0])[-4:]
-	print check
+	xbmc.log(str(check))
 	if check == 'm3u8':
 	    stream = m3u8[0]
 	else:
 	    stream = m3u8[0] + '/master.m3u8'
-	listitem = xbmcgui.ListItem(name, thumbnailImage=thumbnail)
+	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
         xbmcplugin.endOfDirectory(addon_handle)
@@ -240,8 +251,16 @@ def striphtml(data):
 
 
 def play(name,url,iconimage):
-        print url
+        xbmc.log(str(url))
 	listitem = xbmcgui.ListItem(name, thumbnailImage=iconimage)
+	xbmc.Player().play( url, listitem )
+	sys.exit()
+        xbmcplugin.endOfDirectory(addon_handle)
+
+
+def hplay(name,url,iconimage):
+        xbmc.log(str(url))
+	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
 	xbmc.Player().play( url, listitem )
 	sys.exit()
         xbmcplugin.endOfDirectory(addon_handle)
@@ -255,7 +274,7 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot):
                                                 "plot": plot} )
         if not fanart:
             fanart=''
-        liz.setProperty('fanart_image',fanart)	
+        liz.setProperty('fanart_image',fanart)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
         return ok
 
@@ -305,50 +324,6 @@ def get_params():
 
     return param
 
-def addListItem(label, image, url, isFolder, infoLabels = False, fanart = False, duration = False):
-	listitem = xbmcgui.ListItem(label = label, iconImage = image, thumbnailImage = image)
-	if not isFolder:
-		if settings.getSetting('download') == '' or settings.getSetting('download') == 'false':
-			listitem.setProperty('IsPlayable', 'true')
-	if fanart:
-		listitem.setProperty('fanart_image', fanart)
-	if infoLabels:
-		listitem.setInfo(type = 'video', infoLabels = infoLabels)
-		if duration:
-			if hasattr(listitem, 'addStreamInfo'):
-				listitem.addStreamInfo('video', { 'duration': int(duration) })
-			else:
-				listitem.setInfo(type = 'video', infoLabels = { 'duration': str(datetime.timedelta(milliseconds=int(duration)*1000)) } )
-	ok = xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url = u, listitem = listitem, isFolder = isFolder)
-	return ok
-
-def addLink(name, url, mode, iconimage, fanart=True, infoLabels=True):
-    u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-    ok = True
-    liz = xbmcgui.ListItem(name, iconImage=iconimage, thumbnailImage=iconimage)
-    liz.setInfo(type="Video", infoLabels={"Title": name})
-    liz.setProperty('IsPlayable', 'true')
-    if not fanart:
-        fanart=defaultfanart
-    liz.setProperty('fanart_image',fanart)
-    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz,isFolder=False)
-    return ok
-
-def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=True ):
-    _log("add_item action=["+action+"] title=["+title+"] url=["+url+"] thumbnail=["+thumbnail+"] folder=["+str(folder)+"]")
-
-    listitem = xbmcgui.ListItem( title, iconImage=iconimage, thumbnailImage=iconimage )
-    listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot } )
-    
-    if url.startswith("plugin://"):
-        itemurl = url
-        listitem.setProperty('IsPlayable', 'true')
-        xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem)
-    else:
-        itemurl = '%s?action=%s&title=%s&url=%s&thumbnail=%s&plot=%s' % ( sys.argv[ 0 ] , action , urllib.quote_plus( title ) , urllib.quote_plus(url) , urllib.quote_plus( thumbnail ) , urllib.quote_plus( plot ))
-        xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem, isFolder=folder)
-        return ok
-
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
     ok = True
@@ -372,14 +347,6 @@ def addDir2(name,url,mode,iconimage, fanart=True, infoLabels=False):
         liz.setProperty('fanart_image',defaultfanart)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
         return ok
-
-
-def addDirectoryItem2(name, isFolder=True, parameters={}):
-    ''' Add a list item to the XBMC UI.'''
-    li = xbmcgui.ListItem(name, iconImage=defaultimage, thumbnailImage=defaultimage)
-    li.setProperty('fanart_image', defaultfanart)
-    url = sys.argv[0] + '?' + urllib.urlencode(parameters)
-    return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=li, isFolder=isFolder)
 
 
 def unescape(s):
@@ -415,50 +382,53 @@ try:
 except:
     pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode))
+xbmc.log("URL: " + str(url))
+xbmc.log("Name: " + str(name))
 
 if mode == None or url == None or len(url) < 1:
-    print "Generate Main Menu"
+    xbmc.log("Generate Main Menu")
     prog()
 elif mode == 4:
-    print "Play Video"
+    xbmc.log("Play Video")
 elif mode==10:
-        print 'Hunt Channel Categories'
+        xbmc.log('Hunt Channel Categories')
 	cats(program)
 elif mode==11:
-        print 'Hunt Channel VOD'
+        xbmc.log('Hunt Channel VOD')
 	vod(url)
 elif mode==12:
-        print 'Hunt Channel Live'
+        xbmc.log('Hunt Channel Live')
 	get_live(name,url,iconimage)
 elif mode==13:
-        print 'Hunt Channel Featured'
+        xbmc.log('Hunt Channel Featured')
 	get_vod(url)
 elif mode==14:
-        print 'Hunt Channel Recent'
+        xbmc.log('Hunt Channel Recent')
 	recent(url)
 elif mode==15:
-	print 'Hunt Channel Shows'
+	xbmc.log('Hunt Channel Shows')
 	shows(url)
 elif mode==20:
-        print "Hunt Channel Videos"
+        xbmc.log("Hunt Channel Videos")
 	videos(url)
 elif mode==30:
-        print "Hunt Channel Streams"
-	streams(name,url)
+        xbmc.log("Hunt Channel Streams")
+	hstreams(name,url)
 elif mode==21:
-        print "Hunt Channel Videos"
-	s_videos(url)
+        xbmc.log("Hunt Channel Videos")
+	sc_videos(name,url)
 elif mode==31:
-        print "Hunt Channel Streams"
+        xbmc.log("Hunt Channel Streams")
 	s_streams(name,url)
 elif mode==40:
-        print "Hunt Channel Live"
+        xbmc.log("Hunt Channel Live")
 	play(name,url,iconimage)
 elif mode==50:
-        print "Hunt Channel Program"
+        xbmc.log("Hunt Channel Program")
 	prog()
+elif mode==638:
+        xbmc.log("Play Hunt Channel Videos")
+	streams(name,url,iconimage)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
