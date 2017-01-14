@@ -54,13 +54,27 @@ def INDEX(url):
     if len(titles) != len(soup):
         titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype'});e=0
     for episode in soup:
+        #If it's a "coming soon" show, skip it
+        if episode.find(class_="coming_soon"):
+            continue
         title = striphtml(str(titles[e])).replace('&amp;','&')
         url = episode.find('a')['href']
         if not 'http:' in url:
             url = 'http:' + episode.find('a')['href']
         image = episode.find('img')['src']
-        addDir(title, url, 20, image, image);e=e+1
+        #If it has metadata, add it to the episode info
+        if episode.find('meta'):
+            plot = episode.find(itemprop="description")['content'].encode('utf-8').strip()
+            episodeNumber = episode.find(itemprop="episodeNumber")['content'].encode('utf-8').strip()
+            season = episodeNumber[2:6]
+            episodeNum = episodeNumber[-2:]
+            aired = episode.find(itemprop="datePublished")['content'].encode('utf-8').strip()
+            addDir(title, url, 20, image, image, {'plot': plot, 'season': season, 'episode': episodeNum, 'aired': aired});e=e+1
+        else:
+            addDir(title, url, 20, image, image);e=e+1
     xbmcplugin.setContent(pluginhandle, 'episodes')
+    #Fix the sort to be proper episode number order
+    xbmcplugin.addSortMethod(pluginhandle, xbmcplugin.SORT_METHOD_EPISODE)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -74,12 +88,12 @@ def IFRAME(name,url):
     for item in soup:
         iframe = 'http:' + item.find('script')['src']
         data = get_html(iframe)
-        try: stream = re.compile('origin_url": "(.+?)"').findall(str(data))[-1]
+        try: stream = re.compile('"file": "(.+?)\.m3u8"').findall(str(data))[-1]
         except IndexError:
             xbmcgui.Dialog().notification(name, translation(30000), defaultimage, 5000, False)
             sys.exit()
         listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
-        xbmc.Player().play( stream, listitem )
+        xbmc.Player().play( "http:" + stream + ".m3u8", listitem )
         sys.exit()
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -186,7 +200,10 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo(type="Video", infoLabels={"Title": name})
+    if type(infoLabels) is not bool:
+        liz.setInfo(type="Video", infoLabels={"Title": name, "plot": infoLabels['plot'], "episode": infoLabels['episode'], "season": infoLabels['season'], "aired": infoLabels['aired']})
+    else:
+        liz.setInfo(type="Video", infoLabels={"Title": name})
     liz.setProperty('IsPlayable', 'true')
     if not fanart:
         fanart=defaultfanart
