@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.asn"
-       name="American Sports Network" version="0.0.5" provider-name="MetalChris">
+       name="American Sports Network" version="0.0.6" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -15,7 +15,9 @@
         <platform>all</platform>
         <license>GPL 2.0 or Later</license>
         <summary lang="en">Watch videos and live events from the American Sports Network</summary>
-        <description lang="en">Watch videos and live events from the American Sports Network.</description>
+        <description lang="en">American Sports Network (“ASN”) is the home for sports fans to learn, be inspired and entertained, while celebrating the games, athletes, coaches and community across all platforms.  
+
+ASN televises live games from multiple NCAA Division I college sports conferences, provides analysis from the game’s top experts, delves into the human side of competition and shows the best of today’s student-athletes.</description>
         <disclaimer lang="en"></disclaimer>
     </extension>
 </addon>
