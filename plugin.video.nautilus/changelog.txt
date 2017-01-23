@@ -1,3 +1,6 @@
+version 0.0.4
+- Fixes for website changes (January 23, 2017)
+
 Version 0.0.3
 - Added error handling and notification since Expedition 2016 has ended
 

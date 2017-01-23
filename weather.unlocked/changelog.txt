@@ -1,0 +1,14 @@
+Version 0.0.5
+- Fix for python strptime bug
+
+Version 0.0.4
+- Fixes for Mac OS and Android
+
+Version 0.0.3
+- Added settings for API Key and APP ID
+
+Version 0.0.2
+- Added forecast info
+
+Version 0.0.1
+- Initial release.  Current conditions only
