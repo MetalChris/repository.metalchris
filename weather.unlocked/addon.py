@@ -119,8 +119,18 @@ def forecast(loc,locid):
             xbmc.sleep(10000)
             log('weather download failed')
     log('forecast data: %s' % query)
-    if query != '':
-        properties(query,loc,locid)
+    retry = 0
+    while (retry < 6) and (not xbmc.abortRequested):
+        fquery = get_forecast(locid)
+        if fquery != '':
+            retry = 6
+        else:
+            retry += 1
+            xbmc.sleep(10000)
+            log('forecast download failed')
+    log('forecast data: %s' % fquery)
+    if fquery != '':
+        properties(query,fquery,loc,locid)
     else:
         clear()
 
@@ -141,16 +151,19 @@ def get_weather(locid):
 def get_forecast(locid):
     xbmc.log('GET FORECAST')
     url = API_URL.replace('current','forecast') + str(locid) + '?app_id=' + APP_ID + '&app_key=' + API_KEY
+    #xbmc.log('GET FORECAST URL:' + str(url))
     try:
         req = urllib2.Request(url)
         req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:47.0) Gecko/20100101 Firefox/47.0')
         req.add_header('Accept','application/json')
         response = urllib2.urlopen(req)
-        data = response.read()
+        fdata = response.read()
         req.close()
     except:
+        xbmc.log('EXCEPTION!')
         response = ''
-    return data
+        #get_forecast(locid)
+    return fdata
 
 def clear():
     set_property('Current.Condition'     , 'N/A')
@@ -171,7 +184,7 @@ def clear():
         set_property('Day%i.OutlookIcon' % count, 'na.png')
         set_property('Day%i.FanartCode'  % count, 'na')
 
-def properties(data,loc,locid):
+def properties(data,fdata,loc,locid):
     xbmc.log('PROPERTIES')
     wdata = parse_data(data)
     weathercode = WEATHER_CODES[(wdata['wx_icon']).lower().replace('.gif','')]
@@ -184,16 +197,11 @@ def properties(data,loc,locid):
     set_property('Current.Humidity'      , str(wdata['humid_pct']))
     set_property('Current.Visibility'    , str(wdata['vis_mi']))
     set_property('Current.Pressure'      , str(wdata['slp_in']))
-    set_property('Current.FeelsLike'     , str(wdata['feelslike_c']))#wdata['currentobservation']['WindChill'])
+    set_property('Current.FeelsLike'     , str(wdata['feelslike_c']))
     set_property('Current.DewPoint'      , str(wdata['dewpoint_c']))
     set_property('Current.UVIndex'       , 'N/A')
     set_property('Current.OutlookIcon'   , '%s.png' % weathercode)
-    #set_property('Current.FanartCode'    , ''#condition[0].attributes['code'].value)
-    forecast = get_forecast(locid)
-    #xml = minidom.parseString(str(forecast))
-    #forecast = xml.getElementsByTagName('Day')
-    ##xbmc.log(str(forecast)[0:500])
-    forecast = parse_data(forecast)
+    forecast = parse_data(fdata)
     set_property('Today.Sunrise'         , str(forecast['Days'][0]['sunrise_time']))
     set_property('Today.Sunset'          , str(forecast['Days'][0]['sunset_time']))
     #xbmc.log('HOUR: ' + str(HOUR))
