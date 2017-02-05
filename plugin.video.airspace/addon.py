@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, os, platform, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, os, platform, re, xbmcplugin, sys
 import requests
 from bs4 import BeautifulSoup
 import simplejson as json
@@ -72,7 +72,7 @@ def sc_videos(url):
 		title = remove_non_ascii_1(title).split('   ')[0]
 		image = item.find('img')['src']
 		key = (re.compile('data-api_id="(.+?)"').findall(str(item))[-1])[:32]
-		jurl = 'http://player.ooyala.com/sas/player_api/v2/authorization/embed_code/None/' + key + '?device=html5&domain=www.airspacemag.com'		
+		jurl = 'http://player.ooyala.com/sas/player_api/v2/authorization/embed_code/None/' + key + '?device=html5&domain=www.airspacemag.com'
 		description = item.find('span',{'class':'description hidden'}).text + ' ' + duration
 		add_directory2(title,jurl,637,image,image,plot=description)
 	if len(n) > 0:
@@ -88,9 +88,9 @@ def sc_videos(url):
 #636
 def videos(url):
 	response = get_html(url)
-	next = BeautifulSoup(response,'html.parser').find_all('a',{'class':'next pager'})
+	n = BeautifulSoup(response,'html.parser').find_all('a',{'class':'next pager'})
 	if len(next) > 0:
-		nextp = str(re.compile('href="(.+?)">').findall(str(next))[-1])
+		nextp = str(re.compile('href="(.+?)">').findall(str(n))[-1])
 		nextpage = (url.rsplit('/',1))[0] + '/' + nextp
 	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class':'teaser-list'})
 	items = BeautifulSoup(str(soup),'html.parser').find_all('a',{'class':'media-teaser '})
@@ -103,7 +103,7 @@ def videos(url):
 		jurl = 'http://player.ooyala.com/sas/player_api/v2/authorization/embed_code/None/' + key + '?device=html5&domain=www.airspacemag.com'		
 		description = item.find('span',{'class':'description hidden'}).text + ' ' + duration
 		add_directory2(title,jurl,638,image,image,plot=description)
-	if len(next) > 0:
+	if len(n) > 0:
 		addDir2('Next Page', nextpage, 636, defaulticon, defaultfanart)
 		xbmcplugin.setContent(pluginhandle, 'episodes')
 	views = settings.getSetting(id="views")
