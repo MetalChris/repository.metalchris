@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, os, platform, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, os, re, xbmcplugin, sys
 import requests
 from bs4 import BeautifulSoup
 import simplejson as json
@@ -100,7 +100,7 @@ def videos(url):
 		title = remove_non_ascii_1(title).split('   ')[0]
 		image = item.find('img')['src']
 		key = (re.compile('data-api_id="(.+?)"').findall(str(item))[-1])[:32]
-		jurl = 'http://player.ooyala.com/sas/player_api/v2/authorization/embed_code/None/' + key + '?device=html5&domain=www.airspacemag.com'		
+		jurl = 'http://player.ooyala.com/sas/player_api/v2/authorization/embed_code/None/' + key + '?device=html5&domain=www.airspacemag.com'
 		description = item.find('span',{'class':'description hidden'}).text + ' ' + duration
 		add_directory2(title,jurl,638,image,image,plot=description)
 	if len(n) > 0:
