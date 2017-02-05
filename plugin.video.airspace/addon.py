@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, os, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
 import requests
 from bs4 import BeautifulSoup
 import simplejson as json
