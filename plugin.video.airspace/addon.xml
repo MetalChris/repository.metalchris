@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.airspace" name="Air &amp; Space Smithsonian" version="0.0.2" provider-name="MetalChris">
+<addon id="plugin.video.airspace" name="Air &amp; Space Smithsonian" version="0.0.3" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -10,8 +10,8 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Air &amp; Space Smithsonian</summary>
-    <description lang="en">Air &amp; Space Smithsonian magazine has been delighting aerospace enthusiasts since April 1986.</description>
+    <summary lang="en">Watch videos from the Air &amp; Space Smithsonian website</summary>
+    <description lang="en">Air &amp; Space Smithsonian magazine has been delighting aerospace enthusiasts since April 1986.  Air &amp; Space seeks to surprise its audience with a wealth of detail about aviation and spaceflight.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>

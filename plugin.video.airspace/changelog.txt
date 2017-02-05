@@ -1,3 +1,6 @@
+Version 0.0.3
+- More code cleanup
+
 Version 0.0.2
 - Rename add-on
 - Code cleanup

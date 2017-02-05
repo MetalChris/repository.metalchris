@@ -1,7 +1,7 @@
 <settings>
         <category label="General">
  		<setting type="sep" />
-		<setting id="views" type="bool" label="30020" default="true"/>
+		<setting id="views" type="bool" label="30020" default="false"/>
  		<setting type="sep" />
         </category>
 </settings>
