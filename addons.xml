@@ -1,118 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.audio.internet-radio" name="Internet Radio" version="0.0.1" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>audio</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Internet Radio</summary>
-    <description lang="en">Internet Radio: Free Music from Thousands of Stations - Listen to free music from thousands of internet radio stations streaming live right now. Search or browse all your favourite music genres.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.filmrise" name="FilmRise" version="1.0.4" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-	<import addon="script.module.beautifulsoup" version="3.2.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0</license>
-        <summary lang="en">FilmRise</summary>
-        <description lang="en">Watch free TV shows from FilmRise</description>
-        <disclaimer lang="en">Don't blame me if you have nightmares.</disclaimer>
-    </extension>
-</addon>
-
-<addon id="plugin.video.how-stuff-works" name="How Stuff Works" version="3.0.6" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">How Stuff Works</summary>
-    <description lang="en">Watch videos from How Stuff Works</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.msl" name="Mars Science Laboratory" version="0.0.3" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Mars Science Laboratory</summary>
-    <description lang="en">Browse through videos from the Mars Science Laboratory - Mars Rover, Curiosity - Plus videos from Opportunity and Spirit, and Mars Orbiters  MAVEN, MRO, and Odyssey.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.reruncentury" name="RerunCentury" version="0.0.2" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-	<import addon="script.module.beautifulsoup" version="3.2.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0</license>
-        <summary lang="en">RerunCentury</summary>
-        <description lang="en">Free Videos and 20th Century TV | Watch public domain episodes from nearly 200 classic TV shows. Links to legal videos.</description>
-        <disclaimer lang="en"></disclaimer>
-    </extension>
-</addon>
-
-<addon id="plugin.video.asn"
-       name="American Sports Network" version="0.0.7" provider-name="MetalChris">
+<addon id="plugin.video.120sports" name="120 Sports" version="0.0.4" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
     <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.pytz" version="2014.2"/>
     </requires>
     <extension point="xbmc.python.pluginsource"
                library="addon.py">
@@ -121,95 +15,10 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <license>GPL 2.0 or Later</license>
-        <summary lang="en">Watch videos and live events from the American Sports Network</summary>
-        <description lang="en">American Sports Network (“ASN”) is the home for sports fans to learn, be inspired and entertained, while celebrating the games, athletes, coaches and community across all platforms.
+        <summary lang="en">Up-to-the-moment commentary on all trending sports topics.</summary>
+        <description lang="en">120 Sports is the ultimate destination for up-to-the-moment commentary on all trending sports topics. The digital-only broadcast network offers 50 hours of live content, plus more than 1,200 on-demand video clips, each week.
 
-ASN televises live games from multiple NCAA Division I college sports conferences, provides analysis from the game’s top experts, delves into the human side of competition and shows the best of today’s student-athletes.</description>
-        <disclaimer lang="en"></disclaimer>
-    </extension>
-</addon>
-
-<addon id="plugin.video.campus-insiders" name="Campus Insiders" version="0.0.7" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">College Sports.  All Day.  Every Day.</summary>
-        <description lang="en">Your source for college sports news and information.</description>
-        <disclaimer lang="en"></disclaimer>
-    </extension>
-</addon>
-
-<addon id="plugin.video.airspace" name="Air &amp; Space Smithsonian" version="0.0.3" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Watch videos from the Air &amp; Space Smithsonian website</summary>
-    <description lang="en">Air &amp; Space Smithsonian magazine has been delighting aerospace enthusiasts since April 1986.  Air &amp; Space seeks to surprise its audience with a wealth of detail about aviation and spaceflight.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.audio.buddha" name="Buddha Radio" version="1.0.3" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>audio</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Buddha Radio</summary>
-    <description lang="en">Buddha Radio has a very simple philosophy - to bring you the very best music that makes you feel good and feeds your soul. Buddha aims to add a touch of calm, positivity and optimism to our busy lives.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.bigsouth" name="Big South Sports" version="0.0.1" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">Big South Sports</summary>
-        <description lang="en">Watch live and on demand events from the Big South Conference, a collegiate athletic conference affiliated with the NCAA's Division I.</description>
+120 Sports is a first-of-its-kind network partnership involving multiple leagues and media properties created for the digital generation and the devices it uses most.</description>
         <disclaimer lang="en"></disclaimer>
     </extension>
 </addon>
@@ -253,21 +62,97 @@ ASN televises live games from multiple NCAA Division I college sports conference
     </extension>
 </addon>
 
-<addon id="weather.unlocked" name="Weather Unlocked" version="0.0.6" provider-name="MetalChris">
-	<requires>
-		<import addon="xbmc.python" version="2.1.0"/>
-		<import addon="script.module.simplejson" version="3.3.0"/>
-	</requires>
-	<extension point="xbmc.python.weather" library="addon.py"/>
-	<extension point="xbmc.addon.metadata">
-		<summary lang="en">Weather Unlocked</summary>
-		<description lang="en">Weather forecast provided by Weather Unlocked</description>
-		<disclaimer lang="en"></disclaimer>
-		<language></language>
-		<platform>all</platform>
-		<forum></forum>
-		<source></source>
-	</extension>
+<addon id="plugin.video.bigsouth" name="Big South Sports" version="0.0.1" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">Big South Sports</summary>
+        <description lang="en">Watch live and on demand events from the Big South Conference, a collegiate athletic conference affiliated with the NCAA's Division I.</description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
+<addon id="plugin.video.fcc" name="Family Christian Center" version="0.0.2" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Watch live and archived services from Family Christian Center</summary>
+    <description lang="en">Family Christian Center exists to help people connect with a life-changing relationship with Jesus Christ, His purpose for their lives, and His church family and our community. </description>
+    <disclaimer lang="en"></disclaimer>
+    <language>English</language>
+    <platform>all</platform>
+    <license>GPL 2.0</license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.moviezoot" name="MovieZoot" version="0.0.2" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.simplejson" version="3.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">MovieZoot</summary>
+    <description lang="en">Looking for free movies online? Watch free streaming movies online with MovieZoot featuring your favorite westerns, adventure, and comedy.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license>GPL(v2) or Later</license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.audio.internet-radio" name="Internet Radio" version="0.0.1" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>audio</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Internet Radio</summary>
+    <description lang="en">Internet Radio: Free Music from Thousands of Stations - Listen to free music from thousands of internet radio stations streaming live right now. Search or browse all your favourite music genres.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
 </addon>
 
 <addon id="plugin.video.fright-pix" name="FrightPix.com" version="0.0.2" provider-name="MetalChris">
@@ -289,334 +174,6 @@ ASN televises live games from multiple NCAA Division I college sports conference
         <description lang="en">Watch HUNDREDS and HUNDREDS of FREE feature length movies from FrightPix.</description>
         <disclaimer lang="en">Don't blame me if you have nightmares.</disclaimer>
     </extension>
-</addon>
-
-<addon id="plugin.video.charlierose" name="Charlie Rose" version="0.0.3" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Charlie Rose</summary>
-    <description lang="en">Watch videos from charlierose.com - Since 1991, “Charlie Rose” has engaged America’s best thinkers, writers, politicians, athletes, entertainers, business leaders, scientists and other newsmakers in one-on-one interviews and roundtable discussions.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.bigstar" name="BigStar Movies" version="0.1.4" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">BigStar Movies</summary>
-    <description lang="en">Stream movies instantly! Choose from thousands of independent, foreign and award-winning feature films and TV shows.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.nautilus" name="Nautilus Live" version="0.0.4" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video image</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">Nautilus</summary>
-        <description lang="en">Explore the ocean LIVE with Dr. Robert Ballard and the Corps of Exploration aboard E/V Nautilus.</description>
-        <disclaimer lang="en"></disclaimer>
-    </extension>
-</addon>
-
-<addon id="plugin.video.cfl" name="CFL Video" version="0.1.2" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">CFL Video</summary>
-    <description lang="en">Watch video from CFL.ca | Official Site of the Canadian Football League</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.rsi-telegiornale" name="RSI - Telegiornale" version="0.0.1" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">RSI - Telegiornale</summary>
-    <description lang="en">Watch newscasts and videos from RSI Telegiornale.</description>
-    <description lang="it">Guardare telegiornali e video da RSI Telegiornale.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license>GPL(v2 or later)</license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.nhl-rewind" name="NHL Rewind" version="0.2.4" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-	<import addon="script.module.beautifulsoup4" version="4.3.2"/>
-        <import addon="script.module.html5lib" version="0.999.0"/>
-        <import addon="script.module.simplejson" version="3.3.0"/>
-        <import addon="script.module.requests" version="2.6.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">NHL Rewind</summary>
-        <description lang="en">Watch the latest videos from the NHL Network, NBC Sports, MSG Network, Fox Sports, SportsNet.ca, ESPN, and Comcast SportsNet.</description>
-        <disclaimer lang="en">This addon is a project for entertainment purposes only.  Not affiliated with, or endorsed by the NHL in any way shape or form.</disclaimer>
-    </extension>
-</addon>
-
-<addon id="plugin.video.rtsinfo" name="RTS - Info" version="0.1.1" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">RTS - Info</summary>
-    <description lang="en">Watch live news and videos from RTS Info.</description>
-    <description lang="fr">Regarder les nouvelles en direct et des vidéos de RTS Info.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license>GPL(v2 or later)</license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.hunt-channel" name="Hunt Channel" version="0.0.7" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-    <import addon="script.module.pytz" version="2014.2"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Hunt Channel</summary>
-    <description lang="en">Hunt Channel’s Mission is to provide Quality Outdoor Programming during PrimeTime.  Watch Live or On Demand video.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license>GPL(v2) or Later</license>
-    <forum>http://forum.kodi.tv/showthread.php?tid=276043</forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.carbon-tv" name="CarbonTV" version="0.0.1" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">CarbonTV</summary>
-    <description lang="en">Watch video clips and full episodes from CarbonTV, the premier online video destination for premium outdoor themed shows and engaging personalities.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.natgeo" name="Nat Geo Video" version="3.0.1" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">Nat Geo Video</summary>
-        <description lang="en">Watch videos from the National Geographic website.</description>
-        <disclaimer lang="en"></disclaimer>
-    </extension>
-</addon>
-
-<addon id="plugin.audio.internetarchive" name="Internet Archive [Audio]" version="3.0.6" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>audio</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Internet Archive</summary>
-    <description lang="en">Internet Archive is a non-profit digital library.  Choose from thousands of recordings ranging from alternative news programming, to Grateful Dead concerts, to Old Time Radio shows, to book and poetry readings, to original music uploaded by our users.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.audio.radionomy" name="Radionomy" version="0.0.3" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.2.0"/>
-    <import addon="script.module.requests" version="2.6.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>audio</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Radionomy</summary>
-    <description lang="en">Radionomy is a free global service that allows users to create their own online radio or listen to online radio, all created and programmed by users</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.newsmax" name="Newsmax TV" version="0.0.1" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Newsmax TV</summary>
-    <description lang="en">Newsmax TV is a United States cable news channel that is owned by Newsmax Media.  The channel primarily broadcasts from Newsmax's New York studio near Bryant Park, carrying a news/talk format during the day and acquired documentaries and films at night.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.gmm" name="GMM - Graspop Metal Meeting" version="0.0.1" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">GMM - Graspop Metal Meeting</summary>
-    <description lang="en">Watch videos from Graspop Metal Meeting, including full length concert sets.  GMM is an annual METAL festival in Dessel, Belgium that has taken place each year since 1996.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
 </addon>
 
 <addon id="plugin.video.animalist" name="Animalist" version="3.0.3" provider-name="MetalChris">
@@ -642,17 +199,19 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.docstorm" name="Documentary Storm" version="0.0.2" provider-name="MetalChris">
+<addon id="plugin.video.edge" name="Edge.org" version="0.0.6" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="plugin.video.youtube" version="3.1.0" />
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Documentary Storm</summary>
-    <description lang="en">Watch the best free full-length documentary films on the web. History documentaries, Science, Culture, Music... Explore and Enjoy!</description>
+    <summary lang="en">Edge.org</summary>
+    <description lang="en">To arrive at the edge of the world's knowledge, seek out the most complex and sophisticated minds, put them in a room together, and have them ask each other the questions they are asking themselves.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
@@ -664,18 +223,39 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.smithsonian-magazine" name="Smithsonian Magazine" version="0.0.2" provider-name="MetalChris">
+<addon id="plugin.video.campus-insiders" name="Campus Insiders" version="0.0.8" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">College Sports.  All Day.  Every Day.</summary>
+        <description lang="en">Your source for college sports news and information.  Campus Insiders gives you a front row seat to all of the college sports action, now everyday can be Saturday!
+
+Delivering exclusive content, live streaming games, interviews and stories about your team, top headlines, and unlimited on demand content anytime you want it. </description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
+<addon id="plugin.audio.radionomy" name="Radionomy" version="0.0.3" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.beautifulsoup4" version="4.2.0"/>
+    <import addon="script.module.requests" version="2.6.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
+    <provides>audio</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Smithsonian Magazine</summary>
-    <description lang="en">Watch hundreds of videos on a variety of topics from Smithsonian Magazine.  Informative, educational, and enterntaining!</description>
+    <summary lang="en">Radionomy</summary>
+    <description lang="en">Radionomy is a free global service that allows users to create their own online radio or listen to online radio, all created and programmed by users</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
@@ -685,6 +265,50 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <email></email>
     <source></source>
   </extension>
+</addon>
+
+<addon id="plugin.video.asn"
+       name="American Sports Network" version="0.0.7" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">Watch videos and live events from the American Sports Network</summary>
+        <description lang="en">American Sports Network (“ASN”) is the home for sports fans to learn, be inspired and entertained, while celebrating the games, athletes, coaches and community across all platforms.
+
+ASN televises live games from multiple NCAA Division I college sports conferences, provides analysis from the game’s top experts, delves into the human side of competition and shows the best of today’s student-athletes.</description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
+<addon id="plugin.video.nhl-rewind" name="NHL Rewind" version="0.2.4" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+	<import addon="script.module.beautifulsoup4" version="4.3.2"/>
+        <import addon="script.module.html5lib" version="0.999.0"/>
+        <import addon="script.module.simplejson" version="3.3.0"/>
+        <import addon="script.module.requests" version="2.6.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">NHL Rewind</summary>
+        <description lang="en">Watch the latest videos from the NHL Network, NBC Sports, MSG Network, Fox Sports, SportsNet.ca, ESPN, and Comcast SportsNet.</description>
+        <disclaimer lang="en">This addon is a project for entertainment purposes only.  Not affiliated with, or endorsed by the NHL in any way shape or form.</disclaimer>
+    </extension>
 </addon>
 
 <addon id="plugin.video.classic-tv" name="Free Classic TV Shows" version="0.0.2" provider-name="MetalChris">
@@ -697,29 +321,6 @@ ASN televises live games from multiple NCAA Division I college sports conference
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Free Classic TV Shows</summary>
     <description lang="en">Public Domain Television Shows to Watch, Enjoy and Download.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.sciencecasts" name="NASA ScienceCasts" version="0.0.2" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">NASA ScienceCasts</summary>
-    <description lang="en">NASA Science news is too exciting for plain text. Educational "ScienceCast" videos are fun, lively, entertaining--and anything but plain. Join us for a new episode every week as we look into the science behind discoveries on Earth, the Solar System, and beyond...</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
@@ -756,7 +357,48 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.fcc" name="Family Christian Center" version="0.0.2" provider-name="MetalChris">
+<addon id="plugin.video.cbc-sports" name="CBC Sports" version="0.0.2" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">Live Events, Replays, and Highlights from CBC Sports</summary>
+        <description lang="en">Get the latest headlines, opinion, and video from CBC Sports.  Watch live events, replays, and highlights.  Region blocked for Canada only.</description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
+<addon id="plugin.video.nautilus" name="Nautilus Live" version="0.0.4" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video image</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">Nautilus</summary>
+        <description lang="en">Explore the ocean LIVE with Dr. Robert Ballard and the Corps of Exploration aboard E/V Nautilus.</description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
+<addon id="plugin.video.rsi-telegiornale" name="RSI - Telegiornale" version="0.0.1" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -768,12 +410,13 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Watch live and archived services from Family Christian Center</summary>
-    <description lang="en">Family Christian Center exists to help people connect with a life-changing relationship with Jesus Christ, His purpose for their lives, and His church family and our community. </description>
+    <summary lang="en">RSI - Telegiornale</summary>
+    <description lang="en">Watch newscasts and videos from RSI Telegiornale.</description>
+    <description lang="it">Guardare telegiornali e video da RSI Telegiornale.</description>
     <disclaimer lang="en"></disclaimer>
-    <language>English</language>
+    <language></language>
     <platform>all</platform>
-    <license>GPL 2.0</license>
+    <license>GPL(v2 or later)</license>
     <forum></forum>
     <website></website>
     <email></email>
@@ -781,21 +424,22 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.weathernation" name="WeatherNation TV" version="0.0.7" provider-name="MetalChris">
+<addon id="plugin.video.cfl" name="CFL Video" version="0.1.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
-        <import addon="xbmc.python" version="2.1.0"/>
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">WeatherNation</summary>
-    <description lang="en">Delivers the latest in-depth local, regional and national weather video, forecasts, maps, radar, news, satellite maps and alerts on WeatherNation.</description>
+    <summary lang="en">CFL Video</summary>
+    <description lang="en">Watch video from CFL.ca | Official Site of the Canadian Football League</description>
     <disclaimer lang="en"></disclaimer>
-    <language>English</language>
+    <language></language>
     <platform>all</platform>
     <license></license>
     <forum></forum>
@@ -805,7 +449,69 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.edge" name="Edge.org" version="0.0.6" provider-name="MetalChris">
+<addon id="plugin.video.smithsonian-magazine" name="Smithsonian Magazine" version="0.0.2" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Smithsonian Magazine</summary>
+    <description lang="en">Watch hundreds of videos on a variety of topics from Smithsonian Magazine.  Informative, educational, and enterntaining!</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.audio.buddha" name="Buddha Radio" version="1.0.3" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>audio</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Buddha Radio</summary>
+    <description lang="en">Buddha Radio has a very simple philosophy - to bring you the very best music that makes you feel good and feeds your soul. Buddha aims to add a touch of calm, positivity and optimism to our busy lives.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.filmrise" name="FilmRise" version="1.0.4" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+	<import addon="script.module.beautifulsoup" version="3.2.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0</license>
+        <summary lang="en">FilmRise</summary>
+        <description lang="en">Watch free TV shows from FilmRise</description>
+        <disclaimer lang="en">Don't blame me if you have nightmares.</disclaimer>
+    </extension>
+</addon>
+
+<addon id="plugin.video.gmm" name="GMM - Graspop Metal Meeting" version="0.0.1" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -816,35 +522,12 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Edge.org</summary>
-    <description lang="en">To arrive at the edge of the world's knowledge, seek out the most complex and sophisticated minds, put them in a room together, and have them ask each other the questions they are asking themselves.</description>
+    <summary lang="en">GMM - Graspop Metal Meeting</summary>
+    <description lang="en">Watch videos from Graspop Metal Meeting, including full length concert sets.  GMM is an annual METAL festival in Dessel, Belgium that has taken place each year since 1996.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
     <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.moviezoot" name="MovieZoot" version="0.0.2" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.simplejson" version="3.1.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">MovieZoot</summary>
-    <description lang="en">Looking for free movies online? Watch free streaming movies online with MovieZoot featuring your favorite westerns, adventure, and comedy.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license>GPL(v2) or Later</license>
     <forum></forum>
     <website></website>
     <email></email>
@@ -876,24 +559,28 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.cbc-sports" name="CBC Sports" version="0.0.2" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
+<addon id="plugin.video.carbon-tv" name="CarbonTV" version="0.0.1" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
     <import addon="script.module.requests" version="2.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">Live Events, Replays, and Highlights from CBC Sports</summary>
-        <description lang="en">Get the latest headlines, opinion, and video from CBC Sports.  Watch live events, replays, and highlights.  Region blocked for Canada only.</description>
-        <disclaimer lang="en"></disclaimer>
-    </extension>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">CarbonTV</summary>
+    <description lang="en">Watch video clips and full episodes from CarbonTV, the premier online video destination for premium outdoor themed shows and engaging personalities.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
 </addon>
 
 <addon id="plugin.video.lifechurch" name="Life.Church" version="0.0.3" provider-name="MetalChris">
@@ -919,30 +606,31 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.120sports" name="120 Sports" version="0.0.4" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
+<addon id="plugin.video.airspace" name="Air &amp; Space Smithsonian" version="0.0.3" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
     <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.pytz" version="2014.2"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">Up-to-the-moment commentary on all trending sports topics.</summary>
-        <description lang="en">120 Sports is the ultimate destination for up-to-the-moment commentary on all trending sports topics. The digital-only broadcast network offers 50 hours of live content, plus more than 1,200 on-demand video clips, each week.
-
-120 Sports is a first-of-its-kind network partnership involving multiple leagues and media properties created for the digital generation and the devices it uses most.</description>
-        <disclaimer lang="en"></disclaimer>
-    </extension>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Watch videos from the Air &amp; Space Smithsonian website</summary>
+    <description lang="en">Air &amp; Space Smithsonian magazine has been delighting aerospace enthusiasts since April 1986.  Air &amp; Space seeks to surprise its audience with a wealth of detail about aviation and spaceflight.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.3.0" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.3.1" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
@@ -953,6 +641,165 @@ ASN televises live games from multiple NCAA Division I college sports conference
 		<description>MetalChris' Kodi addons</description>
         <platform>all</platform>
     </extension>
+</addon>
+
+<addon id="plugin.video.bigstar" name="BigStar Movies" version="0.1.4" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">BigStar Movies</summary>
+    <description lang="en">Stream movies instantly! Choose from thousands of independent, foreign and award-winning feature films and TV shows.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.charlierose" name="Charlie Rose" version="0.0.3" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Charlie Rose</summary>
+    <description lang="en">Watch videos from charlierose.com - Since 1991, “Charlie Rose” has engaged America’s best thinkers, writers, politicians, athletes, entertainers, business leaders, scientists and other newsmakers in one-on-one interviews and roundtable discussions.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.audio.internetarchive" name="Internet Archive [Audio]" version="3.0.6" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>audio</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Internet Archive</summary>
+    <description lang="en">Internet Archive is a non-profit digital library.  Choose from thousands of recordings ranging from alternative news programming, to Grateful Dead concerts, to Old Time Radio shows, to book and poetry readings, to original music uploaded by our users.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.how-stuff-works" name="How Stuff Works" version="3.0.6" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">How Stuff Works</summary>
+    <description lang="en">Watch videos from How Stuff Works</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.weathernation" name="WeatherNation TV" version="0.0.7" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+        <import addon="xbmc.python" version="2.1.0"/>
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">WeatherNation</summary>
+    <description lang="en">Delivers the latest in-depth local, regional and national weather video, forecasts, maps, radar, news, satellite maps and alerts on WeatherNation.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language>English</language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.reruncentury" name="RerunCentury" version="0.0.2" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+	<import addon="script.module.beautifulsoup" version="3.2.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0</license>
+        <summary lang="en">RerunCentury</summary>
+        <description lang="en">Free Videos and 20th Century TV | Watch public domain episodes from nearly 200 classic TV shows. Links to legal videos.</description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
+<addon id="plugin.video.rtsinfo" name="RTS - Info" version="0.1.1" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">RTS - Info</summary>
+    <description lang="en">Watch live news and videos from RTS Info.</description>
+    <description lang="fr">Regarder les nouvelles en direct et des vidéos de RTS Info.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license>GPL(v2 or later)</license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
 </addon>
 
 <addon id="plugin.video.internetarchive" name="Internet Archive [Video]" version="3.0.6" provider-name="MetalChris">
@@ -971,6 +818,161 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <platform>all</platform>
     <license></license>
     <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="weather.unlocked" name="Weather Unlocked" version="0.0.6" provider-name="MetalChris">
+	<requires>
+		<import addon="xbmc.python" version="2.1.0"/>
+		<import addon="script.module.simplejson" version="3.3.0"/>
+	</requires>
+	<extension point="xbmc.python.weather" library="addon.py"/>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Weather Unlocked</summary>
+		<description lang="en">Weather forecast provided by Weather Unlocked</description>
+		<disclaimer lang="en"></disclaimer>
+		<language></language>
+		<platform>all</platform>
+		<forum></forum>
+		<source></source>
+	</extension>
+</addon>
+
+<addon id="plugin.video.newsmax" name="Newsmax TV" version="0.0.1" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Newsmax TV</summary>
+    <description lang="en">Newsmax TV is a United States cable news channel that is owned by Newsmax Media.  The channel primarily broadcasts from Newsmax's New York studio near Bryant Park, carrying a news/talk format during the day and acquired documentaries and films at night.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.natgeo" name="Nat Geo Video" version="3.0.1" provider-name="MetalChris">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0 or Later</license>
+        <summary lang="en">Nat Geo Video</summary>
+        <description lang="en">Watch videos from the National Geographic website.</description>
+        <disclaimer lang="en"></disclaimer>
+    </extension>
+</addon>
+
+<addon id="plugin.video.msl" name="Mars Science Laboratory" version="0.0.3" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Mars Science Laboratory</summary>
+    <description lang="en">Browse through videos from the Mars Science Laboratory - Mars Rover, Curiosity - Plus videos from Opportunity and Spirit, and Mars Orbiters  MAVEN, MRO, and Odyssey.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.sciencecasts" name="NASA ScienceCasts" version="0.0.2" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">NASA ScienceCasts</summary>
+    <description lang="en">NASA Science news is too exciting for plain text. Educational "ScienceCast" videos are fun, lively, entertaining--and anything but plain. Join us for a new episode every week as we look into the science behind discoveries on Earth, the Solar System, and beyond...</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.docstorm" name="Documentary Storm" version="0.0.2" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="plugin.video.youtube" version="3.1.0" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Documentary Storm</summary>
+    <description lang="en">Watch the best free full-length documentary films on the web. History documentaries, Science, Culture, Music... Explore and Enjoy!</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.hunt-channel" name="Hunt Channel" version="0.0.7" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="script.module.pytz" version="2014.2"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Hunt Channel</summary>
+    <description lang="en">Hunt Channel’s Mission is to provide Quality Outdoor Programming during PrimeTime.  Watch Live or On Demand video.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license>GPL(v2) or Later</license>
+    <forum>http://forum.kodi.tv/showthread.php?tid=276043</forum>
     <website></website>
     <email></email>
     <source></source>

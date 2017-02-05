@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.campus-insiders" name="Campus Insiders" version="0.0.7" provider-name="MetalChris">
+<addon id="plugin.video.campus-insiders" name="Campus Insiders" version="0.0.8" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -13,7 +13,9 @@
         <platform>all</platform>
         <license>GPL 2.0 or Later</license>
         <summary lang="en">College Sports.  All Day.  Every Day.</summary>
-        <description lang="en">Your source for college sports news and information.</description>
+        <description lang="en">Your source for college sports news and information.  Campus Insiders gives you a front row seat to all of the college sports action, now everyday can be Saturday!
+
+Delivering exclusive content, live streaming games, interviews and stories about your team, top headlines, and unlimited on demand content anytime you want it. </description>
         <disclaimer lang="en"></disclaimer>
     </extension>
 </addon>
