@@ -4,18 +4,13 @@
 # Written by MetalChris
 # Released under GPL(v2 or Later)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
-import HTMLParser
 import html5lib
 import requests
 import json
 #import simplejson as json
 import urlparse
-
-num_digits = 32
-myhex = os.urandom(num_digits / 2).encode('hex')
-xbmc.log(myhex)
 
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
@@ -27,7 +22,7 @@ defaultimage = 'special://home/addons/plugin.video.asn/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.asn/fanart.jpg'
 defaultvideo = 'special://home/addons/plugin.video.asn/icon.png'
 defaulticon = 'special://home/addons/plugin.video.asn/icon.png'
-baseurl = 'http://americansportsnet.com'
+baseurl = 'http://americansportsnet.com' # 'http://americansportsnet.com/live'
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36'
 }
@@ -52,7 +47,7 @@ def INDEX(url):
 	#s.get('http://www.americansportsnet.com/category/video/')
 	r = s.get(url, headers=headers)
 	#print(r.text.encode('utf-8'))[0:200]
-	#xbmc.log(r.cookies
+	#xbmc.log(r.cookies)
 	html = (r.text.encode('utf-8'))
 	soup = BeautifulSoup(html,'html5lib').find_all('a',{'class':'ref-section-card collapsed'})
 	for item in soup:
@@ -61,25 +56,40 @@ def INDEX(url):
 	    image = 'http:' + item.find('img')['data-src']
 	    addDir2(title, url, 2, image)
             xbmcplugin.setContent(pluginhandle, 'episodes')
-	#next = BeautifulSoup(html,'html5lib').find_all('div',{'class':'nav-previous'})
-	#next_url = re.compile('href="(.+?)"').findall(str(next))[-1]
-	#addDir('Older Posts', next_url, mode, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #2
 def IFRAME(name,url):
         html = get_html(url)
-	#soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'embed-container'})[0]
-	#iframe = re.compile('src="(.+?)"').findall(str(soup))[-1]
-	#xbmc.log('iframe = ' + str(iframe)
-	#content = get_html(iframe)
-	stream = re.compile("file: '(.+?)'").findall(str(html))[-1]
+	try: stream = re.compile("file: '(.+?)'").findall(str(html))[-1]
+	except IndexError:
+	    ALT_IFRAME(name,url)
 	xbmc.log('ASN Stream: ' + str(stream))
 	listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
+#6
+def ALT_IFRAME(name,url):
+        html = get_html(url)
+	try: soup = BeautifulSoup(html,'html5lib').find_all('sd-embed',{'class':'sd-embedded-media'})[0]
+	except IndexError:
+	    xbmcgui.Dialog().notification(plugin, 'Video Not Available.', defaultimage, 5000, False)
+	    sys.exit()
+	xbmc.log(str(soup))
+	iframe = re.compile('src=%22(.+?)?autostart').findall(str(soup))[0]
+	xbmc.log('IFRAME = ' + str(iframe))
+	content = get_html(iframe)
+	stream = re.compile("main_url = '(.+?)'").findall(str(content))[-1]
+	xbmc.log('ASN Stream: ' + str(stream))
+	listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
+	xbmc.Player().play( stream, listitem )
+	sys.exit()
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
 
 
 #3
@@ -103,8 +113,8 @@ def LIVE(url):
 		title = edate + ' [' + etime + ']' + ' - ' + sport + ' - ' + hteam
 	    else:
 	        title = edate + ' [' + etime + ']' + ' - ' + sport + ' - ' + hteam + ' @ ' + ateam
-	    url = baseurl + '/' + link.replace('<!---{','').replace('}--->','')
-	    addDir2(title, url, 4, defaultimage)
+	    url = 'http://livevideostatus.sinclairstoryline.com/status/ASN1' # baseurl + '/' + link.replace('<!---{','').replace('}--->','')
+	    addDir2(title, url, 5, defaultimage)
             xbmcplugin.setContent(pluginhandle, 'episodes')
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -112,8 +122,8 @@ def LIVE(url):
 #4
 def LIVE_IFRAME(name,url):
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'embed-container'})[0]
-	iframe = re.compile('src="(.+?)"').findall(str(soup))[-1]
+	soup = BeautifulSoup(html,'html5lib').find_all('sd-embed',{'class':'sd-embedded-media'})[0]
+	iframe = re.compile('src=%22(.+?)?autostart').findall(str(soup))[-1]
 	xbmc.log('iframe = ' + str(iframe))
 	if 'sinclair' in iframe:
 	    key = (iframe.rpartition('/')[-1]).replace('.html','')
@@ -164,12 +174,11 @@ def LIVE_STREAM(name,url):
 	    listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
 	    xbmc.Player().play( stream, listitem )
 	    sys.exit()
-	else:                
+	else:
 	    xbmc.log('No Live Broadcast Available')
 	    line1 = "Live Stream Currently Unavailable"
 	    line2 = "Check the Live Schedule for More Info"
 	    xbmcgui.Dialog().ok(plugin, line1, line2)
-	    #xbmcgui.Dialog().notification(plugin, 'No Live Broadcast Available.', defaultimage, 5000, False)
 	    #sys.exit()
 	    LIVE('http://americanspnet.wpengine.com/schedule-iframe')
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
@@ -274,7 +283,7 @@ def unescape(s):
     p.feed(s)
     return p.save_end()
 
-	
+
 
 
 params = get_params()
