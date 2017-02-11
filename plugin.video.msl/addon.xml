@@ -9,7 +9,7 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Mars Science Laboratory</summary>
+    <summary lang="en">Exploration of the Planet Mars - missions, videos, images and information</summary>
     <description lang="en">Browse through videos from the Mars Science Laboratory - Mars Rover, Curiosity - Plus videos from Opportunity and Spirit, and Mars Orbiters  MAVEN, MRO, and Odyssey.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
