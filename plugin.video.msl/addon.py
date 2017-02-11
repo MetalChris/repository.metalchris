@@ -4,9 +4,8 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
-from urllib import urlopen
 import html5lib
 
 artbase = 'special://home/addons/plugin.video.msl/resources/media/'
@@ -55,34 +54,35 @@ def msl_videos(url):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html5lib').find_all('li')
 	QUALITY = settings.getSetting(id="quality")
-        if QUALITY !='0':
-	    mode = 637
-        else:
-	    mode = 640  
+	if QUALITY !='0':
+		mode = 637
+	else:
+		mode = 640
 	for item in soup[30:]:
-	    title = item.find('h2').text.encode('utf-8')
-	    image = re.compile('url\\((.+?)\\)').findall(str(item))[-1] # 'http://mars.nasa.gov' + item.find('img')['src']
-	    url = (baseurl + item.find('a')['href']).replace('..','')#image.replace('.jpg','-1280.mp4')
-	    description = item.find('div',{'class':'listTextLabel'}).text.encode('utf-8')
-	    add_directory2(title, url, mode, image, image, plot=description)
-            xbmcplugin.setContent(pluginhandle, 'episodes')
-        views = settings.getSetting(id="views")
+		title = item.find('h2').text.encode('utf-8')
+		image = 'http://mars.nasa.gov' + re.compile('url\\((.+?)\\)').findall(str(item))[-1] # 'http://mars.nasa.gov' + item.find('img')['src']
+		#xbmc.log(str(image))
+		url = (baseurl + item.find('a')['href']).replace('..','')#image.replace('.jpg','-1280.mp4')
+		description = item.find('div',{'class':'listTextLabel'}).text.encode('utf-8')
+		add_directory2(title, url, mode, image, image, plot=description)
+		xbmcplugin.setContent(pluginhandle, 'episodes')
+		views = settings.getSetting(id="views")
 	if views != 'false':
-            xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
-        xbmcplugin.endOfDirectory(addon_handle)
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+		xbmcplugin.endOfDirectory(addon_handle)
 
 
 #637
 def source(url):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html5lib').find_all('div',{'class':'flowplayer is-splash'})
-	url = re.compile('src="(.+?)"').findall(str(soup))[-1]
+	url = 'http://mars.nasa.gov' + re.compile('src="(.+?)"').findall(str(soup))[-1]
 	title = re.compile('">(.+?)<span').findall(str(soup))[-1]
-	image = re.compile("url\\(\\'(.+?)\\'\\)").findall(str(soup))[-1]
+	image = 'http://mars.nasa.gov' + re.compile("url\\(\\'(.+?)\\'\\)").findall(str(soup))[-1]
 	listitem = xbmcgui.ListItem(name, thumbnailImage=image)
-	xbmc.Player().play( url, listitem )
+	xbmc.Player().play(url, listitem )
 	sys.exit()
-        xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #640
@@ -91,98 +91,98 @@ def files(name,url):
 	soup = BeautifulSoup(response,'html5lib').find_all('li')
 	elements = [];links = []
 	for item in soup[30:]:
-	    title = item.find('a').text.strip().encode('utf-8')
-	    url = item.find('a')['href']
-	    if 'pdf' in title:
-		continue
-    	    elements.append(title)
-	    links.append(url.encode('utf-8'))
-        dialog = xbmcgui.Dialog()
-        ret = xbmcgui.Dialog().select('Select Quality',elements)
-	print ret
-	url = links[ret]
+		title = item.find('a').text.strip().encode('utf-8')
+		url = item.find('a')['href']
+		if 'pdf' in title:
+			continue
+		elements.append(title)
+		links.append(url.encode('utf-8'))
+	dialog = xbmcgui.Dialog()
+	ret = xbmcgui.Dialog().select('Select Quality',elements)
+	xbmc.log(str(ret))
+	url = 'http://mars.nasa.gov' + links[ret]
 	image = url.split('-')[0] + '.jpg'
 	listitem = xbmcgui.ListItem(name, thumbnailImage=image)
-	xbmc.Player().play( url, listitem )
+	xbmc.Player().play(url, listitem )
 	sys.exit()
-        xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 def striphtml(data):
-    p = re.compile(r'<.*?>')
-    return p.sub('', data)
+	p = re.compile(r'<.*?>')
+	return p.sub('', data)
 
 
 #638
 def play(url):
-    item = xbmcgui.ListItem(path=url)
-    return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+	item = xbmcgui.ListItem(path=url)
+	return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
 
 def add_directory2(name,url,mode,fanart,thumbnail,plot):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-        liz.setInfo( type="Video", infoLabels={ "Title": name,
-                                                "plot": plot} )
-        if not fanart:
-            fanart=''
-        liz.setProperty('fanart_image',fanart)
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
-        return ok
+		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+		ok=True
+		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
+		liz.setInfo(type="Video", infoLabels={ "Title": name,
+												"plot": plot} )
+		if not fanart:
+			fanart=''
+		liz.setProperty('fanart_image',fanart)
+		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
+		return ok
 
 def get_html(url):
-    req = urllib2.Request(url)
-    req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
+	req = urllib2.Request(url)
+	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
 
-    try:
-        response = urllib2.urlopen(req)
-        html = response.read()
-        response.close()
-    except urllib2.HTTPError:
-        response = False
-        html = False
-    return html
+	try:
+		response = urllib2.urlopen(req)
+		html = response.read()
+		response.close()
+	except urllib2.HTTPError:
+		response = False
+		html = False
+	return html
 
 def get_params():
-    param = []
-    paramstring = sys.argv[2]
-    if len(paramstring) >= 2:
-        params = sys.argv[2]
-        cleanedparams = params.replace('?', '')
-        if (params[len(params) - 1] == '/'):
-            params = params[0:len(params) - 2]
-        pairsofparams = cleanedparams.split('&')
-        param = {}
-        for i in range(len(pairsofparams)):
-            splitparams = {}
-            splitparams = pairsofparams[i].split('=')
-            if (len(splitparams)) == 2:
-                param[splitparams[0]] = splitparams[1]
+	param = []
+	paramstring = sys.argv[2]
+	if len(paramstring) >= 2:
+		params = sys.argv[2]
+		cleanedparams = params.replace('?', '')
+		if (params[len(params) - 1] == '/'):
+			params = params[0:len(params) - 2]
+		pairsofparams = cleanedparams.split('&')
+		param = {}
+		for i in range(len(pairsofparams)):
+			splitparams = {}
+			splitparams = pairsofparams[i].split('=')
+			if (len(splitparams)) == 2:
+				param[splitparams[0]] = splitparams[1]
 
-    return param
+	return param
 
 
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
-    u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-    ok = True
-    liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo(type="Video", infoLabels={"Title": name})
-    liz.setProperty('IsPlayable', 'true')
-    if not fanart:
-        fanart=defaultfanart
-    liz.setProperty('fanart_image',fanart)
-    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
-    return ok
+	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
+	ok = True
+	liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+	liz.setInfo(type="Video", infoLabels={"Title": name})
+	liz.setProperty('IsPlayable', 'true')
+	if not fanart:
+		fanart=defaultfanart
+	liz.setProperty('fanart_image',fanart)
+	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
+	return ok
 
 
 def unescape(s):
-    p = htmllib.HTMLParser(None)
-    p.save_bgn()
-    p.feed(s)
-    return p.save_end()
+	p = htmllib.HTMLParser(None)
+	p.save_bgn()
+	p.feed(s)
+	return p.save_end()
 
-	
+
 
 
 params = get_params()
@@ -193,51 +193,51 @@ cookie = None
 iconimage = None
 
 try:
-    url = urllib.unquote_plus(params["url"])
+	url = urllib.unquote_plus(params["url"])
 except:
-    pass
+	pass
 try:
-    name = urllib.unquote_plus(params["name"])
+	name = urllib.unquote_plus(params["name"])
 except:
-    pass
+	pass
 try:
-    iconimage = urllib.unquote_plus(params["iconimage"])
+	iconimage = urllib.unquote_plus(params["iconimage"])
 except:
-    pass
+	pass
 try:
-    mode = int(params["mode"])
+	mode = int(params["mode"])
 except:
-    pass
+	pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode))
+xbmc.log("URL: " + str(url))
+xbmc.log("Name: " + str(name))
 
 if mode == None or url == None or len(url) < 1:
-    print "Generate Main Menu"
-    cats()
+	xbmc.log("Generate Main Menu")
+	cats()
 elif mode == 4:
-    print "Play Video"
+	xbmc.log("Play Video")
 elif mode==631:
-        print "Mars Rovers"
+	xbmc.log("Mars Rovers")
 	rovers()
 elif mode==632:
-        print "Mars Orbiters"
+	xbmc.log("Mars Orbiters")
 	orbiters()
 elif mode==634:
-        print "Mars Science Laboratory Categories"
+	xbmc.log("Mars Science Laboratory Categories")
 	cats()
 elif mode==636:
-        print "Mars Science Laboratory Videos"
+	xbmc.log("Mars Science Laboratory Videos")
 	msl_videos(url)
 elif mode==637:
-        print "Mars Science Laboratory Files"
+	xbmc.log("Mars Science Laboratory Sources")
 	source(url)
 elif mode==638:
-        print "Play Video"
+	xbmc.log("Play Video")
 	play(url)
 elif mode==640:
-        print "Mars Science Laboratory Files"
+	xbmc.log("Mars Science Laboratory Files")
 	files(name, url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

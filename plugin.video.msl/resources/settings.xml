@@ -1,6 +1,6 @@
 <settings>
-        <category label="General">
-     		<setting id="quality" type="enum" label="30003" lvalues="30110|30100" enable="!eq(3,false)" default="1"/>
-		<setting id="views" type="bool" label="30020" default="true"/>
-        </category>
+		<category label="General">
+		<setting id="quality" type="enum" label="30003" lvalues="30110|30100" enable="!eq(3,false)" default="1"/>
+		<setting id="views" type="bool" label="30020" default="false"/>
+		</category>
 </settings>
