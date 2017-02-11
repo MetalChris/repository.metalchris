@@ -559,11 +559,10 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.carbon-tv" name="CarbonTV" version="0.0.1" provider-name="MetalChris">
+<addon id="plugin.video.carbon-tv" name="CarbonTV" version="0.0.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
@@ -630,7 +629,7 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.3.2" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.3.3" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
@@ -895,7 +894,7 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Mars Science Laboratory</summary>
+    <summary lang="en">Exploration of the Planet Mars - missions, videos, images and information</summary>
     <description lang="en">Browse through videos from the Mars Science Laboratory - Mars Rover, Curiosity - Plus videos from Opportunity and Spirit, and Mars Orbiters  MAVEN, MRO, and Odyssey.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
