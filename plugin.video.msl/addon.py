@@ -77,7 +77,6 @@ def source(url):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html5lib').find_all('div',{'class':'flowplayer is-splash'})
 	url = 'http://mars.nasa.gov' + re.compile('src="(.+?)"').findall(str(soup))[-1]
-	title = re.compile('">(.+?)<span').findall(str(soup))[-1]
 	image = 'http://mars.nasa.gov' + re.compile("url\\(\\'(.+?)\\'\\)").findall(str(soup))[-1]
 	listitem = xbmcgui.ListItem(name, thumbnailImage=image)
 	xbmc.Player().play(url, listitem )
@@ -97,7 +96,6 @@ def files(name,url):
 			continue
 		elements.append(title)
 		links.append(url.encode('utf-8'))
-	dialog = xbmcgui.Dialog()
 	ret = xbmcgui.Dialog().select('Select Quality',elements)
 	xbmc.log(str(ret))
 	url = 'http://mars.nasa.gov' + links[ret]
