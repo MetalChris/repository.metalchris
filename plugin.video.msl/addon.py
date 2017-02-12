@@ -18,7 +18,7 @@ usexbmc = selfAddon.getSetting('watchinxbmc')
 settings = xbmcaddon.Addon(id="plugin.video.msl")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
-confluence_views = [500,501,502,503,504,508]
+download = settings.getSetting(id="download")
 
 plugin = "Mars Science Laboratory"
 
@@ -26,17 +26,50 @@ defaultimage = 'special://home/addons/plugin.video.msl/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.msl/resources/media/fanart.jpg'
 defaulticon = 'special://home/addons/plugin.video.msl/icon.png'
 baseurl = 'http://mars.jpl.nasa.gov/multimedia'
+pic_base = 'http://mars.nasa.gov/multimedia/images/'
+media_base = 'http://mars.nasa.gov'
 
 local_string = xbmcaddon.Addon(id='plugin.video.msl').getLocalizedString
 addon_handle = int(sys.argv[1])
 pluginhandle = int(sys.argv[1])
 confluence_views = [500,501,502,503,504,508,515]
+window_id = xbmcgui.getCurrentWindowId()
 
 
 def cats():
-	addDir('All Videos', baseurl + '/videos/?searchTerm=All', 636, defaultimage)
-	addDir('Rovers', baseurl, 631, defaultimage)
-	addDir('Orbiters', baseurl, 632, defaultimage)
+	if window_id == 10025:
+		addDir('All Videos', baseurl + '/videos/?searchTerm=All', 636, defaultimage)
+		addDir('Rovers', baseurl, 631, defaultimage)
+		addDir('Orbiters', baseurl, 632, defaultimage)
+	else:
+		addDir('Artist Concept', pic_base + '?t=240', 5, defaultimage)
+		addDir('Mars As Art', pic_base + '?t=363', 5, defaultimage)
+		addDir('Mars 3D Images', pic_base + '?t=518', 5, defaultimage)
+		addDir('Best of Mars', pic_base + '?t=463', 5, defaultimage)
+		addDir('Best of Curiosity', pic_base + '?t=399', 5, defaultimage)
+		addDir('Best of Opportunity', pic_base + '?t=385', 5, defaultimage)
+		addDir('Best of Spirit', pic_base + '?t=384', 5, defaultimage)
+		addDir('Best of MRO', pic_base + '?t=512', 5, defaultimage)
+
+
+#5
+def get_albums(url):
+	html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'objectItem gridThumb'})
+	for item in soup:
+		title = item.find('div',{'class':'featureTitle'}).text
+		#url = media_base + item.find('a')['href']
+		img = item.find('div',{'class':'featureImgLarge'})#re.compile('url\\((.+?)\\)').findall(str(item))[-1]
+		image = media_base + re.compile('url\\((.+?)\\)').findall(str(img))[-1]
+		fanart_image = image.replace('-thmfeat','-full')
+		url = fanart_image
+		liz=xbmcgui.ListItem(title, iconImage=image,thumbnailImage=image)
+		liz.setInfo( type="Image", infoLabels={ "Title": name })
+		liz.setProperty('fanart_image',fanart_image)
+		xbmcplugin.setContent(addon_handle, 'picture')
+		xbmcplugin.addDirectoryItem(handle=addon_handle,url=fanart_image,listitem=liz,isFolder=False)
+	xbmcplugin.endOfDirectory(handle=addon_handle, succeeded=True, updateListing=False, cacheToDisc=True)
+
 
 def rovers():
 	addDir('Curiosity', baseurl + '/videos/?searchTerm=Mission:MSL', 636, defaultimage)
@@ -216,6 +249,15 @@ if mode == None or url == None or len(url) < 1:
 	cats()
 elif mode == 4:
 	xbmc.log("Play Video")
+elif mode == 5:
+	xbmc.log( "Mars Science Laboratory Photo Albums")
+	get_albums(url)
+elif mode == 10:
+	xbmc.log( "Mars Science Laboratory Photos")
+	get_photos(name,url)
+elif mode == 80:
+	xbmc.log( "Download File")
+	downloader(name,url)
 elif mode==631:
 	xbmc.log("Mars Rovers")
 	rovers()
