@@ -1,3 +1,6 @@
+Version 3.0.7
+- Fixes for website changes (02-12-2016)
+
 Version 3.0.6
 - Fix addon.xml
 
