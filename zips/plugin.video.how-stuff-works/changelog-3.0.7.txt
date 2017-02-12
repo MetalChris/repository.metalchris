@@ -1,0 +1,20 @@
+Version 3.0.7
+- Fixes for website changes (02-12-2016)
+
+Version 3.0.6
+- Fix addon.xml
+
+Version 3.0.5
+- Fix for issues on Android
+
+Version 3.0.4
+- Added stream info for clip duration
+
+Version 3.0.3
+- Added Most Watched and Recently Added
+
+Version 3.0.2
+- Code cleanup
+
+Version 3.0.1
+- Initial release.
