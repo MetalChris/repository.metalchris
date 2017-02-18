@@ -125,7 +125,7 @@ def get_vod(url):
 		url = str(re.compile('href=(.+?)>').findall(str(title)))[3:-3]
 		title = striphtml(title)
 		add_directory2(title,url,30,defaultfanart,defaultimage,plot='')
-		xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #14
@@ -136,7 +136,7 @@ def recent(url):
 		title = item.find('title').string.encode('utf-8').title()
 		url = item.find('comments').string.split('#')[0]
 		add_directory2(title,url,30,defaultfanart,defaultimage,plot='')
-		xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #15
