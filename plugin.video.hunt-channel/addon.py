@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib,, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
 import html5lib
 import simplejson as json
@@ -33,15 +33,12 @@ schedule = 'special://home/addons/plugin.video.hunt-channel/resources/media/sche
 
 local_string = xbmcaddon.Addon(id='plugin.video.hunt-channel').getLocalizedString
 addon_handle = int(sys.argv[1])
-pluginhandle = int(sys.argv[1])
 confluence_views = [500,501,502,503,504,508,515]
 
 headers = {
 	'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:51.0) Gecko/20100101 Firefox/51.0',
 	'Referer': 'http://www.huntchannel.tv/shows/'
 }
-
-data = {'action':'load_more','page':'0','template':'cactus-channel/content-listing','vars[post_type]':'ct_channel','vars[orderby]':'title','vars[order]':'ASC'}
 
 now = datetime.datetime.now(timezone('US/Eastern'))
 now_minus_30 = now + datetime.timedelta(minutes = -30)
@@ -91,7 +88,6 @@ def prog():
 def cats(program):
 	addDir2('Live Stream' + ': ' + program,'http://www.huntchannel.tv/live/',12,defaultimage)
 	addDir('On Demand','http://www.huntchannel.tv',11,defaultimage)
-	#addDir('More','http://www.huntchannel.tv/wp-admin/admin-ajax.php',100,defaultimage)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -149,8 +145,6 @@ def shows(url):
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
 	for item in soup:
 		title = (item.find('a')['title']).encode('utf-8').strip()
-		#image = item.find('img')['src']
-		#show_id = image.split('/')
 		url = item.find('a')['href']
 		add_directory2(title,url,21,defaultfanart,defaultimage,plot='')
 		xbmcplugin.endOfDirectory(addon_handle)
@@ -178,30 +172,9 @@ def sc_videos(name,url):
 			image = item.find('img')['src']
 		else:
 			continue
-		#show_id = image.split('/')
 		url = item.find('a')['href']
 		add_directory2(title,url,31,defaultfanart,image,plot='')
-	xbmc.log('NAME: ' + str(name))
-	xbmcplugin.endOfDirectory(addon_handle)
-
-
-def s_videos(name,url):
-	xbmc.log('Vimeo Search Module')
-	name = name.replace(' ','+')
-	response = get_html('https://vimeo.com/search?q=' + name); i = 0
-	json_data = re.compile('\\"data\\":(.+?),\\"search_id\\"').findall(str(response))[-1]
-	jdata = json.loads(json_data)
-	for item in jdata:
-		title = (jdata[i]['clip']['name']).encode('utf-8')
-		#url = 'https://player.vimeo.com/video/' + (jdata[i]['clip']['link']).split('/')[-1]
-		url = 'https://vimeo.com/' + (jdata[i]['clip']['link']).split('/')[-1]
-		image = (jdata[i]['clip']['pictures']['sizes'][0]['link'])#[:-6]
-		duration = (jdata[i]['clip']['duration'])
-		description = ''
-		#image = defaultimage# item.find('img')['src']
-		add_directory2(title,url,638,image,image,plot=description); i = i + 1
-		xbmcplugin.setContent(pluginhandle, 'episodes')
-	xbmc.log(str(duration))
+	xbmcplugin.setContent(addon_handle, 'episodes')
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -240,10 +213,7 @@ def s_streams(name,url):
 	vkey = str(re.compile('value="(.+?)"').findall(str(vsoup)))[2:-2]
 	vurl = 'https://player.vimeo.com/video/' + vkey
 	xbmc.log('VURL: ' + str(vurl))
-	#iframe = re.compile('src="(.+?)"').findall(str(soup))[0]
 	source = get_iframe(vurl)
-	#xbmc.log('SOURCE: ' + str(source))
-	#thumbnail = re.compile('base":"(.+?)"').findall(str(source))[-1]
 	m3u8 = (re.compile('"url":"(.+?)"').findall(str(source))[0]).split(',')
 	check = (m3u8[0])[-4:]
 	xbmc.log(str(check))
@@ -260,18 +230,13 @@ def s_streams(name,url):
 #100
 def more(url):
 	for i in range(0,3):
-		xbmc.log(str(i))
 		data = {'action':'load_more','page':i,'template':'cactus-channel/content-listing','vars[post_type]':'ct_channel','vars[orderby]':'title','vars[order]':'ASC'}
 		session = Session()
 		session.head('http://www.huntchannel.tv')
 		response = session.post(
 		url ='http://www.huntchannel.tv/wp-admin/admin-ajax.php',
 		data=data,
-		headers=headers
-		)
-		xbmc.log('Load More Channels ' + str(url))
-		xbmc.log(str(response))
-		xbmc.log(str(data))
+		headers=headers)
 		soup = BeautifulSoup(response.text,'html5lib').find_all('div',{'class':'entry-content'})
 		for item in soup:
 			title = (item.find('a')['title']).encode('utf-8').strip()
@@ -279,10 +244,8 @@ def more(url):
 				image = item.find('img')['src']
 			else:
 				image = defaultimage
-			#show_id = image.split('/')
 			url = item.find('a')['href']
 			add_directory2(title,url,21,defaultfanart,image,plot='')
-		#add_directory2('Load More Shows',url,100,defaultfanart,defaultimage,plot='')#; i = i + 1
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
