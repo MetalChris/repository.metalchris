@@ -1,0 +1,26 @@
+Version 0.0.8
+- Fix to get all shows listed
+
+Version 0.0.7
+- Fix live stream
+- Fixes for VOD
+
+Version 0.0.6
+- Fix for 'zero hour' failure
+
+Version 0.0.5
+- Fix live stream
+- Fix for website changes to show/episode listings - I hate vimeo!
+- Updated schedule
+
+Version 0.0.4
+- Code cleanup
+
+Version 0.0.3
+- Fix addon.xml
+
+Version 0.0.2
+- Added program info for live stream
+
+Version 0.0.1
+- Initial release
