@@ -8,7 +8,6 @@ import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
 import requests
 import HTMLParser
 from bs4 import BeautifulSoup
-from urllib import urlopen
 from requests import Session
 
 
