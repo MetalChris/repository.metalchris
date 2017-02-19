@@ -4,12 +4,11 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, platform, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
 import requests
 import HTMLParser
 from bs4 import BeautifulSoup
 from urllib import urlopen
-import html5lib
 from requests import Session
 
 
@@ -121,10 +120,6 @@ def r_sub2_genres(url):
 #133
 def r_next_page(url,plot):
 	next_url = url
-	soheaders = {
-	'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0',
-	'Referer':url,
-	'X-Requested-With':'XMLHttpRequest',}
 	data = {'scrollOffset':plot}
 	session = Session()
 	session.head('http://www.radionomy.com')
