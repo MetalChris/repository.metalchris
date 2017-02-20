@@ -244,22 +244,25 @@ Delivering exclusive content, live streaming games, interviews and stories about
     </extension>
 </addon>
 
-<addon id="plugin.audio.radionomy" name="Radionomy" version="0.0.3" provider-name="MetalChris">
+<addon id="plugin.audio.radionomy" name="Radionomy" version="0.0.4" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.2.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.requests" version="2.6.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>audio</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Radionomy</summary>
-    <description lang="en">Radionomy is a free global service that allows users to create their own online radio or listen to online radio, all created and programmed by users</description>
+    <summary lang="en">Discover thousands of streaming radio stations</summary>
+    <description lang="en">Radionomy is a free global service that allows people from around the world to create their own Internet radio stations. Radionomy’s groundbreaking platform provides the tools to broadcast, promote, and monetize a station free of charge.
+
+The platform features a wide variety of music and themed stations to discover and listen to. Radionomy stations are more than just playlists; they are produced and run by real people such as artists, music fans, DJs, opinion leaders, comedians and storytellers etc. Millions of listeners around the world listen to thousands of radio stations created on Radionomy.
+</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
-    <license></license>
+    <license>GPL(v2) or Later</license>
     <forum></forum>
     <website></website>
     <email></email>
@@ -629,7 +632,7 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.3.6" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.3.7" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
