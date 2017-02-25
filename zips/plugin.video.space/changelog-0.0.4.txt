@@ -1,3 +1,6 @@
+Version 0.0.4
+- Add icon and fanart
+
 Version 0.0.3
 - Minor code fix
 
