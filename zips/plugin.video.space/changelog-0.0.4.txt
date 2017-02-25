@@ -1,0 +1,8 @@
+Version 0.0.3
+- Minor code fix
+
+Version 0.0.2
+- Switch from html.parser to html5lib
+
+Version 0.0.1
+- Initial release.
