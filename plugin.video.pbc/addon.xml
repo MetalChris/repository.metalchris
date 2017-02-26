@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.pbc" name="Premier Boxing Champions" version="0.0.1" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="script.module.mechanize" version="0.2.6"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Get all the latest videos and fight replays from PBC</summary>
+    <description lang="en">Featuring today’s best and brightest stars in their toughest, most anticipated bouts, Premier Boxing Champions is broadcast live and free to air on NBC, NBC Sports Network, ESPN and ESPN Deportes, CBS, FOX Sports 1, FOX Deportes, Spike TV and Bounce TV.
+
+PBC takes boxing back to its roots. This is boxing, pure and simple, where what’s brought to the fight, mentally and physically, is what determines who goes home the winner, and who just goes home.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
