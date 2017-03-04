@@ -80,7 +80,6 @@ def past_years(url):
 
 #633
 def past_fights(url):
-	next_url = url.split('?')
 	br.set_handle_robots( False )
 	response = br.open(url)
 	page = response.get_data()
