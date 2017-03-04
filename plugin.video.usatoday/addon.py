@@ -5,10 +5,8 @@
 # Released under GPL(v2) or Later
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
-import requests
 from bs4 import BeautifulSoup
 import html5lib
-import simplejson as json
 
 artbase = 'special://home/addons/plugin.video.usatoday/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -72,7 +70,6 @@ def videos(url):
 		title = title.replace("&#39;","'")
 		image = 'http://' + (image.split('/http/')[-1])
 		key = (image.split('_')[-1]).split('-')[0]
-		xbmc.log('KEY: ' + str(key))
 		if key.isdigit():
 			url = brightcove + key
 			add_directory2(title,url,99,image,image,plot='')
@@ -86,7 +83,6 @@ def striphtml(data):
 
 #99
 def play(name,url):
-	print url
 	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
 	xbmc.Player().play( url, listitem )
 	sys.exit()
@@ -174,23 +170,23 @@ try:
 except:
 	pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode))
+xbmc.log("URL: " + str(url))
+xbmc.log("Name: " + str(name))
 
 if mode == None or url == None or len(url) < 1:
-	print "USA Today Main Menu"
+	xbmc.log("USA Today Main Menu")
 	cats()
 elif mode==3:
-	print 'USA Today Sub Menu'
+	xbmc.log('USA Today Sub Menu')
 	sub_cats(name,url)
 elif mode == 4:
-	print "Play Video"
+	xbmc.log("Play Video")
 elif mode==6:
-	print 'USA Today Videos'
+	xbmc.log('USA Today Videos')
 	videos(url)
 elif mode==99:
-	print 'Play USA Today Videos'
+	xbmc.log('Play USA Today Videos')
 	play(name,url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
