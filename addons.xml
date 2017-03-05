@@ -682,7 +682,7 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.4.0" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.4.1" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
@@ -875,14 +875,14 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="weather.unlocked" name="Weather Unlocked" version="0.0.6" provider-name="MetalChris">
+<addon id="weather.unlocked" name="Weather Unlocked" version="0.0.7" provider-name="MetalChris">
 	<requires>
 		<import addon="xbmc.python" version="2.1.0"/>
 		<import addon="script.module.simplejson" version="3.3.0"/>
 	</requires>
 	<extension point="xbmc.python.weather" library="addon.py"/>
 	<extension point="xbmc.addon.metadata">
-		<summary lang="en">Weather Unlocked</summary>
+		<summary lang="en">Current Conditions and Forecast from Weather Unlocked</summary>
 		<description lang="en">Weather forecast provided by Weather Unlocked</description>
 		<disclaimer lang="en"></disclaimer>
 		<language></language>

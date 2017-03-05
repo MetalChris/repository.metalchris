@@ -1,4 +1,3 @@
-import math
 import xbmc
 
 WEATHER_CODES = { 'chanceflurries'    : '41',
@@ -22,6 +21,7 @@ WEATHER_CODES = { 'chanceflurries'    : '41',
                   'mostlysunny'       : '34',
                   'partlycloudy'      : '30',
                   'partcloudrainthunder'      : '30',
+                  'partcloudrainthunderday'      : '30',
                   'partcloudrainthundernight'      : '47',
                   'partlycloudyday'      : '30',
                   'partlycloudynight'      : '33',
