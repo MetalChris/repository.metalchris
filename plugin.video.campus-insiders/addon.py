@@ -59,12 +59,14 @@ def INDEX(url):
 	    sys.exit()
 	for item in jdata['playbook']['live_events']['value'][0]['scheduled_events']['value']:
 	    title = (jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['title']['value']).replace('&amp;','&')
+	    #title = (title).encode('utf-8','ignore')
+	    xbmc.log('TITLE: ' + str(title))
 	    sport = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['category']['value']
 	    etime = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['timestamp']['value']
 	    isLive = jdata['playbook']['live_events']['value'][0]['scheduled_events']['value'][i]['isLive']['value']
 	    #dtime = (etime.split(' ',1)[-1]).split(' ',1)[0]
 	    edate = etime.split(' ',1)[0]
-	    xbmc.log('EDATE: ' + str(edate))
+	    #xbmc.log('EDATE: ' + str(edate))
 	    etime = etime.split(' ',1)[-1].upper().lstrip("0")
 	    if isLive != False:
 		etime = 'LIVE'
@@ -75,7 +77,9 @@ def INDEX(url):
 	        title = etime + ' - ' + title + ' - ' + sport
 	    i=i+1
 	    infoLabels={ 'Title': title, 'Plot': sport }
-	    addDir2(title, url, 2, defaultimage, defaultfanart, infoLabels={ 'Title': title, 'Plot': sport })
+	    try:addDir2(title, url, 2, defaultimage, defaultfanart, infoLabels={ 'Title': title, 'Plot': sport })
+	    except KeyError:
+	    	continue
 	if edate > now:
 	    xbmc.log('NOT YET')
 	else:
@@ -281,7 +285,7 @@ def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=Tru
 
     listitem = xbmcgui.ListItem( title, iconImage="DefaultVideo.png", thumbnailImage=thumbnail )
     listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot } )
-    
+
     if url.startswith("plugin://"):
         itemurl = url
         listitem.setProperty('IsPlayable', 'true')
