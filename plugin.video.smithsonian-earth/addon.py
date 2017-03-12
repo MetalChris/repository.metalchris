@@ -86,8 +86,6 @@ def stream(name,url,iconimage):
 		xbmcgui.Dialog().notification(plugin, 'Login Successful', defaultimage, 2500, False)
 	page = br.open(url).read()
 	#xbmc.log('LAST URL: ' + str(br.geturl()))
-	soup = BeautifulSoup(page,'html5lib').find_all('script',{'type':'text/javascript'})
-	#xbmc.log('SOUP: ' + str(len(soup)))
 	url = re.compile('html5_url":"(.+?)"').findall(page)[0]
 	#xbmc.log('URL: ' + str(url))
 	play(name,url,iconimage)
