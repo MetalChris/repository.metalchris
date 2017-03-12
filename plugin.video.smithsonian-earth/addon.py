@@ -6,7 +6,6 @@
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys
 from bs4 import BeautifulSoup
-import simplejson as json
 import mechanize
 import html5lib
 
@@ -40,29 +39,12 @@ addon_handle = int(sys.argv[1])
 confluence_views = [500,501,502,503,504,508,515]
 
 
-def login():
-	sign_in = br.open('https://api.smithsonianearthtv.com:8443/channels/5DJZN6FN/responsives/login')
-	br.select_form(nr = 0)
-	br['email'] = 'slingtv@the-antinet.net'
-	br['password'] = '1drowssap2017'
-	logged_in = br.submit()
-	check = logged_in.read()
-	soup = BeautifulSoup(check,'html5lib').find_all('title')
-	xbmc.log('CHECK: ' + str(soup))
-	if 'Log In' in check:
-		xbmcgui.Dialog().notification(plugin, 'Login Failed', defaultimage, 5000, False)
-		return
-	else:
-		xbmcgui.Dialog().notification(plugin, 'Login Successful', defaultimage, 5000, False)
-		cats()
-
-
 #630
 def cats():
 	page = br.open('https://api.smithsonianearthtv.com:8443/channels/5DJZN6FN/responsives/categories/16617?5DJZN6FN').read()
 	cats = BeautifulSoup(page,'html5lib').find_all('option')
-	xbmc.log('CATS: ' + str(len(cats)))
-	xbmc.log('CAT0: ' + str(cats[0]))
+	#xbmc.log('CATS: ' + str(len(cats)))
+	#xbmc.log('CAT0: ' + str(cats[0]))
 	for title in cats:
 		url = baseurl + (title.get('value')).split('?')[0]
 		if len(url) < 50:
@@ -76,8 +58,8 @@ def cats():
 def videos(url):
 	page = br.open(url).read()
 	soup = BeautifulSoup(page,'html5lib').find_all('a')
-	xbmc.log('SOUP: ' + str(len(soup)))
-	xbmc.log('SOUP: ' + str(soup[0]))
+	#xbmc.log('SOUP: ' + str(len(soup)))
+	#xbmc.log('SOUP: ' + str(soup[0]))
 	for title in soup:
 		if title.find(class_="video-thumb"):
 			image = 'http:' + (re.compile('image:url\\((.+?)\\)').findall(str(title)))[0]
@@ -97,18 +79,18 @@ def stream(name,url,iconimage):
 	logged_in = br.submit()
 	check = logged_in.read()
 	soup = BeautifulSoup(check,'html5lib').find_all('title')
-	xbmc.log('CHECK: ' + str(soup))
+	#xbmc.log('CHECK: ' + str(soup))
 	if 'Log In' in check:
 		xbmcgui.Dialog().notification(plugin, 'Login Failed', defaultimage, 5000, False)
 		return
 	else:
 		xbmcgui.Dialog().notification(plugin, 'Login Successful', defaultimage, 2500, False)
 	page = br.open(url).read()
-	xbmc.log('LAST URL: ' + str(br.geturl()))
+	#xbmc.log('LAST URL: ' + str(br.geturl()))
 	soup = BeautifulSoup(page,'html5lib').find_all('script',{'type':'text/javascript'})
-	xbmc.log('SOUP: ' + str(len(soup)))
+	#xbmc.log('SOUP: ' + str(len(soup)))
 	url = re.compile('html5_url":"(.+?)"').findall(page)[0]
-	xbmc.log('URL: ' + str(url))
+	#xbmc.log('URL: ' + str(url))
 	play(name,url,iconimage)
 	xbmcplugin.endOfDirectory(addon_handle)
 
@@ -128,23 +110,6 @@ def play(name,url,iconimage):
 
 def remove_non_ascii_1(text):
 	return ''.join(i for i in text if ord(i)<128)
-
-
-def get_html(url):
-	req = urllib2.Request(url)
-	req.add_header('Host', 'player.ooyala.com')
-	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
-	#req.add_header('Referer', 'http://www.space.com/news?type=video')
-	req.add_header('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-
-	try:
-		response = urllib2.urlopen(req)
-		html = response.read()
-		response.close()
-	except urllib2.HTTPError:
-		response = False
-		html = False
-	return html
 
 
 def get_params():
@@ -180,15 +145,15 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 
 
 def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=True):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-		liz.setInfo( type="Video", infoLabels={ "Title": name } )
-		if not fanart:
-			fanart=defaultfanart
-		liz.setProperty('fanart_image',fanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
-		return ok
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
+	ok=True
+	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+	liz.setInfo( type="Video", infoLabels={ "Title": name } )
+	if not fanart:
+		fanart=defaultfanart
+	liz.setProperty('fanart_image',fanart)
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
+	return ok
 
 
 params = get_params()
