@@ -3,9 +3,14 @@
 <strings>
     <string id="30001">Login Details</string>
     <string id="30003">Stream Quality</string>
-    <string id="30004">480</string>
-    <string id="30005">720</string>
-    <string id="30006">1080</string>
+    <string id="30004">Lowest</string>
+    <string id="30005">Low</string>
+    <string id="30006">Medium Low</string>
+    <string id="30007">Medium</string>
+    <string id="30008">Medium High</string>
+    <string id="30009">High</string>
+    <string id="30010">Higher</string>
+    <string id="30011">Best</string>
     <string id="30020">Force Views</string>
     <string id="30200">User Account</string>
     <string id="30201">Username</string>

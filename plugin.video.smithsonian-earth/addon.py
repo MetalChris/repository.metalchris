@@ -65,7 +65,7 @@ def videos(url):
 			image = 'http:' + (re.compile('image:url\\((.+?)\\)').findall(str(title)))[0]
 			url = baseurl + (title.get('href'))
 			title = title.find('h2').text.encode('utf-8').replace('&amp;','&').strip()
-			addDir2(title, url, 636, image, defaultfanart)
+			addDir2(title, url, 636, image, image)
 	xbmcplugin.setContent(addon_handle, content="videos")
 	xbmcplugin.endOfDirectory(addon_handle)
 
@@ -78,17 +78,20 @@ def stream(name,url,iconimage):
 	br['password'] = password
 	logged_in = br.submit()
 	check = logged_in.read()
-	#xbmc.log('CHECK: ' + str(soup))
 	if 'Log In' in check:
 		xbmcgui.Dialog().notification(plugin, 'Login Failed', defaultimage, 5000, False)
 		return
 	else:
 		xbmcgui.Dialog().notification(plugin, 'Login Successful', defaultimage, 2500, False)
 	page = br.open(url).read()
-	#xbmc.log('LAST URL: ' + str(br.geturl()))
-	url = re.compile('html5_url":"(.+?)"').findall(page)[0]
-	#xbmc.log('URL: ' + str(url))
-	play(name,url,iconimage)
+	url = re.compile('html5_url":"(.+?)"').findall(page)
+	urls = url[0].rpartition('/')
+	keys = urls[-1].rpartition('.')
+	q = settings.getSetting(id='quality')
+	q_key = 'v' + q +'_' + keys[0]
+	post_url = q_key + '/' + q_key + '.m3u8'
+	stream = urls[0] + '/' + post_url
+	play(name,stream,iconimage)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 

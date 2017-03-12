@@ -1,5 +1,9 @@
 <settings>
-    <setting label="30001" type="lsep"/>
+	<category label="30001">
     <setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/>
     <setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/>
+	</category>
+	<category label="30003">
+    <setting id="quality" type="enum" label="30013" lvalues="30004|30005|30006|30007|30008|30009|30010|30011" enable="!eq(3,false)" default="7"/>
+	</category>
 </settings>
