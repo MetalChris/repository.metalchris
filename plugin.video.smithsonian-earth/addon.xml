@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.smithsonian-earth" name="Smithsonian Earth" version="0.0.1" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="script.module.mechanize" version="0.2.6"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Stream the most captivating nature and wildlife documentaries and videos shot in stunning Ultra HD (4K) on Smithsonian Earth.</summary>
+    <description lang="en">Smithsonian Earth is a commercial-free streaming app that offers unlimited access to nature and wildlife documentaries and videos shot in stunning 4K UHD resolution. Refreshed weekly, you'll never run out of things to discover.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license>GPL(v2) or Later</license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
