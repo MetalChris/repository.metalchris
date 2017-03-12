@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys
+import urllib, xbmcplugin, xbmcaddon, xbmcgui, re, sys
 from bs4 import BeautifulSoup
 import mechanize
 import html5lib
@@ -78,7 +78,6 @@ def stream(name,url,iconimage):
 	br['password'] = password
 	logged_in = br.submit()
 	check = logged_in.read()
-	soup = BeautifulSoup(check,'html5lib').find_all('title')
 	#xbmc.log('CHECK: ' + str(soup))
 	if 'Log In' in check:
 		xbmcgui.Dialog().notification(plugin, 'Login Failed', defaultimage, 5000, False)
