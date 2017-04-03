@@ -6,8 +6,6 @@
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
-import urlparse
-import HTMLParser
 import html5lib
 
 #reload(sys)
@@ -61,7 +59,6 @@ def get_movies(url):
 	html = get_html(url)
 	nextpage = re.compile('"next" href="(.+?)"').findall(html)[0]
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'item'})
-	match = re.compile('<a href="(.+?)" data').findall(html)
 	for item in soup:
 		title = (item.find('img')['alt']).encode('ascii',errors='ignore')
 		#xbmc.log('TITLE: ' + str(title))
