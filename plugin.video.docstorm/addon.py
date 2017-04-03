@@ -8,8 +8,6 @@ import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
 import html5lib
 
-#reload(sys)
-#sys.setdefaultencoding('utf8')
 
 youtube = 'youtube'
 vimeo = 'vimeo'
@@ -101,9 +99,9 @@ def get_iframe(name,url):
 		xbmc.log('RT')
 		iframe = str(iframe)[2:-2]#.replace('/embed.','/www.')
 		rt = get_html(iframe)
-		soup = BeautifulSoup(rt,'html5lib').find_all('script')[0]
-		xbmc.log('SOUP: ' + str(soup))
-		streamUrl = str(re.compile(" + '(.+?)'").findall(rt)).replace('films','files/films')
+		soup = BeautifulSoup(rt,'html5lib').find_all('script')[4]
+		#xbmc.log('SOUP: ' + str(soup))
+		streamUrl = 'https://rtd.rt.com/files/films/' + str(re.compile("file: '(.+?)'}").findall(rt)[0]).split(' + ')[-1].replace("'","")
 		xbmc.log('STREAM URL: ' + str(streamUrl))
 	PLAY(name,streamUrl)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
