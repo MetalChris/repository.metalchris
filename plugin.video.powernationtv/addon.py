@@ -11,6 +11,8 @@ import html5lib
 selfAddon = xbmcaddon.Addon(id='plugin.video.powernationtv')
 translation = selfAddon.getLocalizedString
 
+API_KEY = '8d2b83696759583b589b42e70006a2a423626ac7'
+
 defaultimage = 'special://home/addons/plugin.video.powernationtv/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.powernationtv/fanart.jpg'
 defaultvideo = 'special://home/addons/plugin.video.powernationtv/icon.png'
@@ -39,6 +41,8 @@ def CATEGORIES():
             title = 'Xtreme Off-Road'
         if '/' in title:
             mode = 30
+        if '2' in title:
+            mode = 60
         else:
             mode = 10
         image = baseurl + show.find('img')['src']
@@ -49,19 +53,19 @@ def CATEGORIES():
 #10
 def INDEX(url):
     html = get_html(url)
-    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'epi_tile'})
-    titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype faux-h2'});e=0
-    if len(titles) != len(soup):
-        titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype'});e=0
+    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'episode-info'})
+    #titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype faux-h2'});e=0
+    #if len(titles) != len(soup):
+        #titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype'});e=0
     for episode in soup:
         #If it's a "coming soon" show, skip it
         if episode.find(class_="coming_soon"):
             continue
-        title = striphtml(str(titles[e])).replace('&amp;','&')
+        title = episode.find('a').text.encode('ascii',errors='ignore').strip()
         url = episode.find('a')['href']
         if not 'http:' in url:
             url = 'http:' + episode.find('a')['href']
-        image = episode.find('img')['src']
+        image = defaultimage#episode.find('img')['src']
         #If it has metadata, add it to the episode info
         if episode.find('meta'):
             plot = episode.find(itemprop="description")['content'].encode('utf-8').strip()
@@ -71,30 +75,33 @@ def INDEX(url):
             aired = episode.find(itemprop="datePublished")['content'].encode('utf-8').strip()
             addDir(title, url, 20, image, image, {'plot': plot, 'season': season, 'episode': episodeNum, 'aired': aired});e=e+1
         else:
-            addDir(title, url, 20, image, image);e=e+1
+            addDir(title, url, 20, image, image)#;e=e+1
     xbmcplugin.setContent(pluginhandle, 'episodes')
     #Fix the sort to be proper episode number order
-    xbmcplugin.addSortMethod(pluginhandle, xbmcplugin.SORT_METHOD_EPISODE)
+    #xbmcplugin.addSortMethod(pluginhandle, xbmcplugin.SORT_METHOD_EPISODE)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #20
 def IFRAME(name,url):
     html = get_html(url)
-    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'col-lg-10 col-sm-9 clearfix'})
-    xbmc.log(str(len(soup)))
-    if len(soup) == 0:
-        soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'col-lg-17 col-md-16 col-sm-24 clearfix'})
-    for item in soup:
-        iframe = 'http:' + item.find('script')['src']
-        data = get_html(iframe)
-        try: stream = re.compile('"file": "(.+?)\.m3u8"').findall(str(data))[-1]
-        except IndexError:
-            xbmcgui.Dialog().notification(name, translation(30000), defaultimage, 5000, False)
+    soup = BeautifulSoup(html,'html5lib').find_all('script')
+    xbmc.log('SOUP: ' + str(len(soup)))
+    iframe = re.compile('script src="(.+?)"').findall(str(soup))
+    for item in iframe:
+        if 'jwplatform' in item:
+            xbmc.log('MATCH')
+            xbmc.log('ITEM: ' + str(item))
+            iframe = 'http:' + item
+            data = get_html(iframe)
+            try: stream = re.compile('"file": "(.+?)"').findall(str(data))[0]
+            except IndexError:
+                xbmcgui.Dialog().notification(name, translation(30000), defaultimage, 5000, False)
+                sys.exit()
+            listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
+            xbmc.log('STREAM: ' + str(stream))
+            xbmc.Player().play( "http:" + stream, listitem )
             sys.exit()
-        listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
-        xbmc.Player().play( "http:" + stream + ".m3u8", listitem )
-        sys.exit()
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -148,6 +155,21 @@ def YMM_VIDEOS(name,url):
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
+#60
+def TECH(name,url):
+    html = get_html(url)
+    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'epi_tile'})
+    xbmc.log(str(len(soup)))
+    for makes in soup:
+        title = makes.find('p').text
+        url = makes.find('a')['href']
+        if not 'http:' in url:
+            url = 'http:' + url
+        addDir(title, url, 20, defaultimage)
+    xbmcplugin.setContent(pluginhandle, 'episodes')
+    xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
 def striphtml(data):
     p = re.compile(r'<.*?>')
     return p.sub('', data)
@@ -166,6 +188,7 @@ def sanitize(data):
 def get_html(url):
     req = urllib2.Request(url)
     req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:47.0) Gecko/20100101 Firefox/47.0')
+    #req.add_header('X-API-KEY:','8d2b83696759583b589b42e70006a2a423626ac7')
 
     try:
         response = urllib2.urlopen(req)
@@ -287,5 +310,9 @@ elif mode == 40:
 elif mode == 50:
     xbmc.log("PowerNation TV YMM Videos")
     YMM_VIDEOS(name,url)
+elif mode == 60:
+    xbmc.log("PowerNation TV 2 Minute Tech Videos")
+    TECH(name,url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
