@@ -53,7 +53,7 @@ def CATEGORIES():
 #10
 def INDEX(url):
     html = get_html(url)
-    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'episode-info'})
+    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'episode-info'});e=0
     #titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype faux-h2'});e=0
     #if len(titles) != len(soup):
         #titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype'});e=0
@@ -61,7 +61,7 @@ def INDEX(url):
         #If it's a "coming soon" show, skip it
         if episode.find(class_="coming_soon"):
             continue
-        title = episode.find('a').text.encode('ascii',errors='ignore').strip()
+        title = episode.find('a').text.encode('ascii','ignore').strip()
         url = episode.find('a')['href']
         if not 'http:' in url:
             url = 'http:' + episode.find('a')['href']
