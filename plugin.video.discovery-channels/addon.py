@@ -7,7 +7,6 @@
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, platform, re, xbmcplugin, sys
 import requests
 import simplejson as json
-import HTMLParser
 from bs4 import BeautifulSoup
 import html5lib
 import mechanize
@@ -487,45 +486,6 @@ def get_params():
 				param[splitparams[0]] = splitparams[1]
 
 	return param
-
-def addListItem(label, image, url, isFolder, infoLabels = False, fanart = False, duration = False):
-	listitem = xbmcgui.ListItem(label = label, iconImage = image, thumbnailImage = image)
-	if not isFolder:
-		if settings.getSetting('download') == '' or settings.getSetting('download') == 'false':
-			listitem.setProperty('IsPlayable', 'true')
-	if fanart:
-		listitem.setProperty('fanart_image', fanart)
-	if infoLabels:
-		listitem.setInfo(type = 'video', infoLabels = infoLabels)
-	ok = xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url = u, listitem = listitem, isFolder = isFolder)
-	return ok
-
-def addLink(name, url, mode, iconimage, fanart=False, infoLabels=True):
-	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-	ok = True
-	liz = xbmcgui.ListItem(name, iconImage=iconimage, thumbnailImage=iconimage)
-	liz.setInfo(type="Video", infoLabels={ "Title": name, "Plot": description, "Duration": duration })
-	liz.setProperty('IsPlayable', 'true')
-	if not fanart:
-		fanart=defaultfanart
-	liz.setProperty('fanart_image',fanart)
-	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz,isFolder=False)
-	return ok
-
-def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=True ):
-	_log("add_item action=["+action+"] title=["+title+"] url=["+url+"] thumbnail=["+thumbnail+"] folder=["+str(folder)+"]")
-
-	listitem = xbmcgui.ListItem( title, iconImage=iconimage, thumbnailImage=iconimage )
-	listitem.setInfo( "video", { "Title": name, "Plot": description, "Duration": duration } )
-
-	if url.startswith("plugin://"):
-		itemurl = url
-		listitem.setProperty('IsPlayable', 'true')
-		xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem)
-	else:
-		itemurl = '%s?action=%s&title=%s&url=%s&thumbnail=%s&plot=%s' % ( sys.argv[ 0 ] , action , urllib.quote_plus( title ) , urllib.quote_plus(url) , urllib.quote_plus( thumbnail ) , urllib.quote_plus( plot ))
-		xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem, isFolder=folder)
-		return ok
 
 def addDir(name, url, mode, iconimage, fanart=True, infoLabels=True):
 		u=sys.argv[0]+"?url="+urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
