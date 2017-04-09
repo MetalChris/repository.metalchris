@@ -81,6 +81,7 @@ def channels():
 #525
 def dsc_menu(url):
 	site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com/videos/'
+	print site
 	br.set_handle_robots( False )
 	response = br.open(url)
 	page = response.get_data()
@@ -129,6 +130,7 @@ def dsc_menu(url):
 		xbmcplugin.setContent(addon_handle, 'episodes')
 		i = i + 1
 	if not 'tlc.com' in site:
+		addDir('Find More Episodes From ' + name, url, 80, iconimage, artbase + 'fanart2.jpg')
 		addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
 	else:
 		addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
@@ -137,6 +139,46 @@ def dsc_menu(url):
 	if views != 'false':
 		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
+
+
+def find_more(url):
+		site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + 'go.com'
+		print site
+		br.set_handle_robots( False )
+		response = br.open(url)
+		page = response.get_data()
+		if p == '2':
+			xbmc.log('PARSER: ' + 'None')
+			soup = BeautifulSoup(page).find_all('div',{'class':'item small'})
+		if p == '1':
+			xbmc.log('PARSER: ' + 'html.parser')
+			soup = BeautifulSoup(page,'html.parser').find_all('div',{'class':'item small'})
+		if p == '0':
+			xbmc.log('PARSER: ' + 'html5lib')
+			soup = BeautifulSoup(page,'html5lib').find_all('div',{'class':'item small'})
+		#soup4 = BeautifulSoup(html).find_all('div',{'class':'item small'})
+		#xbmc.log ('SOUP: ' + str(len(soup4)))
+		for item in soup:
+			title = (item.find('img')['alt']).encode('utf-8').replace('&amp;', '&').replace('&#x27;','\'').replace('&quot;','\'').replace('&rsquo;','\'')
+			expire = str(re.compile('data-expiration="(.+?)"').findall(str(item))[-1])
+			expire = (expire.split('T')[0]).split('-')
+			year = expire[0]; month = expire[1]; day = (int(expire[2]) - 1)
+			month = month.lstrip('0')
+			expiry = str(month) + '/' + str(day) + '/' + str(year)
+			pageurl = site + item.find('a')['href']
+			try: description = item.find('p').text.strip()
+			except TypeError:
+				description = 'No Description Available' #plot[-1]
+			description = description.replace('&amp;', '&').replace('&#x27;','\'').replace('&quot;','\'').replace('&rsquo;','\'').encode('utf-8')
+			icon = item.find('img')['src']
+			duration = re.compile('data-duration="(.+?)"').findall(str(item))[-1]
+			runtime = GetInHMS(int(duration))
+			add_directory3(title, pageurl, 531, artbase + 'fanart2.jpg', icon, plot=description + ' (' + runtime.replace('00:','') + ') ' + expiry)
+		xbmcplugin.setContent(addon_handle, 'episodes')
+		views = settings.getSetting(id="views")
+		if views != 'false':
+			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+		xbmcplugin.endOfDirectory(addon_handle)
 
 
 #531
@@ -381,7 +423,7 @@ def list_clips(dscdata):
 		views = settings.getSetting(id="views")
 		if views != 'false':
 			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
-		xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 def GetInHMS(seconds):
@@ -413,7 +455,7 @@ def PLAY(name,url):
 	listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
 	listitem.setInfo(type="Video", infoLabels={"Title": name})
 	listitem.setProperty('IsPlayable', 'true')
-	xbmc.Player().play( url, listitem )
+	xbmc.Player().play( url + '&m3u8=yes', listitem )
 	while xbmc.Player().isPlaying():
 		continue
 	sys.exit()
@@ -423,7 +465,7 @@ def PLAY(name,url):
 #999
 def play(url):
 	print url
-	item = xbmcgui.ListItem(path=url)
+	item = xbmcgui.ListItem(path=url + '&m3u8=yes')
 	item.setProperty('IsPlayable', 'true')
 	return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
@@ -451,6 +493,12 @@ def add_directory3(name,url,mode,fanart,thumbnail,plot):
 			fanart=''
 		liz.setProperty('fanart_image',fanart)
 		liz.setProperty('IsPlayable', 'true')
+		#liz.setProperty('mimetype', 'application/x-mpegURL')
+		#liz.setProperty('mimetype', 'vnd.apple.mpegURL')
+		#commands = []
+		#commands.append
+		#li.addContextMenuItems([('Download File', 'XBMC.RunScript(special://home/addons/plugin.video.internetarchive/downloader.py)',)])
+		#liz.addContextMenuItems([('Find More Episodes', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url))])
 		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False, totalItems=40)
 		return ok
 
@@ -560,8 +608,11 @@ print "Name: " + str(name)
 if mode == None or url == None or len(url) < 1:
 	print "Discovery Channels"
 	channels()
+elif mode==80:
+	print "Find More"
+	find_more(url)
 elif mode==525:
-	print "TLC Menu"
+	print "DSC Menu"
 	dsc_menu(url)
 elif mode==530:
 	print "Discovery Menu"

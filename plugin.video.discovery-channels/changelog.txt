@@ -1,3 +1,7 @@
+Version 3.2.6
+- Added advanced settings options for parser and player
+- Additional code cleanup - removed unused modules
+
 Version 3.2.5
 - Code cleanup
 

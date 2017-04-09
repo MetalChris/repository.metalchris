@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.discovery-channels" name="Discovery Channels" version="3.2.5" provider-name="MetalChris">
+<addon id="plugin.video.discovery-channels" name="Discovery Channels" version="3.2.6" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.simplejson" version="3.3.0"/>
     <import addon="script.module.requests" version="2.9.1"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.mechanize" version="0.2.6"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>

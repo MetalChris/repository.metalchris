@@ -48,17 +48,19 @@ def CATEGORIES():
 		addDir(name,url,10,defaulticon,defaultfanart)
 		#xbmcplugin.addDirectoryItem(handle=addon_handle, url=gurl, listitem=li, totalItems=30)
 	xbmcplugin.setContent(addon_handle, 'episodes')
-	xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
-	#xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+	#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
+	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #10
 def get_movies(url):
 	html = get_html(url)
-	nextpage = re.compile('"next" href="(.+?)"').findall(html)[0]
+	try: nextpage = re.compile('"next" href="(.+?)"').findall(html)[0]
+	except IndexError:
+		nextpage = 'None'
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'item'})
 	for item in soup:
-		title = (item.find('img')['alt']).encode('ascii',errors='ignore')
+		title = (item.find('img')['alt']).encode('ascii','ignore')
 		#xbmc.log('TITLE: ' + str(title))
 		image = item.find('img')['src']
 		#xbmc.log('IMAGE: ' + str(image))
@@ -67,9 +69,12 @@ def get_movies(url):
 		plot = item.find('p').text
 		plot = re.sub('\s+',' ',plot)
 		#xbmc.log('PLOT: ' + str(plot))
-		add_directory(title,url,20,defaultfanart,image,plot=plot)
-	url = str(nextpage)
-	add_directory2('Next Page',url,10,defaulticon,defaultfanart,plot='')
+		if 'season-3' in url:
+			addDir(title,url,30,image,defaultfanart)
+		else:
+			add_directory(title,url,20,defaultfanart,image,plot=plot)
+	if len(nextpage) > 4:
+		addDir('Next Page',nextpage,10,defaulticon,defaultfanart)
 	xbmcplugin.setContent(addon_handle, 'episodes')
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
@@ -77,14 +82,22 @@ def get_movies(url):
 #20
 def get_iframe(name,url):
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('iframe')
-	xbmc.log('SOUP: ' + str(soup))
-	iframe = re.compile('src="(.+?)"').findall(str(soup))
+	soup = BeautifulSoup(html,'html5lib')#.find_all('iframe')
+	#xbmc.log('SOUP: ' + str(soup))
+	#for item in soup:
+	iframe = soup.find('iframe')['src']
+	#iframe = re.compile('src="(.+?)"').findall(str(soup))
 	xbmc.log('IFRAME: ' + str(iframe))
 	if 'youtube' in str(iframe):
-		videoId = str(iframe[0].split('/', 4)[-1])#[:-2]
-		xbmc.log('YT videoId: ' + str(videoId))
-		streamUrl = ('plugin://plugin.video.youtube/play/?video_id=' + videoId)
+		if 'list' in iframe:
+			videoId = iframe.rpartition('=')[-1]
+			streamUrl = 'plugin://plugin.video.youtube/play/?playlist_id=' + videoId
+			PLAY(name,streamUrl)
+		#videoId = str(iframe[0].split('/', 4)[-1])#[:-2]
+		else:
+			videoId = str(iframe).rpartition('/')[-1]
+			xbmc.log('YT videoId: ' + str(videoId))
+			streamUrl = ('plugin://plugin.video.youtube/play/?video_id=' + videoId)
 	if len(str(iframe)) > 13 and 'snagfilms' in str(iframe):
 		iframe = str(iframe)[2:-2].replace('/embed.','/www.')
 		snag = get_html(iframe)
@@ -97,23 +110,53 @@ def get_iframe(name,url):
 		xbmc.log('STREAM URL: ' + str(streamUrl))
 	if len(str(iframe)) > 13 and 'rt.com' in str(iframe):
 		xbmc.log('RT')
-		iframe = str(iframe)[2:-2]#.replace('/embed.','/www.')
+		iframe = str(iframe)#.replace('/embed.','/www.')
 		rt = get_html(iframe)
 		soup = BeautifulSoup(rt,'html5lib').find_all('script')[4]
-		#xbmc.log('SOUP: ' + str(soup))
 		streamUrl = 'https://rtd.rt.com/files/films/' + str(re.compile("file: '(.+?)'}").findall(rt)[0]).split(' + ')[-1].replace("'","")
+		xbmc.log('STREAM URL: ' + str(streamUrl))
+	if len(str(iframe)) > 13 and 'nfb.ca' in str(iframe):
+		xbmc.log('NFB')
+		iframe = str(iframe)[2:-2]#.replace('/embed.','/www.')
+		nfb = get_html(iframe)
+		entryId = str(re.compile('"entry_id": "(.+?)"').findall(nfb)[-1])
+		streamUrl = 'http://www.kaltura.com/p/243342/sp/24334200/playManifest/entryId/' + entryId + '/flavorId/1_6wf0o9n7/format/url/protocol/http/a.mp4'
 		xbmc.log('STREAM URL: ' + str(streamUrl))
 	PLAY(name,streamUrl)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
+#30
+def episodes(name,url):
+	html = get_html(url)
+	image = re.compile('image" content="(.+?)"').findall(html)[0]
+	iframe = re.compile('frame src="(.+?)"').findall(html)[-1]
+	xbmc.log('IFRAME: ' + str(iframe))
+	if 'list' in iframe:
+		videoId = iframe.rpartition('=')[-1]
+		streamUrl = 'plugin://plugin.video.youtube/play/?playlist_id=' + videoId
+		PLAY(name,streamUrl)
+	videoId = str(iframe).rpartition('/')[-1]
+	streamUrl = ('plugin://plugin.video.youtube/play/?video_id=' + videoId)
+	title = name + ' Episode 1'
+	add_directory(title,streamUrl,99,defaultfanart,image,plot='')
+	xbmcplugin.setContent(addon_handle, 'episodes')
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'episode-links'})
+	match = re.compile('<a href="(.+?)"><span>(.+?)</span>').findall(str(soup))
+	for url, episode in match:
+		title = name + ' Episode ' + episode
+		add_directory(title,url,20,defaultfanart,image,plot='')
+	xbmcplugin.setContent(addon_handle, 'episodes')
+	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+
+
+
 #99
 def PLAY(name,url):
-	listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
-	listitem.setInfo(type="Video", infoLabels={"Title": name})
-	xbmc.Player().play( url, listitem )
-	sys.exit()
-	xbmcplugin.endOfDirectory(addon_handle)
+	print url
+	item = xbmcgui.ListItem(path=url)
+	item.setProperty('IsPlayable', 'true')
+	return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
 
 def striphtml(data):
@@ -179,34 +222,6 @@ def get_params():
 
 	return param
 
-
-def addLink(name, url, mode, iconimage, fanart=False, infoLabels=True):
-	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
-	ok = True
-	liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-	liz.setInfo(type="Video", infoLabels={"Title": name})
-	liz.setProperty('IsPlayable', 'true')
-	if not fanart:
-		fanart=defaultfanart
-	liz.setProperty('fanart_image',fanart)
-	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz,isFolder=False)
-	return ok
-
-def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=True ):
-	_log("add_item action=["+action+"] title=["+title+"] url=["+url+"] thumbnail=["+thumbnail+"] folder=["+str(folder)+"]")
-
-	listitem = xbmcgui.ListItem( title, iconImage="DefaultVideo.png", thumbnailImage=thumbnail )
-	listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot } )
-
-	if url.startswith("plugin://"):
-		itemurl = url
-		listitem.setProperty('IsPlayable', 'true')
-		xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem)
-	else:
-		itemurl = '%s?action=%s&title=%s&url=%s&thumbnail=%s&plot=%s' % ( sys.argv[ 0 ] , action , urllib.quote_plus( title ) , urllib.quote_plus(url) , urllib.quote_plus( thumbnail ) , urllib.quote_plus( plot ))
-		xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem, isFolder=folder)
-		return ok
-
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
 	ok = True
@@ -230,14 +245,6 @@ def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
 		liz.setProperty('fanart_image',fanart)
 		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
 		return ok
-
-
-def addDirectoryItem2(name, isFolder=True, parameters={}):
-	''' Add a list item to the XBMC UI.'''
-	li = xbmcgui.ListItem(name, iconImage=defaultimage, thumbnailImage=defaultimage)
-	li.setProperty('fanart_image', defaultfanart)
-	url = sys.argv[0] + '?' + urllib.urlencode(parameters)
-	return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=li, isFolder=isFolder)
 
 
 def unescape(s):
@@ -289,6 +296,9 @@ elif mode == 10:
 elif mode == 20:
 	print "Documentary Storm IFRAME"
 	get_iframe(name,url)
+elif mode == 30:
+	print "Documentary Storm EPISODES"
+	episodes(name,url)
 elif mode == 99:
 	print "Play Video"
 	PLAY(name,url)
