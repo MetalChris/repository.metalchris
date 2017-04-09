@@ -1,0 +1,11 @@
+Version 0.0.4
+- Switch to setResolvedUrl to play streams
+
+Version 0.0.3
+- Fixes for website changes
+
+Version 0.0.2
+- Fix addon.xml
+
+Version 0.0.1
+- Intitial Release
