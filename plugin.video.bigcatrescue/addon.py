@@ -4,12 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, re, xbmcplugin, sys
-import requests
-import urlparse
-import HTMLParser
-from bs4 import BeautifulSoup
-from urllib import urlopen
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, xbmcplugin, sys
 import simplejson as json
 #import base64
 ## a.decode('base64') ##
@@ -60,7 +55,7 @@ def bcr_videos(url):
 		description = ''
 		add_directory2(title,url,638,image,image,plot=description); i = i + 1
 		xbmcplugin.setContent(pluginhandle, 'episodes')
-		views = settings.getSetting(id="views")
+		#views = settings.getSetting(id="views")
 		#if views != 'false':
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	print duration
