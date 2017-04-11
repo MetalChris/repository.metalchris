@@ -99,12 +99,18 @@ def get_iframe(name,url):
 			xbmc.log('YT videoId: ' + str(videoId))
 			streamUrl = ('plugin://plugin.video.youtube/play/?video_id=' + videoId)
 	if len(str(iframe)) > 13 and 'snagfilms' in str(iframe):
-		iframe = str(iframe)[2:-2].replace('/embed.','/www.')
+		iframe = (iframe).replace('/embed.','/www.')
+		xbmc.log('IFRAME: ' + str(iframe))
 		snag = get_html(iframe)
-		streamUrl = re.compile('src: "(.+?)"').findall(snag)[-1]
+		streamUrl = re.compile('src: "(.+?)",').findall(snag)[-1]
 		xbmc.log('STREAM URL: ' + str(streamUrl))
 	if len(str(iframe)) > 13 and 'vimeo' in str(iframe):
-		iframe = str(iframe)[2:-2]#.replace('/embed.','/www.')
+		iframe = str(iframe)#[2:-2].replace('/embed.','/www.')
+		xbmc.log('IFRAME: ' + str(iframe))
+		if '?' in iframe:
+			iframe = (iframe.split('?'))[0]
+			#iframe = iframe[0]
+			xbmc.log('IFRAME: ' + str(iframe))
 		vimeo = get_html(iframe)
 		streamUrl = str(re.compile('"url":"(.+?)"').findall(vimeo)[4])
 		xbmc.log('STREAM URL: ' + str(streamUrl))
@@ -117,7 +123,7 @@ def get_iframe(name,url):
 		xbmc.log('STREAM URL: ' + str(streamUrl))
 	if len(str(iframe)) > 13 and 'nfb.ca' in str(iframe):
 		xbmc.log('NFB')
-		iframe = str(iframe)[2:-2]#.replace('/embed.','/www.')
+		iframe = str(iframe)#[2:-2].replace('/embed.','/www.')
 		nfb = get_html(iframe)
 		entryId = str(re.compile('"entry_id": "(.+?)"').findall(nfb)[-1])
 		streamUrl = 'http://www.kaltura.com/p/243342/sp/24334200/playManifest/entryId/' + entryId + '/flavorId/1_6wf0o9n7/format/url/protocol/http/a.mp4'
