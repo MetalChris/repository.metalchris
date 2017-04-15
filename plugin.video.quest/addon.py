@@ -4,12 +4,9 @@
 # Written by MetalChris
 # Released under GPL(v2 or later)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
-import requests
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, os, platform, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
 import html5lib
-from sys import exit
-import simplejson as json
 
 
 
@@ -49,10 +46,10 @@ def quest_shows():
 	soup = BeautifulSoup(html,'html5lib').find_all("div",{"class":"dni-video-playlist-thumb-box"})
 	xbmc.log('SOUP: ' + str(len(soup)))
 	for title in soup:
-		if title.find('a'):
-			url = title.find('a')['href']
-		else:
-			continue
+		#if title.find('a'):
+			#url = title.find('a')['href']
+		#else:
+			#continue
 		image = title.find('img')['src']
 		plot = title.find('p').text
 		videoid = title.find('div')['data-videoid']
