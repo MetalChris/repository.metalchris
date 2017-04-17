@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<strings>
+    <string id="30003">Stream Quality</string>
+    <string id="30100">540</string>
+    <string id="30105">720</string>
+    <string id="30110">1080</string>
+    <string id="30120">Site Version</string>
+    <string id="30121">World</string>
+    <string id="30122">U.S.</string>
+    <string id="30130">Top Stories Length</string>
+    <string id="30131">5 Minutes</string>
+    <string id="30132">10 Minutes</string>
+    <string id="30133">15 Minutes</string>
+    <string id="30134">20 Minutes</string>
+    <string id="30135">25 Minutes</string>
+    <string id="30136">30 Minutes</string>
+</strings>
