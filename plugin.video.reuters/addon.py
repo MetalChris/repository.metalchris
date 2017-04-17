@@ -6,7 +6,6 @@
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
-from urllib import urlopen
 import mechanize
 import html5lib
 import simplejson as json
