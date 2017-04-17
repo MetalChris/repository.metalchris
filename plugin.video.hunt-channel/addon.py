@@ -139,29 +139,6 @@ def recent(url):
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
-#15
-def shows(url):
-	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
-	for item in soup:
-		title = (item.find('a')['title']).encode('utf-8').strip()
-		url = item.find('a')['href']
-		add_directory2(title,url,21,defaultfanart,defaultimage,plot='')
-		xbmcplugin.endOfDirectory(addon_handle)
-
-
-#20
-def videos(url):
-	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
-	for item in reversed(soup):
-		title = (item.find('a')['title']).encode('utf-8').strip()
-		image = item.find('img')['src']
-		url = item.find('a')['href']
-		add_directory2(title,url,30,defaultfanart,image,plot='')
-		xbmcplugin.endOfDirectory(addon_handle)
-
-
 #21
 def sc_videos(name,url):
 	html = get_html(url)
@@ -178,49 +155,49 @@ def sc_videos(name,url):
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
-#638
-def streams(name,url,iconimage):
-	html = get_html(url)
-	url = re.compile('"GET","(.+?)"').findall(str(html))[-1]
-	jresponse = urllib2.urlopen(url)
-	jdata = json.load(jresponse)
-	stream = (jdata['request']['files']['progressive'][0]['url'])
-	hplay(name,stream,iconimage)
-
-
 #30
 def hstreams(name,url):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html5lib').find_all('iframe')[0]
 	iframe = re.compile('src="(.+?)"').findall(str(soup))[0]
 	source = get_iframe(iframe)
-	thumbnail = re.compile('base":"(.+?)"').findall(str(source))[-1]
-	m3u8 = (re.compile('"url":"(.+?)"').findall(str(source))[0]).split(',')
-	key = (m3u8[-1]).split('/')[0]
-	stream = (m3u8[0]).rpartition('/')[0] + '/' + key + '/playlist.m3u8?p=6'
-	xbmc.log(str(stream))
-	listitem = xbmcgui.ListItem(name, thumbnailImage=thumbnail)
-	xbmc.Player().play( stream, listitem )
-	sys.exit()
-	xbmcplugin.endOfDirectory(addon_handle)
+	#thumbnail = re.compile('base":"(.+?)"').findall(str(source))[-1]
+	best(source)
 
 
 #31
 def s_streams(name,url):
 	response = get_html(url)
-	xbmc.log(str(url))
+	#xbmc.log(str(url))
 	vsoup = BeautifulSoup(response,'html5lib').find_all('input',{'name':'main_video_url'})
 	vkey = str(re.compile('value="(.+?)"').findall(str(vsoup)))[2:-2]
 	vurl = 'https://player.vimeo.com/video/' + vkey
-	xbmc.log('VURL: ' + str(vurl))
+	#xbmc.log('VURL: ' + str(vurl))
 	source = get_iframe(vurl)
-	m3u8 = (re.compile('"url":"(.+?)"').findall(str(source))[0]).split(',')
-	check = (m3u8[0])[-4:]
-	xbmc.log(str(check))
-	if check == 'm3u8':
-		stream = m3u8[0]
-	else:
-		stream = m3u8[0] + '/master.m3u8'
+	best(source)
+
+
+def best(data):
+	vjson = re.compile('progressive":(.+?)},"lang').findall(str(data))
+	mp4 = (re.compile('"url":"(.+?)"').findall(str(vjson)));i = 0
+	#xbmc.log('MP4: ' + str(len(mp4)))
+	if len(mp4) < 1:
+		xbmcgui.Dialog().notification(name, 'No Stream Available', defaultimage, 5000, False)
+		sys.exit()
+	data = json.loads(vjson[0])
+	elements = [];links = []
+	for stream in data:
+		stream = data[i]['url']
+		#xbmc.log('STREAM: ' + str(stream))
+		quality = data[i]['quality'];i = i + 1
+		#xbmc.log('QUALITY: ' + str(quality))
+		elements.append(quality)
+		links.append(stream)
+	hi = max(elements)
+	i = elements.index(hi)
+	#ret = xbmcgui.Dialog().select('Select Quality',elements)
+	#xbmc.log(str(ret))
+	stream = links[i]
 	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
@@ -411,12 +388,6 @@ elif mode==13:
 elif mode==14:
 	xbmc.log('Hunt Channel Recent')
 	recent(url)
-elif mode==15:
-	xbmc.log('Hunt Channel Shows')
-	shows(url)
-elif mode==20:
-	xbmc.log("Hunt Channel Videos")
-	videos(url)
 elif mode==30:
 	xbmc.log("Hunt Channel Streams")
 	hstreams(name,url)
@@ -432,9 +403,6 @@ elif mode==40:
 elif mode==50:
 	xbmc.log("Hunt Channel Program")
 	prog()
-elif mode==638:
-	xbmc.log("Play Hunt Channel Videos")
-	streams(name,url,iconimage)
 elif mode==100:
 	xbmc.log("Hunt Channel Shows")
 	more(url)
