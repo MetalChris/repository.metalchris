@@ -8,49 +8,71 @@ import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, pla
 import HTMLParser
 from bs4 import BeautifulSoup
 from urllib import urlopen
-#import lxml.html
-#import socket
+
 
 settings = xbmcaddon.Addon(id="plugin.video.internetarchive")
-artbase = 'special://home/addons/plugin.audio.internetarchive/resources/media/'
-_addon = xbmcaddon.Addon()
-_addon_path = _addon.getAddonInfo('path')
-selfAddon = xbmcaddon.Addon(id='plugin.audio.internetarchive')
+artbase = 'special://home/addons/plugin.video.internetarchive/resources/media/'
+selfAddon = xbmcaddon.Addon(id='plugin.video.internetarchive')
 translation = selfAddon.getLocalizedString
 local_string = xbmcaddon.Addon(id='plugin.video.internetarchive').getLocalizedString
 dsort = settings.getSetting(id="dsort")
 ssort = settings.getSetting(id="ssort")
 download = settings.getSetting(id="download")
-sort = settings.getSetting(id="sort")
 usexbmc = selfAddon.getSetting('watchinxbmc')
-settings = xbmcaddon.Addon(id="plugin.audio.internetarchive")
-addon = xbmcaddon.Addon()
+settings = xbmcaddon.Addon(id="plugin.video.internetarchive")
+addon = xbmcaddon.Addon(id="plugin.video.internetarchive")
 addonname = addon.getAddonInfo('name')
 baseurl = 'https://archive.org/'
 
-plugin = "Internet Archive [Audio]"
+plugin = "Internet Archive [Video]"
 
-defaultimage = 'special://home/addons/plugin.audio.internetarchive/icon.png'
-defaultfanart = 'special://home/addons/plugin.audio.internetarchive/fanart.jpg'
-defaulticon = 'special://home/addons/plugin.audio.internetarchive/icon.png'
+defaultimage = 'special://home/addons/plugin.video.internetarchive/icon.png'
+defaultfanart = 'special://home/addons/plugin.video.internetarchive/fanart.jpg'
+defaulticon = 'special://home/addons/plugin.video.internetarchive/icon.png'
 
-local_string = xbmcaddon.Addon(id='plugin.audio.internetarchive').getLocalizedString
-addon_handle = int(sys.argv[1])
-pluginhandle = int(sys.argv[1])
-#confluence_views = [500,501,502,503,504,508,515]
-#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[1])+")")
+#addon_handle = int(sys.argv[1])
+#int(sys.argv[1])
+confluence_views = [551,500,501,502,503,504,508,515]
+#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[4])+")")
 
-
+#60
 def ia_categories():
-        data = urllib2.urlopen(baseurl).read() 
+        if dsort == '0':
+            default = '-date'
+        if dsort =='1':
+            default = 'titleSorter'
+        if dsort =='2':
+            default = '-download'
+        if dsort =='3':
+            default = 'creatorSorter'
+        mode = 62
+        try:data = urllib2.urlopen(baseurl).read()
+        except urllib2.HTTPError , e:
+            print 'Error Type= ' + str(type(e))    #not catch
+            print 'Error Args= ' + str(e.args)
+            line1 = 'The addon ' + str(e.args).partition("'")[-1].rpartition("'")[0] + '.'
+            dialog = xbmcgui.Dialog()
+            xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
+            return
+        except urllib2.URLError , e:
+            print 'Error Type= ' + str(type(e))
+            print 'Error Args= ' + str(e.args)
+            line1 = 'The addon ' + str(e.args).partition("'")[-1].rpartition("'")[0] + '.'
+            dialog = xbmcgui.Dialog()
+            xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
+            return
         add_directory2('Search', baseurl, 65, artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
         soup = BeautifulSoup(data,'html.parser')
-        for item in soup.find_all(attrs={'class': 'row toprow fivecolumns audio'}):
+        for item in soup.find_all(attrs={'class': 'row toprow fivecolumns movies'}):
             for link in item.find_all('a'):
                 l = link.get('href')
                 title = link.get('title')
+                print 'Title= ' + str(title)
                 if title == 'TV NSA Clip Library':
                     mode = 64
+                    url = l + '&page=1'
+                if title == 'Occupy Wall Street':
+                    mode = 62
                     url = l + '&page=1'
                 else:
                     url = l
@@ -61,29 +83,44 @@ def ia_categories():
                 if title not in link:
                     link = str(link)
                     title = re.compile('>(.+?)</a>').findall(link)[0]
+                    print 'Title= ' + str(title)
                     if 'img' in title:
                         continue
                     if '</span> ' in title:
                         title = re.compile('</span> (.+?)</').findall(link)[0]
-                    if title == 'All Audio':
+                    if 'Understanding' in title:
+                        add_directory2(title,'https://archive.org/details/911', 70,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+                        continue
+                    if title == 'All Video':
                         mode = 61
+                    if title == 'TV News':
+                        mode = 62
+                        url = 'https://archive.org/details/tvnews'
                     else:
                         mode = 62
-                url = url + '?&sort=-date&page=1'
-                print 'IA URL= ' + str(url)
+                url = url + '?&sort='+default+'&page=1'
+                #print 'IA URL= ' + str(url)
                 add_directory2(title,url, mode,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
-        xbmcplugin.setContent(pluginhandle, 'episodes')
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 
-
+#61
 def ia_sub_cat(url):
-        url = url.replace('?&sort=-date&page=1','')
-        print 'IA Audio Sub_Cat URL= ' + str(url)
-        data = urllib2.urlopen(url).read() 
+        if dsort == '0':
+            default = '-date'
+        if dsort =='1':
+            default = 'titleSorter'
+        if dsort =='2':
+            default = '-download'
+        if dsort =='3':
+            default = 'creatorSorter'
+        url = url.split("?")[0]
+        print 'ia sub cat url= ' + str(url)
+        data = urllib2.urlopen(url).read()
         soup = BeautifulSoup(data,'html.parser')
         for item in soup.find_all(attrs={'class': 'collection-title'}):
             for link in item.find_all('a'):
                 l = link.get('href')
-                url = 'https://archive.org' + l + '?&sort=-date&page=1'
+                url = 'https://archive.org' + l + '?&sort='+default+'&page=1'
                 if len(url) <25:
                     continue
                 link = str(link)
@@ -94,184 +131,93 @@ def ia_sub_cat(url):
                     mode = 61
                 else:
                     mode = 62
+
                 add_directory2(title,url, mode, artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
-        xbmcplugin.setContent(pluginhandle, 'episodes')
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 
-
-def ia_sub2_audio(url):
+#62
+def ia_sub2_video(url):
+        if dsort == '0':
+            default = '-date'
+        if dsort =='1':
+            default = 'titleSorter'
+        if dsort =='2':
+            default = '-download'
+        if dsort =='3':
+            default = 'creatorSorter'
         page = (url)[-1]
         print 'page= ' + str(page)
-        thisurl = url[:-7]
+        thisurl = url.split("?")[0]
         print 'thisurl= ' + str(thisurl)
         req = urllib2.Request(url)
-        try: data = urllib2.urlopen(req, timeout = 5) 
+        try: data = urllib2.urlopen(req, timeout = 10)
         except urllib2.HTTPError , e:
             print 'Error Type= ' + str(type(e))    #not catch
             print 'Error Args= ' + str(e.args)
             line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
             dialog = xbmcgui.Dialog()
-            xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again') 
-            return 
+            xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
+            return
         except urllib2.URLError , e:
             print 'Error Type= ' + str(type(e))
             print 'Error Args= ' + str(e.args)
             line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
             dialog = xbmcgui.Dialog()
             xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
-            return 
-        #except socket.timeout , e:
-            #print 'Error Type= ' + str(type(e))
-            #print 'Error Args= ' + str(e.args)
-            #line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
-            #dialog = xbmcgui.Dialog()
-            #xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
-            #return 
-        #except ssl.SSLError , e:
+            return
+        #except SSLError , e:
             #print 'Error Type= ' + str(type(e))    #not catch
             #print 'Error Args= ' + str(e.args)
             #line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
             #dialog = xbmcgui.Dialog()
             #xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
-            #return 
+            #return
         soup = BeautifulSoup(data,'html.parser')
-        for item in soup.find_all(attrs={'class': 'item-ttl C C2'}):
-            for link in item.find_all('a'):
-                l = link.get('href')
-                purl = 'https://archive.org' + l
-                title = link.get('title').encode('utf8')
-                html = get_html(purl)
-                lineage = str(re.compile('Lineage</span> <span class="value">(.+?)</span>').findall(html))
-                lineage = lineage.replace('&gt;','>').replace('&amp;','&')
-                if lineage == '[]':
-                    title = title
-                else:
-                    title = title + ' - ' + 'Lineage: ' + lineage[2:-2]
-                url = purl
-                add_directory2(title,url, 63, artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
-            xbmcplugin.setContent(pluginhandle, 'episodes')
-        page = str(int(page) + 1)
-        thisurl = thisurl.replace('?&sort=-date','')
-        url = thisurl + '?&sort=-date&page=' + page
-        print 'IA Next Page URL= ' + str(url)
-        add_directory2('Next Page', url, 62,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
-        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
-
-def ia_audio_files(url):
-            html = get_html(url)
-            tracks = re.compile('"title":"(.+?)",').findall(html)
-            songs = re.compile('title(.+?)}]').findall(html)
-            #c = len(tracks)
-            i = 0
-            for track in tracks:
-                title = str(track.split('.')[-1])
-                #if i < c:
-                try:song = re.compile('"file":"(.+?)mp3').findall(html)[i]
-                except IndexError:
-                    pass
-                duration = re.compile('duration(.+?)sources').findall(html)[i]
-                duration = duration[2:-2]
-                i = i + 1
-                tracknumber = int(i)
-                url = 'https://archive.org' + str(song) + 'mp3'
-                print 'URL= ' + str(url)
-                infoLabels = {'title':title, 'duration':duration, 'tracknumber':tracknumber}
-                li = xbmcgui.ListItem(title, iconImage=artbase + 'ia.png', thumbnailImage=artbase + 'ia.png')
-                li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
-                #li.setProperty(Playcount)
-                li.setInfo(type = 'music', infoLabels = infoLabels)
-                commands = []
-                commands.append
-                    #li.addContextMenuItems([('Download File', 'XBMC.RunScript(special://home/addons/plugin.video.internetarchive/downloader.py)',)])
-                li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url))])
-                xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=70)
-                xbmcplugin.setContent(addon_handle, 'episodes')
-            xbmcplugin.endOfDirectory(addon_handle)
-
-
-def ia_nsa(url):            
-        data = get_html(url)
-        page = (url)[-1]
-        match = re.compile('<video src="(.+?)"').findall(data)
-        for link in match:
-            url = 'https://archive.org' + link
-            title = url
-
-            li = xbmcgui.ListItem(title, iconImage=artbase + 'ia.png', thumbnailImage=artbase + 'ia.png')
-            li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
-            xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=70)
-        page = str(int(page) + 1)
-        url = 'https://archive.org/details/nsa?page=' + page
-        print 'IA NSA Next Page URL= ' + str(url)
-        add_directory2('Next Page', url, 64,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
-        xbmcplugin.endOfDirectory(addon_handle)
-
-
-def ia_search():
-        if sort == '0':
-            sval = '-publicdate'
-            sname = 'Date'
-        elif sort == '1':
-            sval = 'titleSorter'
-            sname = 'Title'
-        elif sort == '2':
-            sval = '-downloads'
-            sname = 'Views'
-        else:
-            sval = 'creatorSorter'
-            sname = 'Creator'
-            print 'sval= ' + str(sval)
-        keyb = xbmc.Keyboard('', 'Search and Sort By ' + sname)
-        keyb.doModal()
-        if (keyb.isConfirmed()):
-            search = keyb.getText()
-            print 'search= ' + search
-
-            url = 'https://archive.org/search.php?query=' + search + '&and[]=mediatype%3A%22audio%22&sort=' + sval + '&page=1'
-            #url = 'https://archive.org/search.php?query=' + search + '&and[]=mediatype%3A%22audio%22&page=1'
-            ia_sub2_audio(url)
-        else:
-            ia_categories()
-
-
-def ia_search_audio(url):
-        page = (url)[-1]
-        print 'page= ' + str(page)
-        thisurl = url[:-7]
-        print 'thisurl= ' + str(thisurl)
-        data = urllib2.urlopen(url).read() 
-        soup = BeautifulSoup(data,'html.parser')
-        for item in soup.find_all(attrs={'class': 'item-ttl C C2'}):
+        #print 'SOUP= ' + str(soup)
+        for item in soup.find_all(attrs={'class': 'item-ttl'}):
             for link in item.find_all('a'):
                 l = link.get('href')
                 purl = 'https://archive.org' + l
                 title = link.get('title')
+                if title == '':
+                   continue
                 html = get_html(purl)
-                match=re.compile('<meta property="og:video" content="(.+?)"/>').findall(html)
+                match = re.compile('<meta property="og:video" content="(.+?)"/>').findall(html)
+                plot = str(re.compile('<meta property="og:description" content="(.+?)"/>').findall(html))[2:-2]
+                plot = plot.replace('\\xc2\\xa0',' ').replace('\\xe2\\x80\\x99','\'').replace('\\xe2\\x80\\x98','')
+                image = str(re.compile('<meta property="og:image" content="(.+?)"/>').findall(html))[2:-2]
+                infoLabels = {'title':title, 'plot':plot}
                 clipstream = re.compile('TV.clipstream_clips  = (.+?);').findall(html)
                 if str(clipstream) == '[]':
                     url = str(match)[2:-2]
                     if len(url) <25:
                         continue
-                    li = xbmcgui.ListItem(title, iconImage= artbase + 'ia.png', thumbnailImage= artbase + 'ia.png')
+                    li = xbmcgui.ListItem(title, iconImage = image, thumbnailImage = image)
                     li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
-                    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=70)
+                    li.setProperty('mimetype', 'video/mp4')
+                    li.setInfo( type='Video', infoLabels=infoLabels )
+                    commands = []
+                    commands.append
+                    #li.addContextMenuItems([('Download File', 'XBMC.RunScript(special://home/addons/plugin.video.internetarchive/downloader.py)',)])
+                    li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[1], url))])
+                    xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url=url, listitem=li, totalItems=76)
                 else:
                     url = str(clipstream)[3:-3]
                     url = url.replace('"','')
-                    try: add_directory2(title,url,63,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+                    try: add_directory2(title,url,63,  artbase + 'internetarchive.jpg', image ,plot=plot)
                     except KeyError:
                         continue
         page = str(int(page) + 1)
-        thisurl = thisurl.replace('?&sort=-date','')
-        url = thisurl + '&page=' + page
+        thisurl = thisurl.replace('?&sort='+default+'','')
+        url = thisurl + '?&sort='+default+'&page=' + page
         print 'IA Next Page URL= ' + str(url)
-        add_directory2('Next Page', url, 66,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
-
-        xbmcplugin.endOfDirectory(addon_handle)
-
+        add_directory2('Next Page', url, 62,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[7])+")")
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+        xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
 
 #80
-def downloader(url):    
+def downloader(url):
         path = addon.getSetting('download')
         if path == "":
             xbmc.executebuiltin("XBMC.Notification(%s,%s,10000,%s)"
@@ -305,7 +251,7 @@ def downloader(url):
 	    if not buffer:
 	        break
 	    file_size_dl += float(len(buffer))
-            file_size_dlMB = float(file_size_dl/(1024*1024)) 
+            file_size_dlMB = float(file_size_dl/(1024*1024))
 	    f.write(buffer)
 	    status = "%.2f  [%3.2f%%]" % (file_size_dlMB, file_size_dl * 100. / file_size)
  	    status = status + chr(8)*(len(status)+1)
@@ -318,12 +264,235 @@ def downloader(url):
         print 'Download Completed'
 
 
+def sanitize(data):
+    output = ''
+    for i in data:
+        for current in i:
+            if ((current >= '\x20') and (current <= '\xD7FF')) or ((current >= '\xE000') and (current <= '\xFFFD')) or ((current >= '\x10000') and (current <= '\x10FFFF')):
+               output = output + current
+    return output
+
+
+def striphtml(data):
+    p = re.compile(r'<.*?>')
+    return p.sub('', data)
+
+#>>> striphtml('<a href="foo.com" class="bar">I Want This <b>text!</b></a>')
+#'I Want This text!'
+
+#73
+def ia_911_streams(url):
+        html = get_html(url)
+        images = re.compile('src="(.+?)"/>').findall(html)
+        i = 0
+        for image in images:
+            if i % 2==0:
+                seconds = ':00'
+            else:
+                seconds = ':30'
+            urlkey = image.rsplit('/',1)[-1].rpartition("_")[0]
+            network = str(urlkey[:3])
+            start = str(image.rpartition("_")[-1])[2:-4]
+            end = str(int(start) + 30)
+            url = 'https://ia802203.us.archive.org/28/items/' + urlkey + '/' + urlkey + '.mp4?start=' + start + '&end=' + end + '&ignore=x.mp4'
+            image = 'https:' + str(image)
+            title = network + ' - ' + re.compile('title="(.+?)"').findall(html)[i].replace('am', seconds + 'am').replace('pm', seconds + 'pm')
+            i = i + 1
+            li = xbmcgui.ListItem(title, iconImage =  image, thumbnailImage =  image)
+            li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
+            #li.setInfo( type='Video', infoLabels=infoLabels )
+            xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url=url, listitem=li, totalItems=15)
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[7])+")")
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+        xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
+
+#70
+def ia_u911(url):
+        html = get_html(url)
+        days = re.compile('<span class="day">(.+?)</span><br />\\n    <a href="(.+?)">(.+?)</a>').findall(html)
+        for day,url,date in days[1:]:
+            title = day + ', ' + date
+            url = 'https://archive.org' + str(url)
+            add_directory2(title,url,71,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+        u911 = re.compile('<td class="c1">(.+?)</tr>').findall(html)
+        i = 0
+        for title in u911:
+            title = striphtml(title)
+            title = "[" + "m ] ".join(title.split("m", 1))
+            url = re.compile('"file":"(.+?)"').findall(html)[i]
+            url = 'https://archive.org' + url.replace('\\','')
+            i = i + 1
+            li = xbmcgui.ListItem(title, iconImage =  artbase + 'internetarchive.jpg', thumbnailImage =  artbase + 'internetarchive.jpg')
+            li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
+            #li.setInfo( type='Video', infoLabels=infoLabels )
+            xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url=url, listitem=li, totalItems=15)
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[7])+")")
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+        xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
+
+#71
+def ia_u911_day(url):
+        html = get_html(url)
+        datecode = url.rsplit('/', 1)[-1]
+        soup = BeautifulSoup(html,'html.parser')
+        nets = soup.find_all(attrs={'id': 'gridL'})
+        location = re.compile('<i>(.+?)</i>').findall(str(nets))
+        i = 0
+        networks = re.compile('url\\((.+?)\\)').findall(html)
+        for network in networks:
+            title = network.partition("_")[-1].rpartition(".jpg")[0] + ' - ' + str(location[i])
+            image = 'https://archive.org' + str(network)
+
+            i = i + 1
+            add_directory2(title,url,72,  artbase + 'internetarchive.jpg', image,plot='')
+            #li.setInfo( type='Video', infoLabels=infoLabels )
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[7])+")")
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+        xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
+
+#72
+def ia_u911_day_net(name,url):
+        html = get_html(url)
+        datecode = url.rsplit('/', 1)[-1]
+        divid = name.split('-',1)[0].strip() + '_' + datecode
+        print 'divid= ' + str(divid)
+        soup = BeautifulSoup(html,'html.parser')
+        for ndiv in soup.find_all(attrs={'id': divid}):
+            for link in ndiv.find_all('a'):
+                l = link.get('href')
+                url = 'https://archive.org' + l + '&hi1=0&raw=1'
+                title = link.get('title')
+                add_directory2(title,url,73,  artbase + 'internetarchive.jpg', artbase + 'internetarchive.jpg',plot='')
+                #li.setInfo( type='Video', infoLabels=infoLabels )
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[7])+")")
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+        xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
+
+#63
+def ia_clipstream(url):
+        data = url.split(',')
+        for url in data:
+            title = url
+            li = xbmcgui.ListItem(title, iconImage=artbase + 'ia.png', thumbnailImage=artbase + 'ia.png')
+            li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
+            xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url=url, listitem=li, totalItems=70)
+        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+#64
+def ia_nsa(url):
+        data = get_html(url)
+        page = (url)[-1]
+        match = re.compile('<video src="(.+?)"').findall(data)
+        for link in match:
+            url = 'https://archive.org' + link
+            title = url
+
+            li = xbmcgui.ListItem(title, iconImage=artbase + 'ia.png', thumbnailImage=artbase + 'ia.png')
+            li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
+            xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url=url, listitem=li, totalItems=70)
+        page = str(int(page) + 1)
+        url = 'https://archive.org/details/nsa?page=' + page
+        print 'IA NSA Next Page URL= ' + str(url)
+        add_directory2('Next Page', url, 64,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[7])+")")
+        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+#65
+def ia_search():
+        if ssort == '0':
+            sval = '-publicdate'
+            sname = 'Date'
+        elif ssort == '1':
+            sval = 'titleSorter'
+            sname = 'Title'
+        elif ssort == '2':
+            sval = '-downloads'
+            sname = 'Views'
+        else:
+            sval = 'creatorSorter'
+            sname = 'Creator'
+            print 'sval= ' + str(sval)
+        keyb = xbmc.Keyboard('', 'Search and Sort By ' + sname)
+        keyb.doModal()
+        if (keyb.isConfirmed()):
+            search = keyb.getText()
+            print 'search= ' + search
+
+            url = 'https://archive.org/search.php?query=' + search + '&and[]=mediatype%3A%22movies%22&sort=' + sval + '&page=1'
+            #url = 'https://archive.org/search.php?query=' + search + '&and[]=mediatype%3A%22movies%22&page=1'
+            ia_search_video(url)
+        else:
+            ia_categories()
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[7])+")")
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+
+#66
+def ia_search_video(url):
+        if ssort == '0':
+            sval = '-publicdate'
+            sname = 'Date'
+        elif ssort == '1':
+            sval = 'titleSorter'
+            sname = 'Title'
+        elif ssort == '2':
+            sval = '-downloads'
+            sname = 'Views'
+        else:
+            sval = 'creatorSorter'
+            sname = 'Creator'
+            print 'sval= ' + str(sval)
+        page = (url)[-1]
+        print 'page= ' + str(page)
+        thisurl = url[:-7]
+        print 'thisurl= ' + str(thisurl)
+        data = urllib2.urlopen(url).read()
+        soup = BeautifulSoup(data,'html.parser')
+        for item in soup.find_all(attrs={'class': 'item-ttl C C2'}):
+            for link in item.find_all('a'):
+                l = link.get('href')
+                purl = 'https://archive.org' + l
+                title = link.get('title')
+                html = get_html(purl)
+                match=re.compile('<meta property="og:video" content="(.+?)"/>').findall(html)
+                plot = str(re.compile('<meta property="og:description" content="(.+?)"/>').findall(html))[2:-2]
+                plot = plot.replace('\\xc2\\xa0',' ').replace('\\xe2\\x80\\x99','\'').replace('\\xe2\\x80\\x98','')
+                image = str(re.compile('<meta property="og:image" content="(.+?)"/>').findall(html))[2:-2]
+                infoLabels = {'title':title, 'plot':plot}
+                clipstream = re.compile('TV.clipstream_clips  = (.+?);').findall(html)
+                if str(clipstream) == '[]':
+                    url = str(match)[2:-2]
+                    if len(url) <25:
+                        continue
+                    li = xbmcgui.ListItem(title, iconImage = image, thumbnailImage = image)
+                    li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
+                    li.setProperty('mimetype', 'video/mp4')
+                    li.setInfo( type='Video', infoLabels=infoLabels )
+                    commands = []
+                    commands.append
+                    li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url))])
+                    xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url=url, listitem=li, totalItems=70)
+                else:
+                    url = str(clipstream)[3:-3]
+                    url = url.replace('"','')
+                    try: add_directory2(title,url,63,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+                    except KeyError:
+                        continue
+        page = str(int(page) + 1)
+        thisurl = thisurl.replace('?&sort='+sval+'','')
+        url = thisurl + '&page=' + page
+        print 'IA Next Page URL= ' + str(url)
+        add_directory2('Next Page', url, 66,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[7])+")")
+        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
 def add_directory2(name,url,mode,fanart,thumbnail,plot):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-        liz.setInfo( type="music", infoLabels={ "Title": name,
-                                                } )
+        liz.setInfo( type="Video", infoLabels={ "Title": name,
+                                                "plot": plot} )
         if not fanart:
             fanart=''
         liz.setProperty('fanart_image',fanart)
@@ -361,7 +530,7 @@ def get_params():
 
     return param
 
-def addListItem(label, image, url, isFolder, infoLabels = True, fanart = False, duration = False):
+def addListItem(label, image, url, isFolder=False, infoLabels = True, fanart = False, duration = False):
 	listitem = xbmcgui.ListItem(label = label, iconImage = image, thumbnailImage = image)
 	if not isFolder:
 		if settings.getSetting('download') == '' or settings.getSetting('download') == 'false':
@@ -369,13 +538,12 @@ def addListItem(label, image, url, isFolder, infoLabels = True, fanart = False, 
 	if fanart:
 		listitem.setProperty('fanart_image', fanart)
 	if infoLabels:
-                listitem.setInfo( type="music", infoLabels={ "Title": name,
-                                                } )
+		listitem.setInfo(type = 'video', infoLabels = infoLabels)
 		if duration:
 			if hasattr(listitem, 'addStreamInfo'):
 				listitem.addStreamInfo('video', { 'duration': int(duration) })
 			else:
-				listitem.setInfo(type = 'music', infoLabels = { 'duration': str(datetime.timedelta(milliseconds=int(duration)*1000)) } )
+				listitem.setInfo(type = 'video', infoLabels = { 'duration': str(datetime.timedelta(milliseconds=int(duration)*1000)) } )
 	ok = xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url = u, listitem = listitem, isFolder = isFolder)
 	return ok
 
@@ -383,8 +551,7 @@ def addLink(name, url, mode, iconimage, fanart=False, infoLabels=True):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-    liz.setInfo( type="music", infoLabels={ "Title": name,
-                                                } )
+    liz.setInfo(type="Video", infoLabels={"Title": name})
     liz.setProperty('IsPlayable', 'true')
     if not fanart:
         fanart=defaultfanart
@@ -397,7 +564,7 @@ def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=Tru
 
     listitem = xbmcgui.ListItem( title, iconImage="DefaultVideo.png", thumbnailImage=thumbnail )
     listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot } )
-    
+
     if url.startswith("plugin://"):
         itemurl = url
         listitem.setProperty('IsPlayable', 'true')
@@ -411,8 +578,7 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo( type="music", infoLabels={ "Title": name,
-                                                } )
+    liz.setInfo(type="Video", infoLabels={"Title": name})
     liz.setProperty('IsPlayable', 'true')
     if not fanart:
         fanart=defaultfanart
@@ -421,12 +587,11 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     return ok
 
 
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
+def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=True):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        liz.setInfo( type="music", infoLabels={ "Title": name,
-                                                } )
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
         if not fanart:
             fanart=defaultfanart
         liz.setProperty('fanart_image',fanart)
@@ -448,7 +613,7 @@ def unescape(s):
     p.feed(s)
     return p.save_end()
 
-	
+
 
 
 params = get_params()
@@ -478,25 +643,25 @@ if mode == None or url == None or len(url) < 1:
     print "Generate Main Menu"
     ia_categories()
 elif mode == 1:
-    print "Indexing Audio"
+    print "Indexing Videos"
     index(url)
 elif mode == 4:
-    print "Play Audio"
+    print "Play Video"
 elif mode == 6:
     print "Get Episodes"
     get_episodes(url)
 elif mode == 60:
-    print "Get IA Audio Categories"
+    print "Get IA Video Categories"
     ia_video(url)
 elif mode == 61:
-    print "Get IA Audio Sub Categories"
+    print "Get IA Video Sub Categories"
     ia_sub_cat(url)
 elif mode == 62:
-    print "Get IA Audio Sub2 Categories"
-    ia_sub2_audio(url)
+    print "Get IA Video Sub2 Categories"
+    ia_sub2_video(url)
 elif mode == 63:
-    print "Get Audio Files"
-    ia_audio_files(url)
+    print "Get IA Clipstream"
+    ia_clipstream(url)
 elif mode == 64:
     print "Get IA NSA"
     ia_nsa(url)
@@ -504,11 +669,22 @@ elif mode == 65:
     print "IA Search"
     ia_search()
 elif mode == 66:
-    print "IA Search Audio"
-    ia_search_audio(url)
+    print "IA Search Video"
+    ia_search_video(url)
+elif mode == 70:
+    print "IA Understanding 9/11"
+    ia_u911(url)
+elif mode == 71:
+    print "IA 9/11 Day"
+    ia_u911_day(url)
+elif mode == 72:
+    print "IA 9/11 Day Net"
+    ia_u911_day_net(name,url)
+elif mode == 73:
+   print "IA 911 Streams"
+   ia_911_streams(url)
 elif mode == 80:
    print "IA Download File"
    downloader(url)
-
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
