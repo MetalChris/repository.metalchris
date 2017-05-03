@@ -359,24 +359,6 @@ def get_params():
 
     return param
 
-def addListItem(label, image, url, isFolder, infoLabels = True, fanart = False, duration = False):
-	listitem = xbmcgui.ListItem(label = label, iconImage = image, thumbnailImage = image)
-	if not isFolder:
-		if settings.getSetting('download') == '' or settings.getSetting('download') == 'false':
-			listitem.setProperty('IsPlayable', 'true')
-	if fanart:
-		listitem.setProperty('fanart_image', fanart)
-	if infoLabels:
-                listitem.setInfo( type="music", infoLabels={ "Title": name,
-                                                } )
-		if duration:
-			if hasattr(listitem, 'addStreamInfo'):
-				listitem.addStreamInfo('video', { 'duration': int(duration) })
-			else:
-				listitem.setInfo(type = 'music', infoLabels = { 'duration': str(datetime.timedelta(milliseconds=int(duration)*1000)) } )
-	ok = xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url = u, listitem = listitem, isFolder = isFolder)
-	return ok
-
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
     ok = True
