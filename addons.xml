@@ -1036,7 +1036,7 @@ The sanctuary houses the most diverse population of exotic cats in the world, wi
     </extension>
 </addon>
 
-<addon id="plugin.video.reuters" name="Reuters TV" version="0.0.1" provider-name="MetalChris">
+<addon id="plugin.video.reuters" name="Reuters TV" version="0.0.2" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>

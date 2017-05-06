@@ -42,7 +42,7 @@ plugin = 'Reuters TV'
 def CATEGORIES():
 	addDir('Live Stream', baseurl + '/live', 20, defaultimage)
 	addDir('Upcoming', baseurl + '/live', 25, defaultimage)
-	addDir('Top Stories', baseurl + edition + '&time=' + LENGTH, 10, defaultimage)
+	addDir('Top Stories', 'http://www.reuters.tv/data/json/' + edition + '&time=' + LENGTH, 10, defaultimage)
 	addDir('Categories', baseurl + '/categories' + edition, 30, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -53,15 +53,17 @@ def TOP(name,url):
 	f = opener.open(url)
 	html = f.read()
 	top_urls = re.compile('HLS","uri":"(.+?)"').findall(html)
-	## Remove Ads
+	## Attempt to Remove Ads
 	for url in top_urls:
-		xbmc.log('URL: ' + str(url))
+		#xbmc.log('URL: ' + str(url))
 		plist = str(re.findall(r'assets/(.*?)/web', url))[2:-2].split(',')
 		for item in plist[1:-1]:
 			if item[:2] == '14':
 				plist.remove(item)
+			if item[:1] == 'm':
+				plist.remove(item)
 		playlist = str(plist)[1:-1].replace("'","").replace(' ','')
-		xbmc.log('PLAYLIST: ' + str(playlist))
+		#xbmc.log('PLAYLIST: ' + str(playlist))
 		if QUALITY == '2':
 			res = '1920x1080'
 		elif QUALITY == '1':
@@ -76,7 +78,7 @@ def TOP(name,url):
 #20
 def LIVE(name,url):
 	test = get_html('http://www.reuters.tv/liveNowIndicator')
-	xbmc.log('TEST: ' + str(test))
+	xbmc.log('LIVE TEST: ' + str(test))
 	if 'false' in test:
 		xbmc.log('NOT LIVE')
 		line1 = "No Live Content Currently Available"
@@ -86,7 +88,7 @@ def LIVE(name,url):
 	response = br.open(url)
 	html = response.get_data()
 	live_urls = re.compile('HLS","uri":"(.+?)"').findall(html)
-	xbmc.log('LIVE_URLS: ' + str(len(live_urls)))
+	#xbmc.log('LIVE_URLS: ' + str(len(live_urls)))
 	titles = re.compile(',"title":"(.+?)"').findall(html)
 	for url, title in zip(live_urls, titles):
 		if 'churro' in url:
@@ -113,7 +115,7 @@ def UPCOMING(name,url):
 		live_time = item.find('span',{'class':'live-time'}).text
 		if 'ago' in live_time:
 			continue
-		title = live_time + ': ' + item.find('h2').text
+		title = live_time + ': ' + item.find('h2').text.encode('ascii','ignore')
 		if 'LIVE' in title:
 			mode = 20
 			url = baseurl + '/live'
@@ -123,9 +125,9 @@ def UPCOMING(name,url):
 		image = defaultimage #'http:' + item.find('img')['src']
 		addDir2(title, url, mode, image)
 	jsob = re.compile('RTVJson = (.+?);\\n</script>').findall(str(html));i=0
-	xbmc.log('JSOB: ' + str(len(jsob[-1])))
+	#xbmc.log('JSOB: ' + str(len(jsob[-1])))
 	jdata = json.loads(jsob[-1])
-	xbmc.log('JDATA: ' + str(len(jdata)))
+	#xbmc.log('JDATA: ' + str(len(jdata)))
 	#if 'LIVE_NOW' in jsob[-1]:
 		#xbmc.log('LIVE_NOW: YES')
 	#else:
