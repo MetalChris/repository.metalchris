@@ -48,8 +48,8 @@ def bcr_videos(url):
 	jdata = json.loads(json_data)
 	for item in jdata:
 		title = (jdata[i]['clip']['name']).encode('utf-8')
-		#url = 'https://player.vimeo.com/video/' + (jdata[i]['clip']['link']).split('/')[-1]
-		url = 'https://vimeo.com/' + (jdata[i]['clip']['link']).split('/')[-1]
+		url = 'https://player.vimeo.com/video/' + (jdata[i]['clip']['link']).split('/')[-1]
+		#url = 'https://vimeo.com/' + (jdata[i]['clip']['link']).split('/')[-1]
 		image = (jdata[i]['clip']['pictures']['sizes'][0]['link'])#[:-6]
 		duration = (jdata[i]['clip']['duration'])
 		description = ''
@@ -66,10 +66,11 @@ def bcr_videos(url):
 #638
 def streams(url):
 	html = get_html(url)
-	url = re.compile('"GET","(.+?)"').findall(str(html))[-1]
-	jresponse = urllib2.urlopen(url)
-	jdata = json.load(jresponse)
-	stream = (jdata['request']['files']['progressive'][0]['url'])
+	stream = re.compile('"url":"(.+?)",').findall(str(html))[4]
+	xbmc.log('STREAM: ' + str(stream))
+	#jresponse = urllib2.urlopen(url)
+	#jdata = json.load(jresponse)
+	#stream = (jdata['request']['files']['progressive'][0]['url'])
 	play(stream)
 
 
