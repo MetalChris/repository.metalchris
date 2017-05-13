@@ -4,12 +4,9 @@
 # Written by MetalChris
 # Released under GPL(v2 or Later)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, os, platform, re, xbmcplugin, sys
 import requests
-import urlparse
-import HTMLParser
 from bs4 import BeautifulSoup
-from urllib import urlopen
 import html5lib
 
 
@@ -48,8 +45,6 @@ confluence_views = [500,501,502,503,504,508,511,512,513,515]
 #20
 def genres():
 	add_directory2('Search',baseurl,50,defaultfanart,defaultimage,plot='')
-	if os.path.exists(favorites) == True:
-		addDir('Favorites','url',4,os.path.join(home, 'resources', defaultimage),defaultfanart,'','','','')
 	response = get_html(baseurl)
 	soup = BeautifulSoup(response,'html5lib').find_all('a',{'style':'margin: 4px;'})
 	for item in soup:
@@ -66,10 +61,9 @@ def stations(name,url):
 	page = get_html(url)
 	#response = br.open(url)
 	#page = response.get_data()
-	try: next = baseurl + str(re.compile('next"><a href="(.+?)"').findall(page)[-1])
+	try: next_page = baseurl + str(re.compile('next"><a href="(.+?)"').findall(page)[-1])
 	except IndexError:
-		next = ''
-		pass
+		next_page = ''
 	soup = BeautifulSoup(page,'html5lib').find_all('small',{'class':'hidden-xs'})
 	#print soup[1]
 	#stations = [tuple(soup[i:i+3]) for i in range(0, len(soup), 3)]
@@ -85,8 +79,8 @@ def stations(name,url):
 		#title = title + ' - ' + track
 		mount = baseurl + str(re.compile('open\\(\'(.+?)\',').findall(str(station))[-1]).split('&')[0]
 		add_directory(title,mount,40,defaultfanart,defaultimage,plot='')
-	if len(next) > 1:
-		add_directory2('Next Page',next,30,defaultfanart,defaultimage,plot='')
+	if len(next_page) > 1:
+		add_directory2('Next Page',next_page,30,defaultfanart,defaultimage,plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
