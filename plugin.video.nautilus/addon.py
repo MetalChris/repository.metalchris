@@ -7,7 +7,6 @@
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
 import html5lib
-import simplejson as json
 
 
 settings = xbmcaddon.Addon(id="plugin.video.nautilus")
@@ -59,12 +58,8 @@ def INDEX(name,url):
 		sys.exit()
 	for item in soup:
 		url = item.get('src')
-		urlkey = re.compile('s=(.+?)&').findall(url)[-1]
-		jsonurl = 'http://player.piksel.com/ws/get_live_series_events/s/' + urlkey + '/api/62c22d1d-269b-11e3-b5cd-005056865f49/apiv/4/mode/json'
-		jresponse = urllib2.urlopen(jsonurl)
-		jdata = json.load(jresponse)
-		uuid = str(jdata['response']['getLiveSeriesEventsResponse']['liveEvents'])[3:11]
-		streamurl = (jdata['response']['getLiveSeriesEventsResponse']['liveEvents'][uuid]['streamPackages'][0]['m3u8'])
+		urlkey = (url.rpartition('/')[-1])[:11]
+		streamurl = 'plugin://plugin.video.youtube/play/?video_id=' + urlkey
 		listitem = xbmcgui.ListItem('Nautilus Live ' + name, thumbnailImage = defaultimage)
 		xbmc.Player().play( streamurl, listitem )
 		sys.exit()
@@ -92,14 +87,15 @@ def get_photos(name,url):
 			title = remove_crap(striphtml(str(item.find('img')['alt'])))
 		else:
 			title = remove_crap(name)
-		image = baseurl + item.find('img')['src']
-		url = unicode(image.replace('photo_thumbnail','photo_display_large'))
+		image = item.find('img')['src']
+		url = unicode(image.replace('_thumb','_display'))
 		url = ((url.split('itok'))[0])[:-1]
+		xbmc.log('Image URL: ' + str(url))
 		liz=xbmcgui.ListItem(unicode(title), iconImage=unicode(image),thumbnailImage=unicode(image))
 		liz.setInfo( type="Image", infoLabels={ "Title": name })
 		#commands = []
 		#commands.append
-		#liz.addContextMenuItems([('Download Image', 'XBMC.RunPlugin(%s?mode=80&url=%s&name=%s)' % (sys.argv[0], url, title))])
+		liz.addContextMenuItems([('Download Image', 'XBMC.RunPlugin(%s?mode=80&url=%s&name=%s)' % (sys.argv[0], url, title))])
 		#xbmcplugin.setContent(addon_handle, 'picture')
 		xbmcplugin.addDirectoryItem(handle=addon_handle,url=unicode(url),listitem=liz,isFolder=False)
 	#xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
@@ -136,18 +132,18 @@ def downloader(name,url):
 		file_size_dl = 0
 		block_sz = int(bsize)
 		while True:
-			buffer = u.read(block_sz)
-		if not buffer:
-			return
-		file_size_dl += float(len(buffer))
-		file_size_dlMB = float(file_size_dl/(1024*1024))
-		f.write(buffer)
-		status = "%.2f  [%3.2f%%]" % (file_size_dlMB, file_size_dl * 100. / file_size)
-		status = status + chr(8)*(len(status)+1)
-		if dlsn!='false':
-			xbmcgui.Dialog().notification('Nautilus Live Download in Progress', str(status) + ' of ' + ("%.2f" % float(file_sizeMB)) + ' MB', xbmcgui.NOTIFICATION_INFO, 2500)
-		else:
-			pass
+			bfr = u.read(block_sz)
+			if not bfr:
+				break
+			file_size_dl += float(len(bfr))
+			file_size_dlMB = float(file_size_dl/(1024*1024))
+			f.write(bfr)
+			status = "%.2f  [%3.2f%%]" % (file_size_dlMB, file_size_dl * 100. / file_size)
+			status = status + chr(8)*(len(status)+1)
+			if dlsn!='false':
+				xbmcgui.Dialog().notification('Nautilus Live Download in Progress', str(status) + ' of ' + ("%.2f" % float(file_sizeMB)) + ' MB', xbmcgui.NOTIFICATION_INFO, 2500)
+			else:
+				break
 		f.close()
 		xbmcgui.Dialog().notification('Nautilus Live', 'Download Completed.', xbmcgui.NOTIFICATION_INFO, 5000)
 		xbmc.log( 'Download Completed')
@@ -155,7 +151,7 @@ def downloader(name,url):
 
 def remove_crap(data):
 	data = data.replace('&nbsp;',' ').replace('&amp;','&')
-	return data	
+	return data
 
 
 def striphtml(data):
