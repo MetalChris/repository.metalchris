@@ -27,7 +27,6 @@ defaultfanart = 'special://home/addons/plugin.video.cfl/resources/media/FBCL-201
 defaulticon = 'special://home/addons/plugin.video.cfl/icon.png'
 fanart = 'special://home/addons/plugin.video.cfl/media/FBCL-20120713121328.jpg'
 cflfanart = 'special://home/addons/plugin.video.cfl/resources/media/FBCL-20120713121328.jpg'
-#cfl = 'special://home/addons/plugin.video.cfl/resources/media/cfl.png'
 pubId = '4401740954001'
 
 local_string = xbmcaddon.Addon(id='plugin.video.cfl').getLocalizedString
@@ -172,49 +171,6 @@ def get_params():
 
 	return param
 
-def addListItem(label, image, url, isFolder, infoLabels = False, fanart = False, duration = False):
-	listitem = xbmcgui.ListItem(label = label, iconImage = image, thumbnailImage = image)
-	if not isFolder:
-		if settings.getSetting('download') == '' or settings.getSetting('download') == 'false':
-			listitem.setProperty('IsPlayable', 'true')
-	if fanart:
-		listitem.setProperty('fanart_image', fanart)
-	if infoLabels:
-		listitem.setInfo(type = 'video', infoLabels = infoLabels)
-		if duration:
-			if hasattr(listitem, 'addStreamInfo'):
-				listitem.addStreamInfo('video', { 'duration': int(duration) })
-			else:
-				listitem.setInfo(type = 'video', infoLabels = { 'duration': str(datetime.timedelta(milliseconds=int(duration)*1000)) } )
-	ok = xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url = u, listitem = listitem, isFolder = isFolder)
-	return ok
-
-def addLink(name, url, mode, iconimage, fanart=False, infoLabels=True):
-	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
-	ok = True
-	liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-	liz.setInfo(type="Video", infoLabels={"Title": name})
-	liz.setProperty('IsPlayable', 'true')
-	if not fanart:
-		fanart=defaultfanart
-	liz.setProperty('fanart_image',fanart)
-	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz,isFolder=False)
-	return ok
-
-def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=True ):
-	_log("add_item action=["+action+"] title=["+title+"] url=["+url+"] thumbnail=["+thumbnail+"] folder=["+str(folder)+"]")
-
-	listitem = xbmcgui.ListItem( title, iconImage="DefaultVideo.png", thumbnailImage=thumbnail )
-	listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot } )
-
-	if url.startswith("plugin://"):
-		itemurl = url
-		listitem.setProperty('IsPlayable', 'true')
-		xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem)
-	else:
-		itemurl = '%s?action=%s&title=%s&url=%s&thumbnail=%s&plot=%s' % ( sys.argv[ 0 ] , action , urllib.quote_plus( title ) , urllib.quote_plus(url) , urllib.quote_plus( thumbnail ) , urllib.quote_plus( plot ))
-		xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem, isFolder=folder)
-		return ok
 
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
@@ -227,26 +183,6 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 	liz.setProperty('fanart_image',fanart)
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
 	return ok
-
-
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-		liz.setInfo( type="Video", infoLabels={ "Title": name } )
-		if not fanart:
-			fanart=defaultfanart
-		liz.setProperty('fanart_image',fanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
-		return ok
-
-
-def addDirectoryItem2(name, isFolder=True, parameters={}):
-	''' Add a list item to the XBMC UI.'''
-	li = xbmcgui.ListItem(name, iconImage=defaultimage, thumbnailImage=defaultimage)
-	li.setProperty('fanart_image', defaultfanart)
-	url = sys.argv[0] + '?' + urllib.urlencode(parameters)
-	return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=li, isFolder=isFolder)
 
 
 def unescape(s):
