@@ -4,7 +4,7 @@
 # Constructed by MetalChris
 # Released under GPL(v2)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, re, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys
 import HTMLParser
 from bs4 import BeautifulSoup
 from urllib import urlopen
@@ -156,7 +156,7 @@ def ia_sub2_video(url):
 			print 'Error Type= '# + str(type(e))    #not catch
 			print 'Error Args= '# + str(e.args)
 			line1 = 'Time Out'#str(e.args).partition("'")[-1].rpartition("'")[0]
-			dialog = xbmcgui.Dialog()
+			#dialog = xbmcgui.Dialog()
 			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
 			return
 		#if soup.find('div',{'class':'details-ia'}):
@@ -343,7 +343,7 @@ def ia_u911(url):
 #71
 def ia_u911_day(url):
 		html = get_html(url)
-		datecode = url.rsplit('/', 1)[-1]
+		#datecode = url.rsplit('/', 1)[-1]
 		soup = BeautifulSoup(html,'html.parser')
 		nets = soup.find_all(attrs={'id': 'gridL'})
 		location = re.compile('<i>(.+?)</i>').findall(str(nets))
