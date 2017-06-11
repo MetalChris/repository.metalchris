@@ -1,3 +1,6 @@
+Version 0.0.6
+- Broken
+
 Version 0.0.5
 - Add pictures
 

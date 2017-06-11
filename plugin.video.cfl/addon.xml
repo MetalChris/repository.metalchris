@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.cfl" name="CFL Video" version="0.1.3" provider-name="MetalChris">
+<addon id="plugin.video.cfl" name="CFL Video" version="0.1.4" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -20,5 +20,6 @@
     <website></website>
     <email></email>
     <source></source>
+    <broken>Currently unable to scrape the site properly.</broken>
   </extension>
 </addon>

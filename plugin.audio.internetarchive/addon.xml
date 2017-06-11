@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.audio.internetarchive" name="Internet Archive [Audio]" version="3.0.7" provider-name="MetalChris">
+<addon id="plugin.audio.internetarchive" name="Internet Archive [Audio]" version="3.0.8" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.2.0"/>
@@ -8,7 +8,7 @@
     <provides>audio</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Internet Archive</summary>
+    <summary lang="en">Choose from thousands of recordings ranging from alternative news programming, to music, to Old Time Radio shows, to book and poetry readings.</summary>
     <description lang="en">Internet Archive is a non-profit digital library.  Choose from thousands of recordings ranging from alternative news programming, to Grateful Dead concerts, to Old Time Radio shows, to book and poetry readings, to original music uploaded by our users.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
