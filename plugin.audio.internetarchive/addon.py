@@ -128,7 +128,7 @@ def ia_sub2_audio(name,url):
 			print 'Error Type= ' + str(type(e))    #not catch
 			print 'Error Args= ' + str(e.args)
 			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
-			dialog = xbmcgui.Dialog()
+			#dialog = xbmcgui.Dialog()
 			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
 			return
 		xbmc.log('SOUP:' + str(len(soup)))
@@ -179,14 +179,14 @@ def lineage(url):
 		lineage = lineage.replace('&gt;','>').replace('&amp;','&')
 		if len(lineage) < 5:
 			lineage = 'Not Available'
-		ret = xbmcgui.Dialog().ok('Lineage', lineage)
+		xbmcgui.Dialog().ok('Lineage', lineage)
 
 
 #82
 def desc(url):
 		html = get_html(url)
 		desc = str(re.compile('<meta property="og:description" content="(.+?)"/>').findall(html))[2:-2].replace('\\xc2\\xa0',' ').replace('\\xe2\\x80\\x99','\'').replace('\\xe2\\x80\\x98','')
-		ret = xbmcgui.Dialog().ok('Description', desc)
+		xbmcgui.Dialog().ok('Description', desc)
 
 
 def play(name,url):

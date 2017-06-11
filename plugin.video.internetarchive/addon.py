@@ -4,7 +4,7 @@
 # Constructed by MetalChris
 # Released under GPL(v2)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, re, os, platform, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, re, sys
 import HTMLParser
 from bs4 import BeautifulSoup
 from urllib import urlopen
@@ -195,8 +195,8 @@ def get_links(name,url):
 			sys.exit()
 		plot = str(re.compile('<meta property="og:description" content="(.+?)"/>').findall(html))[2:-2]
 		plot = plot.replace('\\xc2\\xa0',' ').replace('\\xe2\\x80\\x99','\'').replace('\\xe2\\x80\\x98','')
-		image = str(re.compile('<meta property="og:image" content="(.+?)"/>').findall(html))[2:-2]
-		infoLabels = {'title':name, 'plot':plot}
+		#image = str(re.compile('<meta property="og:image" content="(.+?)"/>').findall(html))[2:-2]
+		#infoLabels = {'title':name, 'plot':plot}
 		clipstream = re.compile('TV.clipstream_clips  = (.+?);').findall(html)
 		xbmc.log('CLIPSTREAM: ' + str(len(clipstream)))
 		if str(clipstream) == '[]':
@@ -447,7 +447,7 @@ def play(name,url):
 def plot_info(url):
 		html = get_html(url)
 		plot = str(re.compile('<meta property="og:description" content="(.+?)"/>').findall(html))[2:-2]
-		ret = xbmcgui.Dialog().ok('Plot Info', plot)
+		xbmcgui.Dialog().ok('Plot Info', plot)
 
 
 def add_directory3(name,url,mode,fanart,thumbnail,plot):
