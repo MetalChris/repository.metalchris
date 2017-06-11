@@ -2,7 +2,7 @@
 #
 #
 # Constructed by MetalChris
-# Released under GPL(v2)
+# Released under GPL(v2) or Later
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
