@@ -4,14 +4,11 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
-import HTMLParser
 import simplejson as json
-from urllib import urlopen
-import socket
 import requests
-from urllib2 import Request, build_opener, HTTPCookieProcessor, HTTPHandler
+from urllib2 import Request, HTTPCookieProcessor, HTTPHandler
 import urlparse
 import httplib
 import html5lib
@@ -46,8 +43,6 @@ QUALITY = settings.getSetting(id="quality")
 confluence_views = [500,501,502,503,504,508]
 
 def CATEGORIES():
-    mode = 1
-
     addDir('NHL.tv', 'https://www.nhl.com/video/', 16, defaultimage)
     addDir('Fox Sports', 'http://feed.theplatform.com/f/BKQ29B/foxsports-all?byCustomValue={primary}{nhl}&sort=pubDate|desc&form=rss&range=1-18', 51, defaultimage)
     addDir('NBC Sports', 'http://www.nbcsports.com/video/league/nhl', 89, defaultimage)
@@ -91,7 +86,7 @@ def team_sub(url):
 def team_sub2(url):
 	#print url
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html.parser')
+	##soup = BeautifulSoup(html,'html.parser')
 	keys = re.compile('data-asset-id="(.+?)"').findall(str(html))
         for key in keys:
 	    url = 'http://nhl.bamcontent.com/nhl/id/v1/' + key + '/details/web-v1.json'
@@ -123,11 +118,11 @@ def fox_sports2(url):
 		else:
 	            pass
 	    smil = get_html(smilurl)
-	    stream = (re.compile('<video src="(.+?)"').findall(smil)[0]).split('.mp4')[0] 
+	    stream = (re.compile('<video src="(.+?)"').findall(smil)[0]).split('.mp4')[0]
 	    streamurl = 'http://fsvideoprod.edgesuite.net/' + stream.split('/z/')[-1] + '.mp4'
 	    #print 'Image= ' + str(image)
             li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
-            li.setProperty('fanart_image', image)      
+            li.setProperty('fanart_image', image)
             xbmcplugin.addDirectoryItem(handle=addon_handle, url=streamurl, listitem=li, totalItems=18)
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
@@ -144,7 +139,7 @@ def nbcsn_nhl(url):
             smil = 'http://link.theplatform.com/s/BxmELC/media/' + str(key)
 	    add_directory3(title, smil, 91, defaultfanart, defaultimage,plot='')
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
-  
+
 
 #91
 def nbcsn_smil(name,url):
@@ -170,8 +165,8 @@ def msg_cat():
 def msg_network(url):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html.parser').find_all('article',{'class':'video-post'})
-	next = BeautifulSoup(html,'html.parser').find_all('div',{'class':'load-more'})
-	for link in next:
+	nxt = BeautifulSoup(html,'html.parser').find_all('div',{'class':'load-more'})
+	for link in nxt:
 	    next_page = link.find('a')['href']
 	for item in soup:
 	    title = item.find('h2').text.encode('utf-8').strip()
@@ -215,7 +210,7 @@ def msg_pages(url):
 	addDir('Next Page', next_page, 86, image)
         xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
-	
+
 
 
 # Recursively follow redirects until there isn't a location header
@@ -240,7 +235,7 @@ def play_url(name,url):
 	listitem =xbmcgui.ListItem (name,thumbnailImage=defaultimage)
 	print 'URL= ' + str(url)
 	xbmc.Player().play( url, listitem )
-	sys.exit()	
+	sys.exit()
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -275,7 +270,7 @@ def nhl_video(url):
             title = str(nhldata["docs"][i]["title"])
             asset_id = str(nhldata["docs"][i]["asset_id"])
 	    url = 'http://nhl.bamcontent.com/nhl/id/v1/' + asset_id +'/details/web-v1.json'
-            infoLabels = {'title':title}
+            ##infoLabels = {'title':title}
             image = (nhldata["docs"][i]["image"]["cuts"]["1136x640"]["src"])
 	    #print image
             i = i + 1
@@ -300,12 +295,12 @@ def nhl_stream(name,url):
 def espn_nhl(url):
         html = get_html(url)
         match=re.compile('<img src="(.+?)" width="134" height="75" /></a><h5>(.+?)</h5>').findall(html)
-        for image,title in match:     
+        for image,title in match:
             video = image.replace('a.espncdn.com/media', 'media.video-cdn.espn.com')
             if QUALITY !='0':
 	        video = video.replace('.jpg', '_nolbr.m3u8')
             else:
-	        video = video.replace('.jpg', '.mp4')            
+	        video = video.replace('.jpg', '.mp4')
             li = xbmcgui.ListItem(title, iconImage= image, thumbnailImage= image)
             li.setProperty('fanart_image',  defaultfanart)
             xbmcplugin.addDirectoryItem(handle=addon_handle, url=video, listitem=li, totalItems=10)
@@ -372,7 +367,7 @@ def csn_phi(url):
         for item in soup.find_all(attrs={'class': 'vod-content__event'}):
 	    title = item.find('span', {'class':'media-thumb__title'}).text.encode('utf-8')
 	    url = item.find('a')['href']
-	    image = defaultimage
+	    ##image = defaultimage
 	    addDir(title, url, 98,defaultimage)
             xbmcplugin.setContent(pluginhandle, 'episodes')
 	print url
@@ -387,8 +382,8 @@ def csn_video(name,url):
 	f = opener.open(url)
 	page = f.read()
 	soup = BeautifulSoup(page,'html5lib')
-	image = (soup.find('meta', attrs={'property':'og:image'})['content'])
-	title = (soup.find('meta', attrs={'property':'og:title'})['content'])
+	#image = (soup.find('meta', attrs={'property':'og:image'})['content'])
+	#title = (soup.find('meta', attrs={'property':'og:title'})['content'])
 	url = (soup.find('meta', attrs={'name':'twitter:player:stream'})['content'])
 	url = resolve_http_redirect(url)
 	url = url.replace('WEBLOWVIDEO','WEBBESTVIDEO3').replace('WEBBESTVIDEO2','WEBBESTVIDEO3').replace('300k','2200k')
@@ -445,7 +440,7 @@ def add_directory3(name,url,mode,fanart,thumbnail,plot):
         if not fanart:
             fanart=''
         liz.setProperty('fanart_image',fanart)
-        liz.setProperty('IsPlayable', 'true')	
+        liz.setProperty('IsPlayable', 'true')
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False, totalItems=20)
         return ok
 
@@ -467,7 +462,7 @@ def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=Tru
 
     listitem = xbmcgui.ListItem( title, iconImage="DefaultVideo.png", thumbnailImage=thumbnail )
     listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot } )
-    
+
     if url.startswith("plugin://"):
         itemurl = url
         listitem.setProperty('IsPlayable', 'true')
@@ -508,7 +503,7 @@ def unescape(s):
     p.feed(s)
     return p.save_end()
 
-	
+
 
 
 params = get_params()
