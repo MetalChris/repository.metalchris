@@ -4,11 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2 or Later)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
-from bs4 import BeautifulSoup
-import HTMLParser
-import html5lib
-import requests
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 import json
 import datetime
 from pytz import timezone
@@ -37,9 +33,9 @@ plugin = '120 Sports'
 
 
 def CATEGORIES():
-	addDir('Live Stream', 'http://c.120sportsstatic.com/gen/client/state.json', 1, defaultimage)
+	addDir(translation(30000), 'http://c.120sportsstatic.com/gen/client/state.json', 1, defaultimage)
 	#addDir2('Twitter', 'https://twitter.com/i/live_video_stream/status/807393889451544576?client=web', 2, defaultimage)
-	addDir('Latest Videos', 'http://c.120sportsstatic.com/gen/client/timeline.json', 3, defaultimage)
+	addDir(translation(30001), 'http://c.120sportsstatic.com/gen/client/timeline.json', 3, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -54,10 +50,10 @@ def INDEX(url):
 	    xbmc.log(str(key))
 	    url = 'rtmp://cp279796.live.edgefcs.net/live/120sports_c101_n3000@183136 live=true'
 	    play(plugin + ' ' + name,url)
-	elif (key != 'on'):                 
-	    xbmc.log('No Live Broadcast Available') 
-	    line1 = "Live Stream Currently Unavailable"
-	    line2 = "Check the Live Schedule for More Info"
+	elif (key != 'on'):
+	    xbmc.log('No Live Broadcast Available')
+	    line1 = translation(30005)
+	    line2 = translation(30006)
 	    xbmcgui.Dialog().ok(plugin, line1, line2)
 	    LIVE(url)
 	else:
@@ -67,13 +63,13 @@ def INDEX(url):
 
 
 #2
-def TWITTER(url):
-        jresponse = urllib2.urlopen(url)
-        jdata = json.load(jresponse)
-	stream = 'rtmp://cp279796.live.edgefcs.net/live/120sports_c101_n3000@183136'
-	xbmc.log(str(stream))
-	play(stream)            
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+#def TWITTER(url):
+        #jresponse = urllib2.urlopen(url)
+        #jdata = json.load(jresponse)
+	#stream = 'rtmp://cp279796.live.edgefcs.net/live/120sports_c101_n3000@183136'
+	#xbmc.log(str(stream))
+	#play(stream)
+	#xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #3
@@ -97,12 +93,12 @@ def VIDEOS(url):
 
 #4
 def LIVE(url):
-	addDir2('120 Morning Run M-F 8-11 AM ET', 'http://c.120sportsstatic.com/gen/client/state.json', None, defaultimage)
-	addDir2('120 Spotlight M-F 11 AM ET', 'http://c.120sportsstatic.com/gen/client/state.json', None, defaultimage)
-	addDir2('The Rally M-F 9-11 PM ET', 'http://c.120sportsstatic.com/gen/client/state.json', None, defaultimage)
-	addDir2('120 Sports M-S 11 PM - 2 AM ET', 'http://c.120sportsstatic.com/gen/client/state.json', None, defaultimage)
+	addDir2(translation(30010), 'http://c.120sportsstatic.com/gen/client/state.json', None, defaultimage)
+	addDir2(translation(30011), 'http://c.120sportsstatic.com/gen/client/state.json', None, defaultimage)
+	addDir2(translation(30012), 'http://c.120sportsstatic.com/gen/client/state.json', None, defaultimage)
+	addDir2(translation(30013), 'http://c.120sportsstatic.com/gen/client/state.json', None, defaultimage)
 	return
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	#xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #99
@@ -190,7 +186,7 @@ def unescape(s):
     p = htmllib.HTMLParser(None)
     p.save_bgn()
     p.feed(s)
-    return p.save_end()	
+    return p.save_end()
 
 
 params = get_params()

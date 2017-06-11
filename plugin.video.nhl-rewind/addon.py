@@ -8,7 +8,7 @@ import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
 import simplejson as json
 import requests
-from urllib2 import Request, HTTPCookieProcessor, HTTPHandler
+from urllib2 import Request, HTTPCookieProcessor
 import urlparse
 import httplib
 import html5lib
