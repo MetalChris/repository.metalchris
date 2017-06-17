@@ -150,12 +150,12 @@ def bigstar_episodes(url):
 		film_id = item["id"]
 		item_page = 'http://www.bigstar.tv/mobile/stream/film/' + str(film_id) + '/ads/1/type/0/version/2/mobileStreams/1/hls/1/os/web/device/75d6a6c6349cfecb9420d6119c51e1ec/lan/default'
 		title = item["title"]
-		image = item["cover_large"]
+		#image = item["cover_large"]
 		fanart = item["imageUrl1"]
 		desc = item["desc"]
-		infoLabels = {'title':title,
-					 'tvshowtitle':title,
-					 'plot':desc}
+		#infoLabels = {'title':title,
+					 #'tvshowtitle':title,
+					 #'plot':desc}
 		#streamkeys = image.split('/')
 		#key1 = streamkeys[7]
 		#key2 = streamkeys[-1].split('_')[0]
