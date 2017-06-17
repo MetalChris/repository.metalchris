@@ -233,9 +233,9 @@ def bigstar_tvsearch(url):
 		plot = desc
 		show = item["id"]
 		url = 'http://www.bigstar.tv/mobile/movies/boxset/' + str(show) + '/os/web/device'
-		infoLabels = {'title':title,
-					 'tvshowtitle':title,
-					 'plot':desc}
+		#infoLabels = {'title':title,
+					 #'tvshowtitle':title,
+					 #'plot':desc}
 		add_directory2(title, url,143, defaultfanart, image, plot)
 		xbmcplugin.setContent(addon_handle, 'episodes')
 	#if views != 'false':
