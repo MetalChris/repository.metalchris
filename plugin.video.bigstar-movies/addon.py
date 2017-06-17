@@ -118,8 +118,8 @@ def bigstar_tv(url):
 	print 'URL= ' + str(url)
 	page = re.compile('page/(.+?)/limit').findall(url)[0]
 	page = int(page) + 1
-	next = url.rsplit('/', 6)[0]
-	next = str(next) + '/' + str(page) + '/limit/30/os/web/device'
+	next_page = url.rsplit('/', 6)[0]
+	next_page = str(next_page) + '/' + str(page) + '/limit/30/os/web/device'
 	response = urllib2.urlopen(url)
 	jgdata = json.load(response)
 	for item in jgdata["films"]:
@@ -130,12 +130,12 @@ def bigstar_tv(url):
 		plot = desc
 		show = item["id"]
 		url = 'http://www.bigstar.tv/mobile/movies/boxset/' + str(show) + '/os/web/device'
-		infoLabels = {'title':title,
-					 'tvshowtitle':title,
-					 'plot':desc}
+		#infoLabels = {'title':title,
+					 #'tvshowtitle':title,
+					 #'plot':desc}
 		add_directory2(title, url,143, fanart, image, plot)
 		xbmcplugin.setContent(addon_handle, 'episodes')
-	add_directory2('Next Page>>', next,142, defaultfanart , artbase + 'big-star.png',plot='')
+	add_directory2('Next Page>>', next_page, 142, defaultfanart , artbase + 'big-star.png',plot='')
 	#if views != 'false':
 	xbmc.executebuiltin("Container.SetViewMode("+str(t_views[int(t_view)])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
@@ -156,9 +156,9 @@ def bigstar_episodes(url):
 		infoLabels = {'title':title,
 					 'tvshowtitle':title,
 					 'plot':desc}
-		streamkeys = image.split('/')
-		key1 = streamkeys[7]
-		key2 = streamkeys[-1].split('_')[0]
+		#streamkeys = image.split('/')
+		#key1 = streamkeys[7]
+		#key2 = streamkeys[-1].split('_')[0]
 		add_directory(title, item_page, 150, fanart , fanart, plot=desc)
 		#streamurl = 'http://bigstar-vh.akamaihd.net/i/smil/studio/' + str(key1) + '/stream/' + str(key2) + '_web_ads_wifi.smil/index_1500000_av.m3u8?null='
 		#li = xbmcgui.ListItem(title, iconImage=fanart, thumbnailImage=fanart)
@@ -193,12 +193,12 @@ def bigstar_search(url):
 		print 'TV= ' + str(tv)
 		if 'True' in tv:
 			continue
-		infoLabels = {'title':title,
-					 'tvshowtitle':title,
-					 'plot':desc}
-		streamkeys = image.split('/')
-		key1 = streamkeys[7]
-		key2 = streamkeys[-1].split('_')[0]
+		#infoLabels = {'title':title,
+					 #'tvshowtitle':title,
+					 #'plot':desc}
+		#streamkeys = image.split('/')
+		#key1 = streamkeys[7]
+		#key2 = streamkeys[-1].split('_')[0]
 		add_directory(title, item_page, 150, fanart , image, plot=desc)
 		#streamurl = 'http://bigstar-vh.akamaihd.net/i/smil/studio/' + str(key1) + '/stream/' + str(key2) + '_web_ads_wifi.smil/index_1500000_av.m3u8?null='
 		#li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
