@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<strings>
+    <!-- Default strings -->
+    <string id="32001">Page</string>
+
+    <!-- Root menu entries -->
+    <string id="32100">Movies</string>
+    <string id="32105">Documentaries</string>
+    <string id="32110">TV Shows</string>
+
+    <!-- Views -->
+    <string id="32020">Force Views</string>
+    <string id="32021">Movies</string>
+    <string id="32022">TV Shows</string>
+    <string id="32023">List</string>
+    <string id="32024">Big List</string>
+    <string id="32025">Thumbnail</string>
+    <string id="32026">Poster Wrap</string>
+    <string id="32027">Fanart</string>
+    <string id="32028">Media Info</string>
+    <string id="32029">Media Info 2</string>
+    <string id="32030">Media Info 3</string>
+</strings>
