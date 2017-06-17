@@ -83,12 +83,12 @@ def bigstar_movies(url):
 		#print 'TV= ' + str(tv)
 		if 'True' in tv:
 			continue
-		infoLabels = {'title':title,
-					 'tvshowtitle':title,
-					 'plot':desc}
-		streamkeys = image.split('/')
-		key1 = streamkeys[7]
-		key2 = streamkeys[-1].split('_')[0]
+		#infoLabels = {'title':title,
+					 #'tvshowtitle':title,
+					 #'plot':desc}
+		#streamkeys = image.split('/')
+		#key1 = streamkeys[7]
+		#key2 = streamkeys[-1].split('_')[0]
 		add_directory(title, item_page, 150, fanart , image, plot=desc)
 		#streamurl = 'http://bigstar-vh.akamaihd.net/i/smil/studio/' + str(key1) + '/stream/' + str(key2) + '_web_ads_wifi.smil/index_1500000_av.m3u8?null='
 		#li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
@@ -96,9 +96,9 @@ def bigstar_movies(url):
 		#li.setProperty('fanart_image', fanart)
 		#xbmcplugin.addDirectoryItem(handle=addon_handle, url=streamurl, listitem=li, totalItems=60)
 		xbmcplugin.setContent(addon_handle, 'movies')
-	next = url.rsplit('/', 6)[0]
-	next = str(next) + '/' + str(page) + '/limit/30/os/web/device'
-	add_directory2('Next Page>>', next,141, defaultfanart , artbase + 'big-star.png',plot='')
+	next_page = url.rsplit('/', 6)[0]
+	next_page = str(next_page) + '/' + str(page) + '/limit/30/os/web/device'
+	add_directory2('Next Page>>', next_page, 141, defaultfanart, artbase + 'big-star.png',plot='')
 	#if views != 'false':
 	xbmc.executebuiltin("Container.SetViewMode("+str(m_views[int(m_view)])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
