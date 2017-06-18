@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, re, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
 
 
@@ -56,7 +56,7 @@ def podcast():
 
 #633
 def shows():
-	add_directory2('PodCast', url, 632, defaultfanart, defaultimage, plot='')
+	add_directory2('PodCast', 'http://feedpress.me/lifechurchipod', 632, defaultfanart, defaultimage, plot='')
 	html = get_html('https://www.life.church/watch/messages/')
 	soup = BeautifulSoup(html,'html.parser').find_all("div",{"class":"card messages-card"})
 	for show in soup:
@@ -144,11 +144,6 @@ def get_redirected_url(url):
 def striphtml(data):
 	p = re.compile(r'<.*?>')
 	return p.sub('', data)
-
-
-def play(url):
-	item = xbmcgui.ListItem(path=url)
-	return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
 
 def add_directory2(name,url,mode,fanart,iconimage,plot):
