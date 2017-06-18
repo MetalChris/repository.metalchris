@@ -245,7 +245,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.edge" name="Edge.org" version="0.0.7" provider-name="MetalChris">
+<addon id="plugin.video.edge" name="Edge.org" version="0.0.8" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -611,7 +611,7 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.gmm" name="GMM - Graspop Metal Meeting" version="0.0.1" provider-name="MetalChris">
+<addon id="plugin.video.gmm" name="GMM - Graspop Metal Meeting" version="0.0.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -622,7 +622,7 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">GMM - Graspop Metal Meeting</summary>
+    <summary lang="en">GMM - Graspop Metal Meeting 2017</summary>
     <description lang="en">Watch videos from Graspop Metal Meeting, including full length concert sets.  GMM is an annual METAL festival in Dessel, Belgium that has taken place each year since 1996.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
@@ -731,7 +731,7 @@ Watch a Message, do Church Online Live, get Involved. Our mission is to lead peo
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.6.3" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.6.4" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
