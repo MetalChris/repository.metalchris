@@ -4,12 +4,8 @@
 # Written by MetalChris
 # Released under GPL(v2)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
-import requests
-import urlparse
-import HTMLParser
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
-from urllib import urlopen
 
 
 artbase = 'special://home/addons/plugin.video.gmm/resources/media/'
