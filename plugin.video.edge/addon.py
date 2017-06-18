@@ -4,10 +4,8 @@
 # Written by MetalChris
 # Released under GPL(v2 or later)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 import requests
-import urlparse
-import HTMLParser
 from bs4 import BeautifulSoup
 from urllib import urlopen
 import html5lib
@@ -53,8 +51,6 @@ def cats(url):
 	for item in soup:
 		title = item.find('a').string.encode('utf-8').title()
 		url = 'http://www.edge.org' + item.find('a')['href']
-		#duration = item.find('itunes:duration').string.encode('utf-8')
-		image = defaultimage
 		add_directory2(title,url,20,defaultfanart,defaultimage,plot='')
 	add_directory2('Browse by Year',url,11,defaultfanart,defaultimage,plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
@@ -77,8 +73,7 @@ def videos(url):
 	lasttitle = ''
 	page = requests.get(url)
 	response = page.content
-	soup = BeautifulSoup(response,'html5lib').find_all('h2',{'class':'views-field views-field-title margin-top-zero'})
-	members = re.compile('member-name">(.+?)</a>').findall(response); i = 0
+	soup = BeautifulSoup(response,'html5lib').find_all('h2',{'class':'views-field views-field-title margin-top-zero'}); i = 0
 	#members = striphtml(str(members))
 	#print members
 	for item in soup:
@@ -92,11 +87,11 @@ def videos(url):
 		image = defaultimage
 		lasttitle = title
 		add_directory2(title,url,30,defaultfanart,defaultimage,plot=''); i = i + 1
-	try:next = 'http://www.edge.org' + re.compile('next page" href="(.+?)"').findall(response)[-1]
+	try:nxt = 'http://www.edge.org' + re.compile('next page" href="(.+?)"').findall(response)[-1]
 	except IndexError:
 		return
 	#print next
-	add_directory2('Next Page',next,20,defaultfanart,defaultimage,plot='')
+	add_directory2('Next Page',nxt,20,defaultfanart,defaultimage,plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
@@ -272,14 +267,6 @@ def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
 		liz.setProperty('fanart_image',fanart)
 		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
 		return ok
-
-
-def addDirectoryItem2(name, isFolder=True, parameters={}):
-	''' Add a list item to the XBMC UI.'''
-	li = xbmcgui.ListItem(name, iconImage=defaultimage, thumbnailImage=defaultimage)
-	li.setProperty('fanart_image', defaultfanart)
-	url = sys.argv[0] + '?' + urllib.urlencode(parameters)
-	return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=li, isFolder=isFolder)
 
 
 def unescape(s):
