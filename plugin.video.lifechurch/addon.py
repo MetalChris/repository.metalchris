@@ -33,8 +33,16 @@ defaulticon = 'special://home/addons/plugin.video.lifechurch/icon.png'
 local_string = xbmcaddon.Addon(id='plugin.video.lifechurch').getLocalizedString
 addon_handle = int(sys.argv[1])
 pluginhandle = int(sys.argv[1])
-QUALITY = settings.getSetting(id="quality")
+#QUALITY = settings.getSetting(id="quality")
 confluence_views = [500,501,502,503,504,508,515]
+
+
+#630
+def cats():
+	addDir2('Live Webcast','https://lifechurch-tv.churchonline.org/api/v1/events/current',631,defaultimage)
+	addDir('Messages','https://www.life.church/watch/messages/',633,defaultimage)
+	addDir('PodCast','http://feedpress.me/lifechurchipod',632,defaultimage)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #632
@@ -80,8 +88,6 @@ def live():
 
 #633
 def shows():
-	add_directory2('Live', 'https://lifechurch-tv.churchonline.org/api/v1/events/current', 631, defaultfanart, defaultimage, plot='')
-	add_directory2('PodCast', 'http://feedpress.me/lifechurchipod', 632, defaultfanart, defaultimage, plot='')
 	html = get_html('https://www.life.church/watch/messages/')
 	soup = BeautifulSoup(html,'html.parser').find_all("div",{"class":"card messages-card"})
 	for show in soup:
@@ -293,7 +299,7 @@ print "Name: " + str(name)
 
 if mode == None or url == None or len(url) < 1:
 	print "Generate Main Menu"
-	shows()
+	cats()
 elif mode == 4:
 	print "Play Video"
 elif mode==631:

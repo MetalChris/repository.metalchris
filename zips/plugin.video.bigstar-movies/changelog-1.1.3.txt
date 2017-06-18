@@ -1,7 +1,3 @@
-Version 1.1.4
-- Add view settings (Confluence Only)
-- Code cleanup
-
 Version 1.1.3
 - Fix addon.xml
 - Remove forced views

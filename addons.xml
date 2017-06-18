@@ -223,6 +223,28 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.bigstar-movies" name="BigStar Movies &amp; TV" version="1.1.4" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Stream movies instantly! Choose from thousands of independent, foreign and award-winning feature films and TV shows.</summary>
+    <description lang="en">Stream movies instantly! Choose from thousands of independent, foreign and award-winning feature films and TV shows.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
 <addon id="plugin.video.edge" name="Edge.org" version="0.0.6" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -660,18 +682,20 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.lifechurch" name="Life.Church" version="0.0.3" provider-name="MetalChris">
+<addon id="plugin.video.lifechurch" name="Life.Church" version="0.0.4" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Life.Church</summary>
-    <description lang="en">Life.Church wants to make a lasting difference in your life, in our community, and in the world.</description>
+    <summary lang="en">Watch a Message, do Church Online Live, get Involved. Our mission is to lead people to become fully devoted followers of Christ.</summary>
+    <description lang="en">Life.Church wants to make a lasting difference in your life, in our community, and in the world.
+
+Watch a Message, do Church Online Live, get Involved. Our mission is to lead people to become fully devoted followers of Christ.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
@@ -707,7 +731,7 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.6.0" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.6.1" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
