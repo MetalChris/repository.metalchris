@@ -1,2 +1,5 @@
+Version 0.0.2
+- Updated for the 2017 festival
+
 Version 0.0.1
 - Initial release.

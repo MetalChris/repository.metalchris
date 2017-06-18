@@ -137,7 +137,7 @@ def iframe(name, url):
 	#request.add_header('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:45.0) Gecko/20100101 Firefox/45.0')
 	#request.add_header('Referer', url)
 	#page = urllib2.urlopen(request).read()
-	page = requests.get(url, headers=headers)
+	page = requests.get(iframe, headers=headers)
 	response = page.content
 	url = re.compile('"url":"(.+?)","origin"').findall(str(response))[-1].replace('json?base64_init=1','m3u8')
 	print url
