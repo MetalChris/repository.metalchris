@@ -7,7 +7,6 @@
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 import requests
 from bs4 import BeautifulSoup
-from urllib import urlopen
 import html5lib
 
 headers= {'Host':'player.vimeo.com',
@@ -83,8 +82,6 @@ def videos(url):
 		#title = striphtml(members[i]) + ': ' + title
 		url = 'http://www.edge.org' + item.find('a')['href']
 		print 'EDGE URL: ' + str(url)
-		#duration = item.find('itunes:duration').string.encode('utf-8')
-		image = defaultimage
 		lasttitle = title
 		add_directory2(title,url,30,defaultfanart,defaultimage,plot=''); i = i + 1
 	try:nxt = 'http://www.edge.org' + re.compile('next page" href="(.+?)"').findall(response)[-1]
@@ -136,9 +133,9 @@ def iframe(name, url):
 	print 'EDGE iframe: ' + str(iframe)
 	if iframe.find('https:')!=0:
 		iframe = 'https:' + iframe
-	request = urllib2.Request(iframe)
-	request.add_header('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:45.0) Gecko/20100101 Firefox/45.0')
-	request.add_header('Referer', url)
+	#request = urllib2.Request(iframe)
+	#request.add_header('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:45.0) Gecko/20100101 Firefox/45.0')
+	#request.add_header('Referer', url)
 	#page = urllib2.urlopen(request).read()
 	page = requests.get(url, headers=headers)
 	response = page.content
