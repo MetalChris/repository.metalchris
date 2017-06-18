@@ -76,7 +76,6 @@ def live():
 		sys.exit()
 		print 'No Live Broadcast Available'
 		return
-		xbmcplugin.endOfDirectory(addon_handle)
 
 
 #633
