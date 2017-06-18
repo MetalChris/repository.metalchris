@@ -1,0 +1,21 @@
+Version 0.0.7
+- Fix for website changes June, 2017
+
+Version 0.0.6
+- Fix for multiple videos under same title
+
+Version 0.0.5
+- Fix for website changes
+
+Version 0.0.4
+- Added option in Settings to choose SD or HD
+- Added listings by year
+
+Version 0.0.3
+- Added art
+
+Version 0.0.2
+- Switch to html5lib
+
+Version 0.0.1
+- Initial release
