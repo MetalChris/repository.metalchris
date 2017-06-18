@@ -731,7 +731,7 @@ Watch a Message, do Church Online Live, get Involved. Our mission is to lead peo
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.6.1" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.6.2" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
@@ -763,6 +763,7 @@ Watch a Message, do Church Online Live, get Involved. Our mission is to lead peo
     <website></website>
     <email></email>
     <source></source>
+    <broken>Please uninstall this version and install version 1.1.4 from my repo</broken>
   </extension>
 </addon>
 
@@ -779,6 +780,28 @@ Watch a Message, do Church Online Live, get Involved. Our mission is to lead peo
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Charlie Rose</summary>
     <description lang="en">Watch videos from charlierose.com - Since 1991, “Charlie Rose” has engaged America’s best thinkers, writers, politicians, athletes, entertainers, business leaders, scientists and other newsmakers in one-on-one interviews and roundtable discussions.</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="plugin.video.bigstar" name="BigStar Movies" version="0.1.4" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">BigStar Movies</summary>
+    <description lang="en">Stream movies instantly! Choose from thousands of independent, foreign and award-winning feature films and TV shows.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
