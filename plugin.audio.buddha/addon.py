@@ -31,13 +31,16 @@ def now_playing():
 	    print '===Notification Off==='
 	else:
 	    html = get_html('http://tunein.com/radio/Buddha-Radio-s172072/')
-	    info = (re.compile('title">(.+?)</h3').findall(html)[0]).replace('&#39;', '\'').replace('&amp;', '&')
+	    info = (re.compile('data-reactid="262">(.+?)</p').findall(html)[0]).replace('&#39;', '\'').replace('&amp;', '&')
 	    print info
-            xbmcgui.Dialog().notification('Now Playing on Buddha Radio', info, defaultimage, 7500, False)	
+            xbmcgui.Dialog().notification('Now Playing on Buddha Radio', info, defaultimage, 7500, False)
 	    for i in range(60):
-	        if xbmc.Player().isPlaying():
+	        if xbmc.Player().isPlayingAudio():
+		    song = xbmc.Player().getMusicInfoTag(info)
+	            #print song
 	            time.sleep(1)
 	        else:
+		    print '===== EXIT ====='
 	            sys.exit()
 	    now_playing()
 
@@ -69,6 +72,10 @@ else:
 url = pre + base + key + post
 
 item = xbmcgui.ListItem(thumbnailImage=defaultimage)
+#item.setInfo("music", {
+#        "title": "Buddha Radio",
+#})
+#item.setProperty("IsPlayable", "true")
 xbmc.Player().play( url, item );time.sleep(10); now_playing()
 sys.exit()
 
