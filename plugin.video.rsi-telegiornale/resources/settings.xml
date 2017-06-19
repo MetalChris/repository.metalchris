@@ -1,6 +1,0 @@
-<settings>
-        <category label="30001">
-     		<setting id="parser" type="enum" label="30013" lvalues="30200|30205" enable="!eq(3,false)" default="1"/>
-     		<setting id="encoding" type="enum" label="30003" lvalues="30100|30105" enable="!eq(3,false)" default="0"/>
-        </category>
-</settings>

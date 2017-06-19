@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.rsi-telegiornale" name="RSI - Telegiornale" version="0.0.1" provider-name="MetalChris">
+<addon id="plugin.video.rsi-telegiornale" name="RSI - Telegiornale" version="0.0.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>  
-    <import addon="script.module.simplejson" version="3.3.0"/>  
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">RSI - Telegiornale</summary>
+    <summary lang="en">Watch newscasts and videos from RSI Telegiornale.</summary>
+    <summary lang="it">Guardare telegiornali e video da RSI Telegiornale.</summary>
     <description lang="en">Watch newscasts and videos from RSI Telegiornale.</description>
     <description lang="it">Guardare telegiornali e video da RSI Telegiornale.</description>
     <disclaimer lang="en"></disclaimer>

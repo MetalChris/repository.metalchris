@@ -475,7 +475,7 @@ ASN televises live games from multiple NCAA Division I college sports conference
     </extension>
 </addon>
 
-<addon id="plugin.video.rsi-telegiornale" name="RSI - Telegiornale" version="0.0.1" provider-name="MetalChris">
+<addon id="plugin.video.rsi-telegiornale" name="RSI - Telegiornale" version="0.0.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -487,7 +487,8 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">RSI - Telegiornale</summary>
+    <summary lang="en">Watch newscasts and videos from RSI Telegiornale.</summary>
+    <summary lang="it">Guardare telegiornali e video da RSI Telegiornale.</summary>
     <description lang="en">Watch newscasts and videos from RSI Telegiornale.</description>
     <description lang="it">Guardare telegiornali e video da RSI Telegiornale.</description>
     <disclaimer lang="en"></disclaimer>
@@ -731,7 +732,7 @@ Watch a Message, do Church Online Live, get Involved. Our mission is to lead peo
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.6.5" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.6.6" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
