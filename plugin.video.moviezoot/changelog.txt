@@ -1,3 +1,7 @@
+Version 0.0.3
+- Fixes for website changes
+- Code cleanup
+
 Version 0.0.2
 - Fix addon.xml
 

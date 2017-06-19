@@ -20,7 +20,7 @@ selfAddon = xbmcaddon.Addon(id='plugin.video.edge')
 self = xbmcaddon.Addon(id='plugin.video.edge')
 translation = selfAddon.getLocalizedString
 usexbmc = selfAddon.getSetting('watchinxbmc')
-settings = xbmcaddon.Addon(id="plugin.video.edge")
+#settings = xbmcaddon.Addon(id="plugin.video.edge")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 confluence_views = [500,501,502,503,504,508]
@@ -35,7 +35,7 @@ baseurl = 'https://www.edge.org/videos'
 local_string = xbmcaddon.Addon(id='plugin.video.edge').getLocalizedString
 addon_handle = int(sys.argv[1])
 pluginhandle = int(sys.argv[1])
-QUALITY = settings.getSetting(id="quality")
+#QUALITY = settings.getSetting(id="quality")
 confluence_views = [500,501,502,503,504,508,515]
 
 
@@ -95,10 +95,10 @@ def videos(url):
 
 #30
 def streams(name,url):
-	Q = int(QUALITY)
-	print type(Q)
+	#Q = int(QUALITY)
+	#print type(Q)
 	page = requests.get(url)
-	print page
+	#print page
 	response = page.content
 	soup = BeautifulSoup(response,'html5lib').find_all('iframe')
 	print 'len(iframe): ' + str(len(soup))
