@@ -5,12 +5,8 @@
 # Released under GPL(v2) or Later
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys
-from bs4 import BeautifulSoup
-from urllib import urlopen
-import socket
 
 
-apiURL = 'http://www.omdbapi.com/'
 artbase = 'special://home/addons/plugin.video.moviezoot/resources/media/'
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
