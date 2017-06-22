@@ -75,7 +75,7 @@ def bigstar_movies(url):
 	for item in jgdata["films"]:
 		film_id = item["id"]
 		item_page = 'http://www.bigstar.tv/mobile/stream/film/' + str(film_id) + '/ads/1/type/0/version/2/mobileStreams/1/hls/1/os/web/device/75d6a6c6349cfecb9420d6119c51e1ec/lan/default'
-		title = item["title"]
+		title = item["title"].encode('utf-8')
 		image = item["cover_large"]
 		fanart = item["imageUrl1"]
 		desc = item["desc"]
@@ -150,7 +150,7 @@ def bigstar_search(url):
 	keyb = xbmc.Keyboard('', 'Search')
 	keyb.doModal()
 	if (keyb.isConfirmed()):
-		search = keyb.getText()
+		search = keyb.getText().replace(' ','+')
 		print 'search= ' + search
 		url = url + search
 		print url
