@@ -82,6 +82,7 @@ def FOX_videos(url):
 		ep = item.find('span',{'class':'ep-num'}).text.split(' ')[-1]
 		if not item.find('p'):
 			continue
+		description = item.find('p').text
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
 		li.setProperty('fanart_image', defaultfanart)
 		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Episode": ep, "Premiered": airdate})
