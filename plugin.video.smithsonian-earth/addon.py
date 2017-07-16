@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 import mechanize
 import html5lib
 import simplejson as json
-import Cookie
+#import Cookie
 import cookielib
 cookiejar = cookielib.LWPCookieJar()
 
@@ -66,12 +66,7 @@ def videos(url):
 		if title.find(class_="video-thumb"):
 			image = 'http:' + (re.compile('image:url\\((.+?)\\)').findall(str(title)))[0]#.replace('.jpg','.background.atv4.jpg')
 			vid_key = title.find('div')['vid']
-			if ((vid_key)[:3] == '328') or ((vid_key)[:3] == '330') or ((vid_key)[:3] == '329'):
-				mode = 634
-				url = 'https://api.skychnl.net' + (title.get('href'))# + 'token=' + str(cookie.value)
-			else:
-				mode = 636
-				url = baseurl + (title.get('href'))# + 'token=' + str(cookie.value)
+			url = 'https://api.skychnl.net' + (title.get('href'))# + 'token=' + str(cookie.value)
 			title = title.find('h2').text.encode('utf-8').replace('&amp;','&').strip()
 			addDir2(title, url, 634, defaultfanart, image, plot='')
 	#xbmcplugin.setContent(addon_handle, content="videos")
@@ -103,7 +98,7 @@ def series(name,url,iconimage):
 	url = url.replace('https://api.skychnl.net', baseurl) + '&' + cookie.name + '=' + cookie.value
 	xbmc.log('URL: ' + str(url))
 	page = br.open(url).read()
-	soup = BeautifulSoup(page,'html5lib').find_all('a')
+	#soup = BeautifulSoup(page,'html5lib').find_all('a')
 	scripts = BeautifulSoup(page,'html5lib').find_all('script',{'type':'text/javascript'})
 	#for script in scripts:
 		#print str(len(str(script)))
@@ -119,7 +114,7 @@ def series(name,url,iconimage):
 		season = jdata[i]['season_number']
 		pubdate = jdata[i]['pubdate']
 		m3u8_url = jdata[i]['vtt'][0]['m3u8_url']
-		subs_url = jdata[i]['vtt'][0]['url']
+		#subs_url = jdata[i]['vtt'][0]['url']
 		key = m3u8_url.split('/')
 		q = settings.getSetting(id='quality')
 		url = 'http://se-media.smithsonianchannel.com/5DJZN6FN/' + key[4] + '/hd/hls/v' + q + '_' + key[4] + '_clear/v' + q + '_' + key[4] + '_clear.m3u8'
@@ -200,14 +195,6 @@ def play(name,url,iconimage):
 
 def remove_non_ascii_1(text):
 	return ''.join(i for i in text if ord(i)<128)
-
-
-def plot_info(url):
-	#url = 'https://api.skychnl.net/channels/5DJZN6FN/responsives/2929646?index=0&locale=en'
-	xbmc.log('PLOT_URL: ' + str(url))
-	html = br.open(url).read()
-	plot = str(re.compile('description">(.+?)</p').findall(html))[2:-2]
-	ret = xbmcgui.Dialog().ok('Plot Info', plot)
 
 
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
