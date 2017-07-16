@@ -65,7 +65,6 @@ def videos(url):
 	for title in soup:
 		if title.find(class_="video-thumb"):
 			image = 'http:' + (re.compile('image:url\\((.+?)\\)').findall(str(title)))[0]#.replace('.jpg','.background.atv4.jpg')
-			vid_key = title.find('div')['vid']
 			url = 'https://api.skychnl.net' + (title.get('href'))# + 'token=' + str(cookie.value)
 			title = title.find('h2').text.encode('utf-8').replace('&amp;','&').strip()
 			addDir2(title, url, 634, defaultfanart, image, plot='')
