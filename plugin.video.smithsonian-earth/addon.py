@@ -28,6 +28,7 @@ email = settings.getSetting(id="username")
 password = settings.getSetting(id="password")
 addon = xbmcaddon.Addon(id="plugin.video.smithsonian-earth")
 addonname = addon.getAddonInfo('name')
+views = settings.getSetting(id="views")
 
 plugin = "Smithsonian Earth"
 
@@ -124,6 +125,8 @@ def series(name,url,iconimage):
 		li.addStreamInfo('video', { 'duration': duration })
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=10)
 		xbmcplugin.setContent(addon_handle, 'episodes');i=i+1
+	if views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -147,6 +150,8 @@ def single(url):
 		li.addStreamInfo('video', { 'duration': duration })
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li)
 		xbmcplugin.setContent(addon_handle, 'episodes')
+	if views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
