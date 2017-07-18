@@ -4,13 +4,8 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, re, xbmcplugin, sys
-import requests
-import urlparse
-import HTMLParser
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
-from urllib import urlopen
-import simplejson as json
 #import base64
 ## a.decode('base64') ##
 
@@ -49,7 +44,6 @@ def index():
 	for link, title in match[0:13]:
 		title = title.encode('utf-8').replace('&amp;','&')
 		url = baseurl + link + '?no-ist'
-		thumbnail = defaultimage
 		addDir2(title, url, 636, defaulticon, defaultfanart)
 	views = settings.getSetting(id="views")
 	if views != 'false':
@@ -60,9 +54,9 @@ def index():
 #636
 def videos(url):
 	response = get_html(url)
-	next = BeautifulSoup(response,'html.parser').find_all('a',{'class':'next pager'})
-	if len(next) > 0:
-		nextp = str(re.compile('href="(.+?)">').findall(str(next))[-1])
+	nxt = BeautifulSoup(response,'html.parser').find_all('a',{'class':'next pager'})
+	if len(nxt) > 0:
+		nextp = str(re.compile('href="(.+?)">').findall(str(nxt))[-1])
 		nextpage = (url.rsplit('/',1))[0] + '/' + nextp
 	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class':'teaser-list'})
 	items = BeautifulSoup(str(soup),'html.parser').find_all('a',{'class':'media-teaser '})
@@ -74,7 +68,7 @@ def videos(url):
 		url = 'http://www.smithsonianmag.com' + re.compile('href="(.+?)"').findall(str(item))[0]
 		description = item.find('span',{'class':'description hidden'}).text + ' ' + duration
 		add_directory2(title,url,638,image,image,plot=description)
-	if len(next) > 0:
+	if len(nxt) > 0:
 			addDir2('Next Page', nextpage, 636, defaulticon, defaultfanart)
 	xbmcplugin.setContent(pluginhandle, 'episodes')
 	views = settings.getSetting(id="views")
