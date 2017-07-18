@@ -4,10 +4,8 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, os, platform, re, xbmcplugin, sys
-import requests
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
-import simplejson as json
 #import base64
 ## a.decode('base64') ##
 
