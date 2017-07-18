@@ -59,9 +59,9 @@ def index():
 def videos(url):
 	xbmc.log('URL: ' + str(url))
 	response = get_html(url)
-	next = BeautifulSoup(response,'html.parser').find_all('a',{'class':'next pager'})
-	if len(next) > 0:
-		nextp = str(re.compile('href="(.+?)">').findall(str(next))[-1])
+	nxt = BeautifulSoup(response,'html.parser').find_all('a',{'class':'next pager'})
+	if len(nxt) > 0:
+		nextp = str(re.compile('href="(.+?)">').findall(str(nxt))[-1])
 		nextpage = (url.rsplit('/',1))[0] + '/' + nextp
 	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class':'teaser-list'})
 	xbmc.log('SOUP: ' + str(len(soup)))
@@ -69,13 +69,13 @@ def videos(url):
 	xbmc.log('ITEMS: ' + str(len(items)))
 	for item in items:
 		title = item.find('img')['title']#('h5').text#.strip('\\n').strip('\\t')#.strip('\n')
-		duration = title.split('   ')[-1]
+		#duration = title.split('   ')[-1]
 		title = remove_non_ascii_1(title).encode('utf-8')#.split('   ')[0]
 		image = item.find('img')['src']
 		description = item.find('span',{'class':'description hidden'}).text.strip()# + ' ' + duration
 		url = 'http://www.airspacemag.com' + re.compile('href="(.+?)"').findall(str(item))[0]
 		add_directory2(title,url,638,image,image,plot=description)
-	if len(next) > 0:
+	if len(nxt) > 0:
 		addDir2('Next Page', nextpage, 636, defaulticon, defaultfanart)
 		xbmcplugin.setContent(pluginhandle, 'episodes')
 	views = settings.getSetting(id="views")
