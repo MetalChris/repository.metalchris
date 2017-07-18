@@ -55,6 +55,8 @@ def cats():
 			url = url.split('categories')[0] + 'get_next_category_page?id=48459&index=0'
 			mode = 635
 		title = title.text
+		xbmc.log('TITLE: ' +str(title))
+		xbmc.log('URL: ' +str(url))
 		addDir(title, url, mode, defaulticon, defaultfanart)
 	xbmcplugin.endOfDirectory(addon_handle)
 
@@ -75,7 +77,6 @@ def videos(url):
 
 #634
 def series(name,url,iconimage):
-	dlsn = settings.getSetting(id="status")
 	sign_in = br.open('https://api.smithsonianearthtv.com:8443/channels/5DJZN6FN/responsives/login')
 	#for cookie in cookiejar:
 		#print cookie.name, cookie.value, cookie.domain
@@ -84,6 +85,7 @@ def series(name,url,iconimage):
 	br['password'] = password
 	logged_in = br.submit()
 	check = logged_in.read()
+	dlsn = settings.getSetting(id="status")
 	if 'Log In' in check:
 		xbmcgui.Dialog().notification(plugin, 'Login Failed', defaultimage, 5000, False)
 		return
