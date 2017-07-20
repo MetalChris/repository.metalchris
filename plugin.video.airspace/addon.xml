@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.airspace" name="Air &amp; Space Smithsonian" version="0.0.3" provider-name="MetalChris">
+<addon id="plugin.video.airspace" name="Air &amp; Space Smithsonian" version="0.0.5" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.simplejson" version="3.3.0"/> 
-    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Watch videos from the Air &amp; Space Smithsonian website</summary>
-    <description lang="en">Air &amp; Space Smithsonian magazine has been delighting aerospace enthusiasts since April 1986.  Air &amp; Space seeks to surprise its audience with a wealth of detail about aviation and spaceflight.</description>
+    <summary lang="en">Watch Videos from Air &amp; Space Smithsonian</summary>
+    <description lang="en">Air &amp; Space Smithsonian magazine has been delighting aerospace enthusiasts since April 1986.  Air &amp; Space brings you the world of aviation and space flight with its in-depth coverage of flight history, flight today, military aviation, space exploration and aeronautical technology.</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>

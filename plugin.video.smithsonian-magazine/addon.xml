@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.smithsonian-magazine" name="Smithsonian Magazine" version="0.0.2" provider-name="MetalChris">
+<addon id="plugin.video.smithsonian-magazine" name="Smithsonian Magazine" version="0.0.3" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -9,7 +9,7 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Smithsonian Magazine</summary>
+    <summary lang="en">Watch Videos from Smithsonian Magazine</summary>
     <description lang="en">Watch hundreds of videos on a variety of topics from Smithsonian Magazine.  Informative, educational, and enterntaining!</description>
     <disclaimer lang="en"></disclaimer>
     <language></language>

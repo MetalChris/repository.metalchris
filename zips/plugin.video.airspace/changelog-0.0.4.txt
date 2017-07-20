@@ -1,6 +1,3 @@
-Version 0.0.5
-- Fixes for Android/Mac OS issues in 0.0.4
-
 Version 0.0.4
 - Fixes for website changes July, 2017
 
