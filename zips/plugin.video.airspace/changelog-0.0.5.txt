@@ -1,0 +1,15 @@
+Version 0.0.5
+- Fixes for Android/Mac OS issues in 0.0.4
+
+Version 0.0.4
+- Fixes for website changes July, 2017
+
+Version 0.0.3
+- More code cleanup
+
+Version 0.0.2
+- Rename add-on
+- Code cleanup
+
+Version 0.0.1
+- Initial release.
