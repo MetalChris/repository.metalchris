@@ -68,7 +68,8 @@ def videos(url):
 	items = BeautifulSoup(str(soup),'html.parser').find_all('a',{'class':'media-teaser '})
 	xbmc.log('ITEMS: ' + str(len(items)))
 	for item in items:
-		title = item.find('img')['title']#('h5').text#.strip('\\n').strip('\\t')#.strip('\n')
+		title = item.find('h5',{'class': 'media-title video-title'}).text.replace("\\n","").replace('  ','').strip()
+		#title = item.find('img')['title']#('h5').text#.strip('\\n').strip('\\t')#.strip('\n')
 		#duration = title.split('   ')[-1]
 		title = remove_non_ascii_1(title).encode('utf-8')#.split('   ')[0]
 		image = item.find('img')['src']
