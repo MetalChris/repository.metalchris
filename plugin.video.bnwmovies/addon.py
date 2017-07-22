@@ -67,7 +67,7 @@ def videos(url):
 		xbmc.log('NURL: ' + str(nurl))
 	for item in soup:
 		title = striphtml(str(item.find('a')))
-		image = defaultimage#item.find('img',{'typeof':'foaf:Image'})
+		#image = defaultimage#item.find('img',{'typeof':'foaf:Image'})
 		thumbnail = item.find('img')['src']
 		url = item.find('a')['href']
 		purl = 'plugin://plugin.video.bnwmovies?mode=637&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
@@ -85,7 +85,7 @@ def videos(url):
 def episode(name,url,iconimage):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class': 'box-holder cf centered'})[0]
-	links = re.compile('<source src="(.+?)"').findall(str(soup));i = 0
+	links = re.compile('<source src="(.+?)"').findall(str(soup))#;i = 0
 	xbmc.log('links: ' + str(links))
 	ret = xbmcgui.Dialog().select('Select File',links)
 	xbmc.log(str(ret))
@@ -124,7 +124,7 @@ def downloader(url):
 		html = get_html(url)
 		xbmcgui.Dialog().notification('B&W Movies', 'Getting Download URL.', xbmcgui.NOTIFICATION_INFO, 5000)
 		links = re.compile('<source src="(.+?)"').findall(str(html))
-		types = ([link.split('.')[-1].upper() for link in links])
+		ftypes = ([link.split('.')[-1].upper() for link in links])
 		#xbmc.log('links: ' + str(types))
 		sizes = [];items = []
 		for link in links:
@@ -136,8 +136,8 @@ def downloader(url):
 			file_sizeMB = str(float(file_size/(1024*1024))).split('.')[0] + ' MB'
 			#xbmc.log('FILE SIZE MB: ' + str(file_sizeMB))
 			sizes.append(file_sizeMB)
-		for type,size in zip(types,sizes):
-			info = type + ' ' + size
+		for ftype,size in zip(ftypes,sizes):
+			info = ftype + ' ' + size
 			#xbmc.log('INFO: ' + str(info))
 			items.append(info)
 		#xbmc.log('SIZES: ' + str(sizes))
