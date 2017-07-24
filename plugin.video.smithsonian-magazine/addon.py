@@ -61,7 +61,7 @@ def videos(url):
 	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class':'teaser-list'})
 	items = BeautifulSoup(str(soup),'html.parser').find_all('a',{'class':'media-teaser '})
 	for item in items:
-		title = item.find('h5').text.strip()
+		title = item.find('h5',{'class': 'media-title video-title'}).text.replace("\\n","").replace('  ','').strip()
 		duration = title.split('   ')[-1]
 		title = remove_non_ascii_1(title).split('   ')[0]
 		image = item.find('img')['src']

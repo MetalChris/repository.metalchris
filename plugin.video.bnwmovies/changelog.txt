@@ -1,2 +1,6 @@
+Version 0.0.2
+- Error handling for unavailable movies
+- Code cleanup
+
 Version 0.0.1
 - Initial release.

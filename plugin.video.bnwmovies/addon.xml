@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.bnwmovies" name="Black and White Movies" version="0.0.1" provider-name="MetalChris">
+<addon id="plugin.video.bnwmovies" name="Black and White Movies" version="0.0.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -15,7 +15,7 @@
     <platform>all</platform>
     <license>GPL(v2) or Later</license>
     <forum></forum>
-    <website></website>
+    <website>http://addons.the-antinet.net</website>
     <email></email>
     <source></source>
   </extension>

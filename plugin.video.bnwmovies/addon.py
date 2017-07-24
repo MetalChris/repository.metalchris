@@ -28,6 +28,8 @@ plugin = "Black and White Movies"
 defaultimage = 'special://home/addons/plugin.video.bnwmovies/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.bnwmovies/fanart.jpg'
 defaulticon = 'special://home/addons/plugin.video.bnwmovies/icon.png'
+line1 = 'Download Starting'
+t = 5000
 
 
 local_string = xbmcaddon.Addon(id='plugin.video.bnwmovies').getLocalizedString
@@ -67,7 +69,6 @@ def videos(url):
 		xbmc.log('NURL: ' + str(nurl))
 	for item in soup:
 		title = striphtml(str(item.find('a')))
-		#image = defaultimage#item.find('img',{'typeof':'foaf:Image'})
 		thumbnail = item.find('img')['src']
 		url = item.find('a')['href']
 		purl = 'plugin://plugin.video.bnwmovies?mode=637&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
@@ -86,9 +87,14 @@ def episode(name,url,iconimage):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class': 'box-holder cf centered'})[0]
 	links = re.compile('<source src="(.+?)"').findall(str(soup))#;i = 0
-	xbmc.log('links: ' + str(links))
-	ret = xbmcgui.Dialog().select('Select File',links)
+	if len(links) < 1:
+		xbmcgui.Dialog().notification(name, 'Video Not Available', defaultimage, 5000, False)
+		return videos
+	files = ([link.split('/')[-1].upper() for link in links])
+	ret = xbmcgui.Dialog().select('Select File',files)
 	xbmc.log(str(ret))
+	if ret == -1:
+		return videos
 	url = links[ret]
 	streams(name,url,iconimage)
 
@@ -122,7 +128,7 @@ def downloader(url):
 		if path == "":
 			return
 		html = get_html(url)
-		xbmcgui.Dialog().notification('B&W Movies', 'Getting Download URL.', xbmcgui.NOTIFICATION_INFO, 5000)
+		xbmcgui.Dialog().notification('B&W Movies', 'Getting Download URL.', defaultimage, 5000, False)
 		links = re.compile('<source src="(.+?)"').findall(str(html))
 		ftypes = ([link.split('.')[-1].upper() for link in links])
 		#xbmc.log('links: ' + str(types))
@@ -157,7 +163,7 @@ def downloader(url):
 		if ret == False:
 			return videos
 		else:
-			xbmcgui.Dialog().notification('B&W Movies', 'Download Started.', xbmcgui.NOTIFICATION_INFO, 3000)
+			xbmcgui.Dialog().notification('B&W Movies', 'Download Started.', defaultimage, 3000, False)
 		print 'URL= ' + str(url)
 		print 'Filename= ' + str(file_name)
 		print 'Download Location= ' + str(download)
@@ -179,11 +185,11 @@ def downloader(url):
 			status = "%.2f  [%3.2f%%]" % (file_size_dlMB, file_size_dl * 100. / file_size)
 			status = status + chr(8)*(len(status)+1)
 			if dlsn!='false':
-				xbmcgui.Dialog().notification('B&W Movies Download in Progress', str(status) + ' of ' + ("%.2f" % float(file_sizeMB)) + ' MB', xbmcgui.NOTIFICATION_INFO, 2500)
+				xbmcgui.Dialog().notification('B&W Movies Download in Progress', str(status) + ' of ' + ("%.2f" % float(file_sizeMB)) + ' MB', defaultimage, 2500, False)
 			else:
 				break
 		f.close()
-		xbmcgui.Dialog().notification('B&W Movies', 'Download Completed.', xbmcgui.NOTIFICATION_INFO, 5000)
+		xbmcgui.Dialog().notification('B&W Movies', 'Download Completed.', defaultimage, 5000, False)
 		print 'Download Completed'
 
 
