@@ -110,20 +110,25 @@ def videos(url):
 
 #30
 def streams(name,url):
+	xbmc.log('REDIRECT: ' + str(url))
 	response = get_html(url)
 	link = re.compile('<link rel="video_src" href="(.+?)"').findall(str(response))[0]
-	xbmc.log(str(link))
-	response = get_html(link)
-	keys = re.compile('2,"id":"(.+?)"').findall(str(response))
-	xbmc.log(str(keys))
+	thumbnail = re.compile('<link rel="image_src" href="(.+?)"').findall(str(response))[0]
+	xbmc.log('THUMBNAIL: ' + str(thumbnail))
+	xbmc.log('LINK: ' + str(link))
+	key = link.split('=')[-1]
+	#response = get_html(link)
+	#keys = re.compile('2,"id":"(.+?)"').findall(str(response))
+	#xbmc.log(str(keys))
 	if q =='2':
-		key = keys[-1]
+		qkey = 487091#keys[-1]
 	elif q =='1':
-		key = keys[-4]
+		qkey = 487081#keys[-4]
 	elif q =='0':
-		key = keys[-7]
-	thumbnail = (re.compile('thumbnailUrl":"(.+?)"').findall(str(response))[0]).replace('\/','/')
-	stream = (thumbnail.split('version')[0]).replace('cfvod.kaltura.com','carbonmedia-a.akamaihd.net').replace('thumbnail','serveFlavor') + 'v/2/flavorId/' + key + '/forceproxy/true/name/a.mp4'
+		qkey = 487061#keys[-7]
+	#thumbnail = (re.compile('thumbnailUrl":"(.+?)"').findall(str(response))[0]).replace('\/','/')
+	#stream = (thumbnail.split('version')[0]).replace('cfvod.kaltura.com','carbonmedia-a.akamaihd.net').replace('thumbnail','serveFlavor') + 'v/2/flavorId/' + key + '/forceproxy/true/name/a.mp4'
+	stream = 'https://cdnapisec.kaltura.com/p/1897241/sp/189724100/playManifest/entryId/' + key + '/format/download/protocol/https/flavorParamIds/' + str(qkey)
 	listitem = xbmcgui.ListItem(name, thumbnailImage=thumbnail)
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
