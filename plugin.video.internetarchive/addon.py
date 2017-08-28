@@ -75,9 +75,12 @@ def ia_categories():
 				if str(url)[0] == '/':
 					url = 'https://archive.org' + url
 				if title not in link:
+					title = link.text
+					if len(title) < 1:
+						continue
 					link = str(link)
-					title = re.compile('>(.+?)</a>').findall(link)[0]
-					#print 'Title= ' + str(title)
+					#title = re.compile('>(.+?)</a>').findall(link)[0]
+					print 'TITLE: ' + str(title)
 					if 'img' in title:
 						continue
 					if '</span> ' in title:
@@ -85,11 +88,16 @@ def ia_categories():
 					if 'Understanding' in title:
 						add_directory2(title,'https://archive.org/details/911', 70,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
 						continue
-					if 'All Video' in title:
+					if ('All Video' in title) or ('Just' in title):
+						# Find a better way #
+						title = (title.split(" ", 1))[-1]
+						#
 						mode = 61
 					if title == 'TV News':
 						mode = 62
 						url = 'https://archive.org/details/tvnews'
+					if 'Just' in title:
+						mode = 62
 				url = url +'&page=1' #'?&sort='+default+
 				#print 'IA URL= ' + str(url)
 				add_directory2(title,url, mode,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
@@ -99,7 +107,7 @@ def ia_categories():
 #61
 def ia_sub_cat(url):
 		url = url.split("?")[0]
-		print 'ia sub cat url= ' + str(url)
+		#print 'ia sub cat url= ' + str(url)
 		data = urllib2.urlopen(url).read()
 		soup = BeautifulSoup(data,'html.parser')
 		for item in soup.find_all(attrs={'class': 'collection-title'}):
@@ -128,9 +136,9 @@ def ia_sub_cat(url):
 #62
 def ia_sub2_video(url):
 		page = (url)[-1]
-		print 'page= ' + str(page)
+		#print 'page= ' + str(page)
 		thisurl = url.split("?")[0]
-		print 'thisurl= ' + str(thisurl)
+		#print 'thisurl= ' + str(thisurl)
 		req = urllib2.Request(url)
 		try: data = urllib2.urlopen(req, timeout = 10)
 		except urllib2.HTTPError , e:
@@ -243,15 +251,15 @@ def downloader(url):
 		file_name = url.split('/')[-1]
 		dlsn = settings.getSetting(id="status")
 		bsize = settings.getSetting(id="bsize")
-		print 'bfr Size= ' + str(bsize)
+		#print 'bfr Size= ' + str(bsize)
 		ret = xbmcgui.Dialog().yesno("Internet Archive [Video]", 'Download Selected File?', str(file_name))
 		if ret == False:
 			return ia_sub2_video
 		else:
 			xbmcgui.Dialog().notification('IA [Video]', 'Download Started.', xbmcgui.NOTIFICATION_INFO, 3000)
-		print 'URL= ' + str(url)
-		print 'Filename= ' + str(file_name)
-		print 'Download Location= ' + str(download)
+		print 'URL: ' + str(url)
+		print 'Filename: ' + str(file_name)
+		print 'Download Location: ' + str(download)
 		u = urllib2.urlopen(url)
 		f = open(download+file_name, 'wb')
 		meta = u.info()
@@ -363,7 +371,7 @@ def ia_u911_day_net(name,url):
 		html = get_html(url)
 		datecode = url.rsplit('/', 1)[-1]
 		divid = name.split('-',1)[0].strip() + '_' + datecode
-		print 'divid= ' + str(divid)
+		#print 'divid= ' + str(divid)
 		soup = BeautifulSoup(html,'html.parser')
 		for ndiv in soup.find_all(attrs={'id': divid}):
 			for link in ndiv.find_all('a'):
@@ -410,9 +418,9 @@ def ia_search():
 #66
 def ia_search_video(url):
 		page = (url)[-1]
-		print 'page= ' + str(page)
+		#print 'page= ' + str(page)
 		thisurl = url[:-7]
-		print 'thisurl= ' + str(thisurl)
+		#print 'thisurl= ' + str(thisurl)
 		data = urllib2.urlopen(url).read()
 		soup = BeautifulSoup(data,'html.parser')
 		#print 'SOUP= ' + str(soup)

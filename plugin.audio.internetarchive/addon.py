@@ -52,17 +52,23 @@ def ia_categories():
 				if str(url)[0] == '/':
 					url = 'https://archive.org' + url
 				if title not in link:
+					title = link.text
+					if len(title) < 1:
+						continue
+					if ('All Audio' in title) or ('Just' in title):
+						# Find a better way #
+						title = (title.split(" ", 1))[-1]
 					link = str(link)
-					title = re.compile('>(.+?)</a>').findall(link)[0]
+					#title = re.compile('>(.+?)</a>').findall(link)[0]
 					if 'img' in title:
 						continue
 					if '</span> ' in title:
 						title = re.compile('</span> (.+?)</').findall(link)[0]
-					if title == 'All Audio':
+					if 'All Audio' in title:
 						mode = 61
 					else:
 						mode = 62
-				url = url + '?&page=1'
+				url = url + '&page=1'
 				#print 'IA URL= ' + str(url)
 				add_directory2(title,url, mode,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
 		xbmcplugin.setContent(pluginhandle, 'episodes')
@@ -71,7 +77,7 @@ def ia_categories():
 #61
 def ia_sub_cat(url):
 		url = url.replace('?&page=1','')
-		print 'IA Audio Sub_Cat URL= ' + str(url)
+		#print 'IA Audio Sub_Cat URL= ' + str(url)
 		data = urllib2.urlopen(url).read()
 		soup = BeautifulSoup(data,'html.parser')
 		for item in soup.find_all(attrs={'class': 'collection-title'}):
@@ -95,9 +101,9 @@ def ia_sub_cat(url):
 #62
 def ia_sub2_audio(name,url):
 		page = (url)[-1]
-		print 'page= ' + str(page)
+		#print 'page= ' + str(page)
 		thisurl = url[:-7]
-		print 'thisurl= ' + str(thisurl)
+		#print 'thisurl= ' + str(thisurl)
 		req = urllib2.Request(url)
 		try: data = urllib2.urlopen(req, timeout = 5)
 		except urllib2.HTTPError , e:
@@ -214,9 +220,9 @@ def ia_search():
 
 def ia_search_audio(url):
 		page = (url)[-1]
-		print 'page= ' + str(page)
+		#print 'page= ' + str(page)
 		thisurl = url[:-7]
-		print 'thisurl= ' + str(thisurl)
+		#print 'thisurl= ' + str(thisurl)
 		data = urllib2.urlopen(url).read()
 		soup = BeautifulSoup(data,'html.parser')
 		for item in soup.find_all(attrs={'class': 'item-ttl C C2'}):
@@ -264,15 +270,15 @@ def downloader(url):
 		file_name = url.split('/')[-1]
 		dlsn = settings.getSetting(id="status")
 		bsize = settings.getSetting(id="bsize")
-		print 'bfr Size= ' + str(bsize)
+		#print 'bfr Size= ' + str(bsize)
 		ret = xbmcgui.Dialog().yesno("Internet Archive [Audio]", 'Download Selected File?', str(file_name))
 		if ret == False:
 			return ia_sub2_video
 		else:
 			xbmcgui.Dialog().notification('IA [Audio]', 'Download Started.', xbmcgui.NOTIFICATION_INFO, 5000)
-		print 'URL= ' + str(url)
-		print 'Filename= ' + str(file_name)
-		print 'Download Location= ' + str(download)
+		print 'URL: ' + str(url)
+		print 'Filename: ' + str(file_name)
+		print 'Download Location: ' + str(download)
 		u = urllib2.urlopen(url)
 		f = open(download+file_name, 'wb')
 		meta = u.info()

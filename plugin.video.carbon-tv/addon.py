@@ -87,7 +87,6 @@ def shows(url):
 		title = item.find('h3').string.encode('utf-8').strip()
 		image = item.find('img')['src']
 		show_id = image.split('/')
-		#url = 'http://www.carbontv.com' + item.find('a')['href']
 		url = 'http://www.carbontv.com/videos/recent/episodes/limit:999/show_id:' + show_id[9]
 		add_directory2(title,url,20,image,image,plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
@@ -110,16 +109,10 @@ def videos(url):
 
 #30
 def streams(name,url):
-	xbmc.log('REDIRECT: ' + str(url))
 	response = get_html(url)
 	link = re.compile('<link rel="video_src" href="(.+?)"').findall(str(response))[0]
 	thumbnail = re.compile('<link rel="image_src" href="(.+?)"').findall(str(response))[0]
-	xbmc.log('THUMBNAIL: ' + str(thumbnail))
-	xbmc.log('LINK: ' + str(link))
 	key = link.split('=')[-1]
-	#response = get_html(link)
-	#keys = re.compile('2,"id":"(.+?)"').findall(str(response))
-	#xbmc.log(str(keys))
 	if q =='2':
 		qkey = 487091#keys[-1]
 	elif q =='1':
@@ -148,16 +141,16 @@ def play(url):
 
 
 def add_directory2(name,url,mode,fanart,thumbnail,plot):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&thumbnail=" + urllib.quote_plus(thumbnail)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-		liz.setInfo( type="Video", infoLabels={ "Title": name,
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&thumbnail=" + urllib.quote_plus(thumbnail)
+	ok=True
+	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
+	liz.setInfo( type="Video", infoLabels={ "Title": name,
 												"plot": plot} )
-		if not fanart:
-			fanart=''
-		liz.setProperty('fanart_image',fanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
-		return ok
+	if not fanart:
+		fanart=''
+	liz.setProperty('fanart_image',fanart)
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
+	return ok
 
 def get_html(url):
 	req = urllib2.Request(url)
@@ -205,15 +198,15 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 
 
 def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-		liz.setInfo( type="Video", infoLabels={ "Title": name } )
-		if not fanart:
-			fanart=defaultfanart
-		liz.setProperty('fanart_image',fanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-		return ok
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+	ok=True
+	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+	liz.setInfo( type="Video", infoLabels={ "Title": name } )
+	if not fanart:
+		fanart=defaultfanart
+	liz.setProperty('fanart_image',fanart)
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+	return ok
 
 
 def unescape(s):
