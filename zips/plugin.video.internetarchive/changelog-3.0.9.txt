@@ -1,0 +1,33 @@
+Version 3.0.9
+- Fixes for website changes 08/27/2017
+
+Version 3.0.8
+- Code cleanup/changes to enhance speed of add-on
+- Change to improve search function
+
+Version 3.0.7
+- Fix for website changes 05/03/2017
+
+Version 3.0.6
+- Fix for archive.org page code change
+
+Version 3.0.5
+- Added context menu option to download files
+- Added option in add-on settings to set download folder and display download status
+
+Version 3.0.4
+- Enabled use of infoLabels
+- Added option in add-on settings for sort method
+
+Version 3.0.3
+- Understanding 9/11 section is now working
+- Fixed a bug where multiple files were ignored if a playlist file was not present
+
+Version 3.0.2
+- Removed developmental code remnants that caused issues for some users
+
+Version 3.0.1
+- Fix addon.xml
+
+Version 3.0.0
+- Initial release.

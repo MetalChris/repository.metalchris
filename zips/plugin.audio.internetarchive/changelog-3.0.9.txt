@@ -1,0 +1,35 @@
+Version 3.0.9
+- Fixes for website changes 08/27/2017
+
+Version 3.0.8
+- Code cleanup/changes to enhance speed of add-on
+- Change to improve search function
+
+Version 3.0.7
+- Fix for website changes 05/03/2017
+
+Version 3.0.6
+- Fix for error caused by incorrect path for settings file
+
+Version 3.0.5
+- Fix for archive.org page code change
+- Added context menu option to download files
+- Added option in add-on settings to set download folder and display download status
+
+Version 3.0.4
+- Now makes use of InfoLabels to display some file info
+- Appending recording 'Lineage' when available to Title
+- Changed the way files are grabbed (again), since grabbing the m3u file did not work as well as expected
+- Added some error handling
+
+Version 3.0.3
+- Changed code to grab playlist file (m3u) if available, otherwise code will grab single media file
+
+Version 3.0.2
+- Removed developmental code remnants that caused issues for some users
+
+Version 3.0.1
+- Fix addon.xml
+
+Version 3.0.0
+- Initial release.
