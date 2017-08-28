@@ -278,7 +278,7 @@ def downloader(url):
 			status = "%.2f  [%3.2f%%]" % (file_size_dlMB, file_size_dl * 100. / file_size)
 			status = status + chr(8)*(len(status)+1)
 			if dlsn!='false':
-				xbmcgui.Dialog().notification('IA [Video] Download in Progress', str(status) + ' of ' + ("%.2f" % float(file_sizeMB)) + ' MB', xbmcgui.NOTIFICATION_INFO, 2500)
+				xbmcgui.Dialog().notification('IA [Video] Download in Progress', str(status) + ' of ' + ("%.2f" % float(file_sizeMB)) + ' MB', xbmcgui.NOTIFICATION_INFO, 2500, False)
 			else:
 				break
 		f.close()
