@@ -3,9 +3,9 @@
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/> 
-    <import addon="script.module.requests" version="2.9.1"/> 
-    <import addon="script.module.pytz" version="2014.2"/> 
+    <import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.pytz" version="2014.2"/>
     </requires>
     <extension point="xbmc.python.pluginsource"
                library="addon.py">
@@ -19,5 +19,6 @@
 
 120 Sports is a first-of-its-kind network partnership involving multiple leagues and media properties created for the digital generation and the devices it uses most.</description>
         <disclaimer lang="en"></disclaimer>
+    <broken>I'm not going to fix this.</broken>
     </extension>
 </addon>

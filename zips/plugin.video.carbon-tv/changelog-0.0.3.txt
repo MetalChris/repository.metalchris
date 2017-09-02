@@ -1,0 +1,9 @@
+Version 0.0.3
+- Fix for change in stream url format
+- Minor code cleanup and changes
+
+Version 0.0.2
+- Update for website changes (02-11-2017)
+
+Version 0.0.1
+- Initial release

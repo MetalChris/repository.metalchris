@@ -100,9 +100,18 @@ def videos(url):
 	for item in soup:
 		title = item.find('h5').string.encode('utf-8').strip()
 		url = 'http://www.carbontv.com' + item.find('a',{'class':'content-image video-link'})['href']
-		#duration = striphtml(str(item.find('div',{'class':'thumb-duration'})))#.string.encode('utf-8')
-		image = item.find('img',{'class':'category-image full-image'})['src']
-		add_directory2(title,url,30,image,image,plot='')
+		duration = striphtml(str(item.find('div',{'class':'thumb-duration'})))#.string.encode('utf-8')
+		runtime = get_sec(duration)
+		thumbnail = item.find('img',{'class':'category-image full-image'})['src']
+		purl = 'plugin://plugin.video.carbon-tv?mode=30&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
+		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
+		li.setProperty('fanart_image', thumbnail)
+		li.setProperty('mimetype', 'video/mp4')
+		li.addStreamInfo('video', { 'duration': runtime })
+		#li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url)),('Plot Info', 'XBMC.RunPlugin(%s?mode=81&url=%s)' % (sys.argv[0], url))])
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li)
+		xbmcplugin.setContent(addon_handle, 'episodes')
+		#add_directory2(title,url,30,thumbnail,thumbnail,plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
@@ -126,6 +135,14 @@ def streams(name,url):
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
 	xbmcplugin.endOfDirectory(addon_handle)
+
+
+def get_sec(time_str):
+	try: h, m, s = time_str.split(':')
+	except ValueError:
+		m, s = time_str.split(':')
+		return int(m) * 60 + int(s)
+	return int(h) * 3600 + int(m) * 60 + int(s)
 
 
 def striphtml(data):
@@ -182,31 +199,6 @@ def get_params():
 				param[splitparams[0]] = splitparams[1]
 
 	return param
-
-
-def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
-	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-	ok = True
-	liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-	liz.setInfo(type="Video", infoLabels={"Title": name})
-	liz.setProperty('IsPlayable', 'true')
-	if not fanart:
-		fanart=defaultfanart
-	liz.setProperty('fanart_image',fanart)
-	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
-	return ok
-
-
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-	ok=True
-	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-	liz.setInfo( type="Video", infoLabels={ "Title": name } )
-	if not fanart:
-		fanart=defaultfanart
-	liz.setProperty('fanart_image',fanart)
-	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-	return ok
 
 
 def unescape(s):
