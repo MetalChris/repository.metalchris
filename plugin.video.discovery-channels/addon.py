@@ -4,19 +4,18 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, platform, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, platform, re, xbmcplugin, sys, os
 import requests
 import simplejson as json
 from bs4 import BeautifulSoup
 import html5lib
 import mechanize
-
-br = mechanize.Browser()
-br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/48.0')]
+import cookielib
 
 artbase = 'special://home/addons/plugin.video.discovery-channels/resources/media/'
-#_addon = xbmcaddon.Addon()
-#_addon_path = _addon.getAddonInfo('path')
+_addon = xbmcaddon.Addon()
+_addon_path = _addon.getAddonInfo('path')
+addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
 selfAddon = xbmcaddon.Addon(id='plugin.video.discovery-channels')
 #self = xbmcaddon.Addon(id='plugin.video.discovery-channels')
 translation = selfAddon.getLocalizedString
@@ -24,6 +23,15 @@ translation = selfAddon.getLocalizedString
 settings = xbmcaddon.Addon(id="plugin.video.discovery-channels")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
+
+CookieJar = cookielib.LWPCookieJar(os.path.join(addon_path_profile, 'cookies.lwp'))
+br = mechanize.Browser()
+br.set_cookiejar(CookieJar)
+br.set_handle_robots(False)
+br.set_handle_equiv(False)
+#br.addheaders = [('Host', 'api.discovery.com')]
+br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0')]
+#br.addheaders = [('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpZCI6ImRiZmIyZmZhZWYxYmJjMmUxZGIwMGM0MjYzZTg2OThjYTBkZmQ4NTgiLCJqdGkiOiJkYmZiMmZmYWVmMWJiYzJlMWRiMDBjNDI2M2U4Njk4Y2EwZGZkODU4IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLmRpc2NvdmVyeS5jb20iLCJhdWQiOiIzMDIwYTQwYzIzNTZhNjQ1YjRiNCIsInN1YiI6eyJmbG93IjoiYW5vbnltb3VzIiwiYXV0aGVudGljYXRvciI6IkRpc2NvdmVyeSIsInV1aWQiOiJFT1MtVVNOZXRzIChXZWJcL1NpdGVzKSIsImFhdCI6MTUwNDM5MTcwN30sImV4cCI6MTUwNDM5NTMwNywiaWF0IjoxNTA0MzkxNzA3LCJ0b2tlbl90eXBlIjoiYmVhcmVyIiwic2NvcGUiOnsiY29udGVudCI6W10sInN0cmVhbWluZyI6eyJ2b2QiOnsiYXV0aGVudGljYXRlZCI6eyJmaWx0ZXIiOnsibmV0d29ya3MuY29kZSI6W119fSwidW5hdXRoZW50aWNhdGVkIjpbXX0sImxpdmUiOnsiYXV0aGVudGljYXRlZCI6eyJmaWx0ZXIiOnsibmV0d29ya3MuY29kZSI6W119fSwidW5hdXRoZW50aWNhdGVkIjpbXX19LCJzZWFyY2giOltdLCJpbWFnZXMiOnsiYXNzZXQiOltdfX19.FnkVjccXgTKe6Urw5SF8-0_aFsUH-ff9MX21BgzDpCZDXA-AsZ_3zGSBtSzNHwGYFJHq-pTVTngi-KUSLKheAxh5qF5jdJqMZcQjv1MSfxV0mJzvW2JPvAeKgE3Uwv8s0VkiMJshF3zgu8pyuWpUQsH_2BFXYhaPL36-bboeGUBysbl_e0UrmQdCWkKtL92HPrOtw86HdhVGwPGtSf_fct5xh46Bksuep5cXveoFkYy7xxZM4WMyZ14MoQBix953SClQmPtYXtct7NIuAaoF22T-FpLuy6gcDtd1k_6i_LKoUSRpK_td0_oCyrgvcS6TEShDqj4WDIxXnKhE2wcfo79WCnQpEcr83Mxt0LmyFuaJSakTV6E0pU9qQHNPLbG5uUotGkrDDmH_mmQK3-OikdUdV_1MbNu6qbKC0Jf-d1y4uMdca_W31CqmFKjzvcXdRYTr_EGgmQZnSIeRF7X90yh7x9mcFv78nDN2fOiCAe_vcw-boIfYViHYYmjObH4_U1S08XTa9QqI08R9LSCI3TXK0jUmAlpvwmkrmApifMmd4Z5xc-SLvvabOL0vHASdBbcqwesgsHyJda98chnfewabs2V0SZOC263I2IfJ8VKt9ZdJIR06qL4Udwol3w4DAWEM7qaS0F-HssN4Bbhs4EwugP6sUT9-ehzOL612lgQ')]
 
 plugin = "Discovery Channels"
 
@@ -80,8 +88,8 @@ def channels():
 
 #525
 def dsc_menu(url):
-	site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com/videos/'
-	print site
+	site = 'https://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com/tv-shows/'
+	xbmc.log('SITE: ' + str(site))
 	br.set_handle_robots( False )
 	response = br.open(url)
 	page = response.get_data()
@@ -96,6 +104,7 @@ def dsc_menu(url):
 		soup = BeautifulSoup(page,'html5lib').find_all('div',{'class':'carousel-wrapper'})
 	for item in soup[2:3]:
 		ctitle = item.find('h3')
+		xbmc.log('CTITLE: ' + str(ctitle))
 	if ctitle is not None and 'Unlocked' in ctitle:
 		xbmc.log('====================MATCH')
 		xbmc.log('Getting Unlocked Episodes')
@@ -114,7 +123,7 @@ def dsc_menu(url):
 		month = month.lstrip('0')
 		expiry = str(month) + '/' + str(day) + '/' + str(year)
 		key = datashowslug[i] + '/' + dataslug[i]
-		url = 'http://www.discoverygo.com/' + str(key)
+		url = 'https://www.discoverygo.com/' + str(key)
 		try: description = plot[i]
 		except IndexError:
 			description = 'No Description Available' #plot[-1]
@@ -132,18 +141,21 @@ def dsc_menu(url):
 	if not 'tlc.com' in site:
 		addDir('Find More Episodes From ' + name, url, 80, iconimage, artbase + 'fanart2.jpg')
 		addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
-	else:
-		addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
-		xbmcplugin.setContent(addon_handle, 'episodes')
+	#else:
+		#addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
+		#xbmcplugin.setContent(addon_handle, 'episodes')
 	views = settings.getSetting(id="views")
 	if views != 'false':
 		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
+#80
 def find_more(url):
-		site = 'http://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + 'go.com'
-		print site
+		#site = 'https://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + 'go.com'
+		#xbmc.log(site
+		#base = url.partition('/')[0]
+		#xbmc.log(base
 		br.set_handle_robots( False )
 		response = br.open(url)
 		page = response.get_data()
@@ -157,15 +169,16 @@ def find_more(url):
 			xbmc.log('PARSER: ' + 'html5lib')
 			soup = BeautifulSoup(page,'html5lib').find_all('div',{'class':'item small'})
 		#soup4 = BeautifulSoup(html).find_all('div',{'class':'item small'})
-		#xbmc.log ('SOUP: ' + str(len(soup4)))
+		xbmc.log ('SOUP: ' + str(len(soup)))
 		for item in soup:
 			title = (item.find('img')['alt']).encode('utf-8').replace('&amp;', '&').replace('&#x27;','\'').replace('&quot;','\'').replace('&rsquo;','\'')
-			expire = str(re.compile('data-expiration="(.+?)"').findall(str(item))[-1])
-			expire = (expire.split('T')[0]).split('-')
-			year = expire[0]; month = expire[1]; day = (int(expire[2]) - 1)
-			month = month.lstrip('0')
+			xbmc.log('TITLE: ' + str(title))
+			expire = str(re.compile('data-expiration="(.+?)"').findall(str(item))[-1]).split('T')[0].split('-')
+			#expire = (expire.split('T')[0]).split('-')
+			year = expire[0]; month = expire[1].lstrip('0'); day = (int(expire[2]) - 1)
+			#month = month.lstrip('0')
 			expiry = str(month) + '/' + str(day) + '/' + str(year)
-			pageurl = site + item.find('a')['href']
+			pageurl = 'https://www.discoverygo.com' + item.find('a')['href']
 			try: description = item.find('p').text.strip()
 			except TypeError:
 				description = 'No Description Available' #plot[-1]
@@ -208,36 +221,83 @@ def discovery_shows(name,url):
 
 #532
 def discovery_clips(url, iconimage):
-	try: response = urllib2.urlopen(url)
+	site = url.split('/tv')[0]
+	try: html = urllib2.urlopen(url)
 	except urllib2.HTTPError:
 		xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
 		return
-	try: dscdata = json.load(response)
-	except ValueError:
-		xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
+	#try: dscdata = json.load(response)
+	#except ValueError:
+		#xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
+		#return
+	#list_clips(dscdata)
+	soup = BeautifulSoup(html,'html5lib').find_all("a",{"class":"thumbnailTile__link"})
+	#xbmc.log(soup[0]
+	for item in soup:
+		title = item.find('div',{'class':'thumbnailTile__lineTwo'}).text.encode('ascii', 'ignore')
+		if 'Season' in title:
+			continue
+		link = site + item.get('href')
+		add_directory2(title, link, 550, artbase + 'fanart2.jpg', iconimage,plot='')
+	xbmcplugin.endOfDirectory(addon_handle)
+
+
+#550
+def get_clips(name,url):
+	r = requests.get(url)
+	video_id = re.compile('platform=desktop&video_id=(.+?)&networks').findall(str(r.content))[0]
+	xbmc.log('VIDEO_ID: ' + str(video_id))
+	video_url = 'http://api.discovery.com/v1/streaming/video/' + video_id + '?platform=desktop'
+	opener = urllib2.build_opener()
+	xbmc.log('COOKIES LENGTH: ' + str(len(r.cookies)))
+	if len(str(r.cookies)) < 1:
+		xbmcgui.Dialog().notification(name, 'Currently Unavailable.  Try Again Later', iconimage, 5000, False)
+		xbmc.log('CURRENTLY UNAVAILABLE')
 		return
-	list_clips(dscdata)
+	#xbmc.log('COOKIES: ' + str(r.cookies))
+	#xbmc.log(r.request.headers
+	#auth = re.findall(r'%2522%253A%2522.*\n', str(r.cookies), flags=re.MULTILINE)
+	auth = 'Bearer ' + re.compile('%2522%253A%2522(.+?)%2522%252C%2522').findall(str(r.cookies))[0]
+	opener.addheaders.append(('Host', 'api.discovery.com'))
+	opener.addheaders.append(('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0'))
+	opener.addheaders.append(('Referer', url))
+	opener.addheaders.append(('Authorization', auth))
+	f = opener.open(video_url)
+	page = f.read()
+	jsob = json.loads(page)
+	stream = jsob['streamUrl']
+	xbmc.log('STREAM: ' + str(stream))
+	PLAY(name,stream)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #533
 def other_shows(url, iconimage):
-	print url, iconimage
-	add_directory2('Search', url, 538, artbase + 'fanart2.jpg', iconimage,plot='')
+	xbmc.log('ICONIMAGE: ' + str(iconimage))
+	site = url.replace('/tv-shows/','')
+	xbmc.log('SITE: ' + str(site))
+	#add_directory2('Search', url, 538, artbase + 'fanart2.jpg', iconimage,plot='')
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all("ul",{"class":"show-list"})[0]
-	for show in soup.find_all("h6"):
-		tvshow = show.get('data-value-display').encode('utf-8').replace("\\'","'")
+	soup = BeautifulSoup(html,'html5lib').find_all("div",{"class":"headerMain__showDropDesktop"})[0]
+	for show in soup.find_all("a")[1:]:
+		tvshow = show.text.encode('utf-8')#.replace("\\'","'")
 		if not 'tlc.com' in url:
-			link = url.replace('videos', 'tv-shows') + show.get('data-ssid').split('/')[-1] + '?flat=1'
-		mode = 532
-		if 'velocity' in url:
-			link = velocity_clips(link)
-			mode = 542
+			link = site + show.get('href')#url.replace('videos', 'tv-shows') + show.get('data-ssid').split('/')[-1] + '?flat=1'
+			mode = 532
 		else:
 			link = url.replace('videos', 'tv-shows') + show.get('data-ssid').split('/')[-1] + '?flat=2'
-		mode = 534
+			mode = 534
+		if 'aerospace' in link:
+			continue
+			#xbmc.log('LINK: ' + str(link))
+		#if 'velocity' in url:
+			#link = velocity_clips(link)
+			#mode = 542
+		#else:
+			#link = url.replace('videos', 'tv-shows') + show.get('data-ssid').split('/')[-1] + '?flat=2'
+		#mode = 534
 		add_directory2(tvshow, link, mode, artbase + 'fanart2.jpg', iconimage,plot='')
-		#print link
+		#xbmc.log(link
 		views = settings.getSetting(id="views")
 		if views != 'false':
 			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
@@ -309,11 +369,18 @@ def kids_clips(url,iconimage):
 def kids_stream(name,url):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib')
-	try: url = soup.find('source')['src']
+	try: url = soup.find('iframe')['src']
 	except TypeError:
 		xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
 		return
-	play(url)
+	if 'facebook' in url:
+		html = get_html(url)
+		stream = (re.compile('hd_src_no_ratelimit":"(.+?)"').findall(str(html))[0]).replace('\\','')
+		xbmc.log('STREAM: ' + str(stream))
+	else:
+		xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
+		return
+	play(stream)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -387,7 +454,7 @@ def get_json(url):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib')
 	data = re.compile('var initialVideoData = (.+?);</script>').findall(str(soup))[-1]
-	print len(str(data))
+	xbmc.log ('DATA LENGTH: ' + (str(len(data))))
 	try: dscdata = json.loads(data)
 	except ValueError:
 		xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
@@ -464,7 +531,7 @@ def PLAY(name,url):
 
 #999
 def play(url):
-	print url
+	xbmc.log('URL: ' + str(url))
 	item = xbmcgui.ListItem(path=url + '&m3u8=yes')
 	item.setProperty('IsPlayable', 'true')
 	return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
@@ -497,8 +564,8 @@ def add_directory3(name,url,mode,fanart,thumbnail,plot):
 		#liz.setProperty('mimetype', 'vnd.apple.mpegURL')
 		#commands = []
 		#commands.append
-		#li.addContextMenuItems([('Download File', 'XBMC.RunScript(special://home/addons/plugin.video.internetarchive/downloader.py)',)])
-		#liz.addContextMenuItems([('Find More Episodes', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url))])
+		#li.addContextMenuItems([('Download File', 'XBMC.RunScript(special://home/addons/plugin.video.discovery-channels/downloader.py)',)])
+		#liz.addContextMenuItems([('Find More Episodes', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (addon_handle, url))])
 		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False, totalItems=40)
 		return ok
 
@@ -601,63 +668,66 @@ try:
 except:
 	pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode))
+xbmc.log("URL: " + str(url))
+xbmc.log("Name: " + str(name))
 
 if mode == None or url == None or len(url) < 1:
-	print "Discovery Channels"
+	xbmc.log("Discovery Channels")
 	channels()
 elif mode==80:
-	print "Find More"
+	xbmc.log("Find More")
 	find_more(url)
 elif mode==525:
-	print "DSC Menu"
+	xbmc.log("DSC Menu")
 	dsc_menu(url)
 elif mode==530:
-	print "Discovery Menu"
+	xbmc.log("Discovery Menu")
 	discovery_menu(url)
 elif mode==531:
-	print "Discovery Shows"
+	xbmc.log("Discovery Shows")
 	discovery_shows(name,url)
 elif mode==532:
-	print "Discovery Clips"
+	xbmc.log("Discovery Clips")
 	discovery_clips(url, iconimage)
 elif mode==533:
-	print "Other Clips"
+	xbmc.log("Other Clips")
 	other_shows(url, iconimage)
 elif mode==534:
-	print "Get TLC Clips"
+	xbmc.log("Get TLC Clips")
 	tlc_clips(url, iconimage)
 elif mode==535:
-	print "Get DSC Kids"
+	xbmc.log("Get DSC Kids")
 	dsc_kids(url)
 elif mode==536:
-	print "Get Kids Clips"
+	xbmc.log("Get Kids Clips")
 	kids_clips(url, iconimage)
 elif mode==537:
-	print "Get Kids Stream"
+	xbmc.log("Get Kids Stream")
 	kids_stream(name,url)
 elif mode==538:
-	print "Search"
+	xbmc.log("Search")
 	search(url)
 elif mode==539:
-	print "Get Search"
+	xbmc.log("Get Search")
 	get_search(url)
 elif mode==540:
-	print "Search Streams"
+	xbmc.log("Search Streams")
 	search_streams(url)
 elif mode==541:
-	print "Velocity Clips"
+	xbmc.log("Velocity Clips")
 	velocity_clips(url)
 elif mode==542:
-	print "Velocity JSON"
+	xbmc.log("Velocity JSON")
 	get_json(url)
+elif mode==550:
+	xbmc.log("Get Clips")
+	get_clips(name,url)
 elif mode == 99:
-	print "PLAY Video"
+	xbmc.log("PLAY Video")
 	PLAY(name,url)
 elif mode==999:
-	print "Play Video"
+	xbmc.log("Play Video")
 	play(url)
 
 
