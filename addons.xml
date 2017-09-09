@@ -134,11 +134,11 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.fox" name="FOX" version="0.0.3" provider-name="MetalChris">
+<addon id="plugin.video.fox" name="FOX" version="0.0.4" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
@@ -783,7 +783,7 @@ Watch a Message, do Church Online Live, get Involved. Our mission is to lead peo
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="2.8.0" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="2.8.1" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
