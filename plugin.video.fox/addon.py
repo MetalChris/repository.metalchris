@@ -4,9 +4,9 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys, os
 from bs4 import BeautifulSoup
-
+import simplejson as json
 
 artbase = 'special://home/addons/plugin.video.fox/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -19,6 +19,7 @@ settings = xbmcaddon.Addon(id="plugin.video.fox")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 confluence_views = [500,501,502,503,504,508]
+addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
 
 plugin = "FOX"
 
@@ -37,13 +38,13 @@ airdate = ''
 
 #633
 def shows():
-	response = get_html('http://www.fox.com/full-episodes')
-	soup = BeautifulSoup(response,'html.parser').find_all('li',{'class':'leaf depth-3'})
+	response = get_html('http://www.fox.com/shows')
+	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class':'Tile_tile_3qaLc MovieTile_tile_1a04u Tile_fadeAnimated_1K79m Tile_clickable_3dKX4'})
+	#xbmc.log('SOUP: ' + str(soup[0]))
 	for show in soup:
-		title = striphtml(str(show.find('a')))
-		url = show.find('a')['href']
-		if not 'full-episodes' in url:
-			url = url + '/full-episodes'
+		title = re.compile('span>(.+?)</').findall(str(show))[0]
+		title = re.sub(r'\([^)]*\)', '', title)
+		url = 'https://www.fox.com' + show.find('a')['href']
 		thumbnail = defaultimage
 		add_directory2(title, url, 636, defaultfanart, thumbnail, plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
@@ -61,55 +62,92 @@ def FOX_videos(url):
 		xbmcgui.Dialog().notification(name, 'No Episodes Available', defaultimage, 5000, False)
 		sys.exit()
 		xbmc.log('PAGE NOT FOUND')
-	soup = BeautifulSoup(response,'html.parser').find_all('div')
+	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class':'Tile_details_9UwiV'})
 	xbmc.log('SOUP: ' + str(len(soup)))
-	for item in soup:
-		if not item.find('h2'):
-			continue
-		if not item.find('div',{'class':'views-field views-field-field-image-thumb'}):
-			continue
+	for item in soup[:5]:
 		if item.find('div',{'class':'video-lock mvpd-locked'}):
 			continue
-		title = item.find('h2').text.encode('utf-8')
+		title = item.find('div',{'class':'Tile_titleWrapper_1Ub6U'}).text.encode('ascii', 'ignore')
 		if 'FULL EPISODES' in title:
 			continue
-		url = 'http://www.fox.com' + item.find('a')['href']
-		purl = 'plugin://plugin.video.fox?mode=637&url=' + url
-		image = item.find('img',{'typeof':'foaf:Image'})
-		thumbnail = image.get('src')
-		airdate = item.find('span',{'class':'date-display-single'})#.text
-		airdate = airdate.get('content').split('T')[0].replace('-','/')
-		ep = item.find('span',{'class':'ep-num'}).text.split(' ')[-1]
-		if not item.find('p'):
-			continue
-		description = item.find('p').text
+		#image = item.find('img',{'typeof':'foaf:Image'})
+		thumbnail = defaultimage#image.get('src')
+		url_key = item.find('a')['href'].replace('/watch/','')
+		url = 'https://api.fox.com/fbc-content/v1_4/screens/video-detail/' + url_key
+		purl = 'plugin://plugin.video.fox?mode=637&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
+		#airdate = item.find('p').text.split(' ')[1].encode('ascii', 'ignore')
+		airdate = item.find('p').text.split(' ')[1].encode('ascii', 'ignore').split('-')
+		month = airdate[0]; day = airdate[1]; year = '20' + airdate[2]
+		if int(month) < 10:
+			month = '0' + str(month)
+		if int(day) < 10:
+			day = '0' + str(day)
+		airdate = str(month) + '/' + str(day) + '/' + str(year)
+		season = title.split(' ')[0].replace('S','')
+		episode = title.split(' ')[1].replace('E','')
+		ep = season + episode
+		description = item.find('a',{'class':'Tile_subtitle_OzXVN'}).text
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
 		li.setProperty('fanart_image', defaultfanart)
-		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Episode": ep, "Premiered": airdate})
+		#li.setInfo(type="Video", infoLabels={"Title": title, "Episode": ep, "Plot": description, "Premiered": airdate})
+		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Premiered": airdate})
 		#li.addStreamInfo('video', { 'duration': duration })
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li)
 		xbmcplugin.setContent(addon_handle, 'episodes')
-    	xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
+		xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
+	xbmc.log('EPISODE: ' + str(ep))
 	#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
+def episode(name,url,iconimage):
+	response = get_json(url)
+	xbmcgui.Dialog().notification(name, 'Getting URL', defaultimage, 5000, False)
+	jsob = json.loads(response)
+	videoReleaseURL = jsob['panels']['member'][0]['items']['member'][0]['videoRelease']['url']
+	xbmcgui.Dialog().notification(name, 'Following Redirect', defaultimage, 5000, False)
+	redirect = get_redirected_url(videoReleaseURL)
+	xbmcgui.Dialog().notification(name, 'Fetching Stream URL', defaultimage, 5000, False)
+	r = get_json(redirect)
+	jsob = json.loads(str(r))
+	stream = jsob['playURL']
+	xbmc.log('playURL: ' + str(stream))
+	streams(name,stream,iconimage)
+	xbmcplugin.endOfDirectory(addon_handle)
+
+
 #637
-def episode(url):
+def _episode(name,url,iconimage):
 	response = get_html(url)
+	stream = re.compile('VOD","url":"(.+?)"').findall(response)[0]
+	xbmc.log('STREAM: ' + str(stream))
 	platform = re.compile('release_url":"(.+?)"').findall(response)[0].replace('\\','') + '&manifest=m3u'
 	xbmc.log('PLATFORM: ' + str(platform))
-	streams(platform)
+	streams(name,platform,iconimage)
 
 
 #650
-def streams(url):
-	response = get_html(url)
-	stream = re.compile('video src="(.+?)"').findall(str(response))[0]
-	xbmc.log('STREAM: ' + str(stream))
-	xbmc.Player().play( stream )
+def streams(name,url,iconimage):
+	#response = get_html(url)
+	#stream = re.compile('video src="(.+?)"').findall(str(response))[0]
+	item = xbmcgui.ListItem(name, path=url, thumbnailImage=iconimage)
+	xbmc.log('STREAM: ' + str(url))
+	xbmc.Player().play( url, item )
 	sys.exit("Stop Video")
 	xbmcplugin.endOfDirectory(addon_handle)
+
+
+def get_redirected_url(url):
+	opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
+	opener.addheaders.append(('Host', 'api.fox.com'))
+	opener.addheaders.append(('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0'))
+	opener.addheaders.append(('Accept','application/json, text/plain, */*'))
+	#opener.addheaders.append(('apikey','abdcbed02c124d393b39e818a4312055'))
+	try:request = opener.open(url)
+	except urllib2.HTTPError:
+		xbmcgui.Dialog().notification(name, 'Stream Not Available', defaultimage, 5000, False)
+		sys.exit()
+	return request.url
 
 
 def striphtml(data):
@@ -153,13 +191,34 @@ def get_html(url):
 	req = urllib2.Request(url)
 	req.add_header('Host','www.fox.com')
 	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/50.0')
-	req.add_header('Referer','http://www.fox.com')
+	#req.add_header('Referer','http://www.fox.com')
 
 	try:
 		response = urllib2.urlopen(req)
 		html = response.read()
 		response.close()
 	except urllib2.HTTPError:
+		response = False
+		html = False
+	return html
+
+def get_json(url):
+	req = urllib2.Request(url)
+	#xbmc.log('JSON_URL: ' + str(url))
+	host = url.split('/')[2]
+	xbmc.log('HOST: ' + str(host))
+	req.add_header('Host', host)
+	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/50.0')
+	#req.add_header('Accept','application/json, text/plain, */*')
+	req.add_header('apikey','abdcbed02c124d393b39e818a4312055')
+
+	try:
+		response = urllib2.urlopen(req)
+		html = response.read()
+		response.close()
+	except urllib2.HTTPError, error:
+		message = error.read()
+		xbmc.log('ERROR: ' + str(message))
 		response = False
 		html = False
 	return html
@@ -234,7 +293,7 @@ elif mode==636:
 	FOX_videos(url)
 elif mode==637:
 	xbmc.log("FOX Episode")
-	episode(url)
+	episode(name,url,iconimage)
 elif mode==638:
 	xbmc.log("FOX Most Watched")
 	most_watched(name,url)
@@ -243,6 +302,6 @@ elif mode==639:
 	more_shows(name,url)
 elif mode==650:
 	xbmc.log("FOX Shows")
-	streams(url)
+	streams(name,url,iconimage)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
