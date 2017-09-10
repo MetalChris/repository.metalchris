@@ -43,6 +43,8 @@ def shows():
 	#xbmc.log('SOUP: ' + str(soup[0]))
 	for show in soup:
 		title = re.compile('span>(.+?)</').findall(str(show))[0]
+		if not '(' in title:
+			continue
 		title = re.sub(r'\([^)]*\)', '', title)
 		url = 'https://www.fox.com' + show.find('a')['href']
 		thumbnail = defaultimage
@@ -95,7 +97,6 @@ def FOX_videos(url):
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li)
 		xbmcplugin.setContent(addon_handle, 'episodes')
 		xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
-	xbmc.log('EPISODE: ' + str(ep))
 	#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
