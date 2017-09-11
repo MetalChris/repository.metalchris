@@ -99,14 +99,14 @@ def FOX_videos(url):
 		purl = 'plugin://plugin.video.fox?mode=637&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
 		li.setProperty('fanart_image', fanart)
-		li.addContextMenuItems([('Mark as Watched/Unwatched', 'Action(ToggleWatched)')])
 		#li.setInfo(type="Video", infoLabels={"Title": title, "Episode": ep, "Plot": description, "Premiered": airdate})
 		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Premiered": airdate})
-		li.addStreamInfo('video', { 'duration': int(duration) })
+		li.addStreamInfo('video', { 'duration': duration })
+		li.addContextMenuItems([('Mark as Watched/Unwatched', 'Action(ToggleWatched)')])
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li)
 		xbmcplugin.setContent(addon_handle, 'episodes')
 		xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
-	xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+	#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
