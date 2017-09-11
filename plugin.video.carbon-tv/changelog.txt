@@ -1,3 +1,6 @@
+Version 0.0.4
+- Added hack to mark videos watched
+
 Version 0.0.3
 - Fix for change in stream url format
 - Minor code cleanup and changes

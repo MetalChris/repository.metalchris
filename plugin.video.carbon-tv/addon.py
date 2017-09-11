@@ -20,6 +20,7 @@ settings = xbmcaddon.Addon(id="plugin.video.carbon-tv")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 confluence_views = [500,501,502,503,504,508]
+xbmc_monitor = xbmc.Monitor()
 
 plugin = "CarbonTV"
 
@@ -107,18 +108,23 @@ def videos(url):
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
 		li.setProperty('fanart_image', thumbnail)
 		li.setProperty('mimetype', 'video/mp4')
+		li.setInfo(type="video", infoLabels={ 'Title': title, 'Plot': '' })
 		li.addStreamInfo('video', { 'duration': runtime })
-		#li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url)),('Plot Info', 'XBMC.RunPlugin(%s?mode=81&url=%s)' % (sys.argv[0], url))])
-		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li)
+		li.addContextMenuItems([('Mark as Watched/Unwatched', 'Action(ToggleWatched)')])
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li, isFolder=False)
 		xbmcplugin.setContent(addon_handle, 'episodes')
 		#add_directory2(title,url,30,thumbnail,thumbnail,plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
-	xbmcplugin.endOfDirectory(addon_handle)
+	xbmc.log('DURATION: ' + str(runtime))
+	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #30
 def streams(name,url):
 	response = get_html(url)
+	duration = re.compile('duration" content="(.+?)"').findall(str(response))[0]
+	runtime = int(get_sec(duration)*1000)
+	xbmc.log('DURATION: ' + str(runtime))
 	link = re.compile('<link rel="video_src" href="(.+?)"').findall(str(response))[0]
 	thumbnail = re.compile('<link rel="image_src" href="(.+?)"').findall(str(response))[0]
 	key = link.split('=')[-1]
@@ -128,13 +134,19 @@ def streams(name,url):
 		qkey = 487081#keys[-4]
 	elif q =='0':
 		qkey = 487061#keys[-7]
-	#thumbnail = (re.compile('thumbnailUrl":"(.+?)"').findall(str(response))[0]).replace('\/','/')
 	#stream = (thumbnail.split('version')[0]).replace('cfvod.kaltura.com','carbonmedia-a.akamaihd.net').replace('thumbnail','serveFlavor') + 'v/2/flavorId/' + key + '/forceproxy/true/name/a.mp4'
 	stream = 'https://cdnapisec.kaltura.com/p/1897241/sp/189724100/playManifest/entryId/' + key + '/format/download/protocol/https/flavorParamIds/' + str(qkey)
-	listitem = xbmcgui.ListItem(name, thumbnailImage=thumbnail)
+	listitem = xbmcgui.ListItem(name, path=stream, thumbnailImage=thumbnail)
+	listitem.setProperty('IsPlayable', 'true')
+	xbmc.executebuiltin("Action(ToggleWatched)")
 	xbmc.Player().play( stream, listitem )
+	xbmc.sleep(1000)
+	xbmc.log('===== PLAYING =====')
+	#if not xbmc.getCondVisibility("Player.HasMedia"):
+		#xbmc.sleep(1000)
+	#xbmc.log('===== EXIT =====')
 	sys.exit()
-	xbmcplugin.endOfDirectory(addon_handle)
+	#xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 def get_sec(time_str):
