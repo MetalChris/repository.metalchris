@@ -61,6 +61,8 @@ def shows():
 				season = '_02'
 			if title == 'MasterChef':
 				season = '_07'
+			if title == 'APB':
+				season = '_01'
 		else:
 			season = '_01'
 		show = jsob['member'][i]['url'].rpartition('/')[-1]
@@ -99,6 +101,7 @@ def FOX_videos(url):
 		purl = 'plugin://plugin.video.fox?mode=637&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
 		li.setProperty('fanart_image', fanart)
+		li.setProperty('mimetype', 'video/mp4')
 		#li.setInfo(type="Video", infoLabels={"Title": title, "Episode": ep, "Plot": description, "Premiered": airdate})
 		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Premiered": airdate})
 		li.addStreamInfo('video', { 'duration': duration })
