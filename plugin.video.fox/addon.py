@@ -47,6 +47,8 @@ def shows():
 		if (seriesType == 'special'):# or (title == 'MasterChef'):
 			continue
 		thumbnail = jsob['member'][i]['images']['seriesList']['FHD']
+		if 'Orville' in title:
+			print thumbnail
 		fanart = jsob['member'][i]['images']['still']['FHD']
 		if ('eason' in thumbnail):
 			season = (thumbnail.split('eason')[-1])[:3].replace('/','')
@@ -62,6 +64,8 @@ def shows():
 			if title == 'MasterChef':
 				season = '_07'
 			if title == 'APB':
+				season = '_01'
+			if title == 'The Orville':
 				season = '_01'
 		else:
 			season = '_01'
