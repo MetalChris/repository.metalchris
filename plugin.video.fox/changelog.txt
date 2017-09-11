@@ -1,3 +1,7 @@
+Version 0.0.6
+- Fix for new additions not showing
+- Rewrote to make more use of API
+
 Version 0.0.5
 - Added check to filter out shows with no episodes available
 

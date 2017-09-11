@@ -38,77 +38,87 @@ airdate = ''
 
 #633
 def shows():
-	response = get_html('http://www.fox.com/shows')
-	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class':'Tile_tile_3qaLc MovieTile_tile_1a04u Tile_fadeAnimated_1K79m Tile_clickable_3dKX4'})
-	#xbmc.log('SOUP: ' + str(soup[0]))
-	for show in soup:
-		title = re.compile('span>(.+?)</').findall(str(show))[0]
-		if not '(' in title:
+	response = get_json('https://api.fox.com/fbc-content/v1_4/screenpanels/58daf1b54672070001df1400/items?itemsPerPage=50')
+	jsob = json.loads(response)
+	totalItems = jsob['totalItems']
+	for i in range(totalItems):
+		seriesType = jsob['member'][i]['seriesType']
+		title = jsob['member'][i]['name']
+		if (seriesType == 'special'):# or (title == 'MasterChef'):
 			continue
-		title = re.sub(r'\([^)]*\)', '', title)
-		url = 'https://www.fox.com' + show.find('a')['href']
-		thumbnail = defaultimage
-		add_directory2(title, url, 636, defaultfanart, thumbnail, plot='')
+		thumbnail = jsob['member'][i]['images']['seriesList']['FHD']
+		fanart = jsob['member'][i]['images']['still']['FHD']
+		if ('eason' in thumbnail):
+			season = (thumbnail.split('eason')[-1])[:3].replace('/','')
+			if len(season) < 3:
+				season = season.replace('_','_0')
+			if 'Family' in title:
+				season = '_15'
+		elif not 'eason' in thumbnail:
+			if 'Simpsons' in title:
+				season = '_28'
+			if title == 'Rosewood':
+				season = '_02'
+			if title == 'MasterChef':
+				season = '_07'
+		else:
+			season = '_01'
+		show = jsob['member'][i]['url'].rpartition('/')[-1]
+		url = 'https://api.fox.com/fbc-content/v1_4/seasons/' + show + season + '/episodes'
+		add_directory2(title, url, 636, fanart, thumbnail, plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
+		#xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_TITLE)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #636
 def FOX_videos(url):
-	if 'prisonbreak' in url:
-		url = url.replace('prisonbreak','prison-break')
-	if 'kicking-and-screaming' in url:
-		url = url.replace('kicking-and-screaming','kicking-screaming')
-	response = get_html(url)
-	if response == False:
-		xbmcgui.Dialog().notification(name, 'No Episodes Available', defaultimage, 5000, False)
-		sys.exit()
-		xbmc.log('PAGE NOT FOUND')
-	soup = BeautifulSoup(response,'html.parser').find_all('div',{'class':'Tile_details_9UwiV'})
-	xbmc.log('SOUP: ' + str(len(soup)))
-	for item in soup[:5]:
-		if item.find('div',{'class':'video-lock mvpd-locked'}):
-			continue
-		title = item.find('div',{'class':'Tile_titleWrapper_1Ub6U'}).text.encode('ascii', 'ignore')
-		if 'FULL EPISODES' in title:
-			continue
-		#image = item.find('img',{'typeof':'foaf:Image'})
-		thumbnail = defaultimage#image.get('src')
-		url_key = item.find('a')['href'].replace('/watch/','')
-		url = 'https://api.fox.com/fbc-content/v1_4/screens/video-detail/' + url_key
-		purl = 'plugin://plugin.video.fox?mode=637&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
-		#airdate = item.find('p').text.split(' ')[1].encode('ascii', 'ignore')
-		airdate = item.find('p').text.split(' ')[1].encode('ascii', 'ignore').split('-')
-		month = airdate[0]; day = airdate[1]; year = '20' + airdate[2]
-		if int(month) < 10:
-			month = '0' + str(month)
-		if int(day) < 10:
-			day = '0' + str(day)
+	print '1st'
+	response = get_json(url)
+	#print response
+	try: jsob = json.loads(response)
+	except TypeError:
+		url = url.rpartition('_')[0]
+		url = url + '/episodes'
+		print url
+		print '2nd'
+		response = get_json(url)
+	totalItems = jsob['totalItems']
+	for i in range(totalItems)[:5]:
+		title = jsob['member'][i]['trackingData']['properties']['title'].encode('ascii', 'ignore')
+		print title
+		contentId = jsob['member'][i]['trackingData']['properties']['contentId']
+		url = 'https://api.fox.com/fbc-content/v1_4/screens/video-detail/' + contentId
+		thumbnail = jsob['member'][i]['images']['seriesList']['FHD']
+		fanart = jsob['member'][i]['images']['still']['FHD']
+		description = jsob['member'][i]['description']
+		duration = jsob['member'][i]['durationInSeconds']
+		originalAirDate = jsob['member'][i]['originalAirDate'].split('T')[0].split('-')
+		month = originalAirDate[2]; day = originalAirDate[1]; year = originalAirDate[0]
 		airdate = str(month) + '/' + str(day) + '/' + str(year)
-		season = title.split(' ')[0].replace('S','')
-		episode = title.split(' ')[1].replace('E','')
-		ep = season + episode
-		description = item.find('a',{'class':'Tile_subtitle_OzXVN'}).text
+		purl = 'plugin://plugin.video.fox?mode=637&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
-		li.setProperty('fanart_image', defaultfanart)
+		li.setProperty('fanart_image', fanart)
+		li.addContextMenuItems([('Mark as Watched/Unwatched', 'Action(ToggleWatched)')])
 		#li.setInfo(type="Video", infoLabels={"Title": title, "Episode": ep, "Plot": description, "Premiered": airdate})
 		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Premiered": airdate})
-		#li.addStreamInfo('video', { 'duration': duration })
+		li.addStreamInfo('video', { 'duration': int(duration) })
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li)
 		xbmcplugin.setContent(addon_handle, 'episodes')
 		xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
-	#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+	xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
+#637
 def episode(name,url,iconimage):
 	response = get_json(url)
-	xbmcgui.Dialog().notification(name, 'Getting URL', defaultimage, 5000, False)
+	xbmcgui.Dialog().notification(name, 'Getting URL', defaultimage, 2500, False)
 	jsob = json.loads(response)
 	videoReleaseURL = jsob['panels']['member'][0]['items']['member'][0]['videoRelease']['url']
-	xbmcgui.Dialog().notification(name, 'Following Redirect', defaultimage, 5000, False)
+	xbmcgui.Dialog().notification(name, 'Following Redirect', defaultimage, 2500, False)
 	redirect = get_redirected_url(videoReleaseURL)
-	xbmcgui.Dialog().notification(name, 'Fetching Stream URL', defaultimage, 5000, False)
+	xbmcgui.Dialog().notification(name, 'Fetching Stream URL', defaultimage, 2500, False)
 	r = get_json(redirect)
 	jsob = json.loads(str(r))
 	stream = jsob['playURL']
@@ -117,22 +127,13 @@ def episode(name,url,iconimage):
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
-#637
-def _episode(name,url,iconimage):
-	response = get_html(url)
-	stream = re.compile('VOD","url":"(.+?)"').findall(response)[0]
-	xbmc.log('STREAM: ' + str(stream))
-	platform = re.compile('release_url":"(.+?)"').findall(response)[0].replace('\\','') + '&manifest=m3u'
-	xbmc.log('PLATFORM: ' + str(platform))
-	streams(name,platform,iconimage)
-
-
 #650
 def streams(name,url,iconimage):
 	#response = get_html(url)
 	#stream = re.compile('video src="(.+?)"').findall(str(response))[0]
 	item = xbmcgui.ListItem(name, path=url, thumbnailImage=iconimage)
 	xbmc.log('STREAM: ' + str(url))
+	xbmc.executebuiltin("Action(ToggleWatched)")
 	xbmc.Player().play( url, item )
 	sys.exit("Stop Video")
 	xbmcplugin.endOfDirectory(addon_handle)
