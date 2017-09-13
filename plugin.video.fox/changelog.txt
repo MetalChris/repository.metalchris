@@ -1,3 +1,8 @@
+Version 0.0.8
+- Better way of accessing season number
+- Add episode number, MPAA rating, and cast to infolabels (when available)
+- Code cleanup
+
 Version 0.0.7
 - Remove broken code remnant
 

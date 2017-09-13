@@ -7,6 +7,7 @@
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
 import simplejson as json
+import html5lib
 
 artbase = 'special://home/addons/plugin.video.fox/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -47,52 +48,35 @@ def shows():
 		if (seriesType == 'special'):# or (title == 'MasterChef'):
 			continue
 		thumbnail = jsob['member'][i]['images']['seriesList']['FHD']
-		if 'Orville' in title:
-			print thumbnail
 		fanart = jsob['member'][i]['images']['still']['FHD']
-		if ('eason' in thumbnail):
-			season = (thumbnail.split('eason')[-1])[:3].replace('/','')
-			if len(season) < 3:
-				season = season.replace('_','_0')
-			if 'Family' in title:
-				season = '_15'
-		elif not 'eason' in thumbnail:
-			if 'Simpsons' in title:
-				season = '_28'
-			if title == 'Rosewood':
-				season = '_02'
-			if title == 'MasterChef':
-				season = '_07'
-			if title == 'APB':
-				season = '_01'
-			if title == 'The Orville':
-				season = '_01'
-		else:
-			season = '_01'
 		show = jsob['member'][i]['url'].rpartition('/')[-1]
-		url = 'https://api.fox.com/fbc-content/v1_4/seasons/' + show + season + '/episodes'
+		url1 = 'https://api.fox.com/fbc-content/v1_4/seasons/' + show + 'SEASON/episodes'
+		url2 = jsob['member'][i]['url']
+		url = url1 + '___' + url2
 		add_directory2(title, url, 636, fanart, thumbnail, plot='')
-		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
 		#xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_TITLE)
+	#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #636
-def FOX_videos(url):
-	print '1st'
-	response = get_json(url)
-	#print response
-	try: jsob = json.loads(response)
-	except TypeError:
-		url = url.rpartition('_')[0]
-		url = url + '/episodes'
-		print url
-		print '2nd'
-		response = get_json(url)
+def FOX_videos(name,url):
+	url = url.split('___')
+	html = get_html(url[1])
+	soup = BeautifulSoup(html,'html5lib').find_all('a',{'class':'TabList_tab_37A8u'})
+	season = soup[0].text.split(' ')[-1]
+	if len(season) < 2:
+		season = '0' + season
+	if name == 'MasterChef':
+		season = '07'
+	xbmc.log('SEASON: ' + str(season))
+	url[0] = url[0].replace('SEASON', '_' + season)
+	xbmc.log('URL[0]: ' + str(url[0]))
+	response = get_json(url[0])
+	jsob = json.loads(response)
 	totalItems = jsob['totalItems']
 	for i in range(totalItems)[:5]:
 		title = jsob['member'][i]['trackingData']['properties']['title'].encode('ascii', 'ignore')
-		print title
 		contentId = jsob['member'][i]['trackingData']['properties']['contentId']
 		url = 'https://api.fox.com/fbc-content/v1_4/screens/video-detail/' + contentId
 		thumbnail = jsob['member'][i]['images']['seriesList']['FHD']
@@ -100,14 +84,27 @@ def FOX_videos(url):
 		description = jsob['member'][i]['description']
 		duration = jsob['member'][i]['durationInSeconds']
 		originalAirDate = jsob['member'][i]['originalAirDate'].split('T')[0].split('-')
+		if 'episodeNumber' in jsob['member'][i]:
+			episodeNumber = jsob['member'][i]['episodeNumber']
+		else: episodeNumber = ''
+		if 'contentRating' in jsob['member'][i]:
+			contentRating = jsob['member'][i]['contentRating'].upper()
+		else: contentRating = ''
+		if 'actors' in jsob['member'][i]:
+			xbmc.log('===== ACTORS =====')
+			a = len(jsob['member'][i]['actors'])
+			cast = []
+			for actors in range(a):
+				cast.append(jsob['member'][i]['actors'][actors]['name'])
+		else: cast = []
 		month = originalAirDate[2]; day = originalAirDate[1]; year = originalAirDate[0]
 		airdate = str(month) + '/' + str(day) + '/' + str(year)
 		purl = 'plugin://plugin.video.fox?mode=637&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
 		li.setProperty('fanart_image', fanart)
 		li.setProperty('mimetype', 'video/mp4')
-		#li.setInfo(type="Video", infoLabels={"Title": title, "Episode": ep, "Plot": description, "Premiered": airdate})
-		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Premiered": airdate})
+		li.setInfo(type="Video", infoLabels={"Title": title, "Cast": cast, "MPAA": contentRating, "Episode": episodeNumber, "Plot": description, "Premiered": airdate})
+		#li.setInfo(type="Video", infoLabels={"Title": title, "Cast": cast, "Plot": description, "Premiered": airdate})
 		li.addStreamInfo('video', { 'duration': duration })
 		li.addContextMenuItems([('Mark as Watched/Unwatched', 'Action(ToggleWatched)')])
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li)
@@ -119,13 +116,13 @@ def FOX_videos(url):
 
 #637
 def episode(name,url,iconimage):
+	xbmcgui.Dialog().notification(name, 'Getting URL', defaultimage, 2000, False)
 	response = get_json(url)
-	xbmcgui.Dialog().notification(name, 'Getting URL', defaultimage, 2500, False)
 	jsob = json.loads(response)
 	videoReleaseURL = jsob['panels']['member'][0]['items']['member'][0]['videoRelease']['url']
-	xbmcgui.Dialog().notification(name, 'Following Redirect', defaultimage, 2500, False)
+	xbmcgui.Dialog().notification(name, 'Following Redirect', defaultimage, 2000, False)
 	redirect = get_redirected_url(videoReleaseURL)
-	xbmcgui.Dialog().notification(name, 'Fetching Stream URL', defaultimage, 2500, False)
+	xbmcgui.Dialog().notification(name, 'Fetching Stream URL', defaultimage, 2000, False)
 	r = get_json(redirect)
 	jsob = json.loads(str(r))
 	stream = jsob['playURL']
@@ -294,23 +291,14 @@ elif mode == 4:
 elif mode==633:
 	xbmc.log("FOX Shows")
 	shows()
-elif mode==635:
-	xbmc.log("FOX Archive")
-	archives(url)
 elif mode==636:
 	xbmc.log("FOX Videos")
-	FOX_videos(url)
+	FOX_videos(name,url)
 elif mode==637:
 	xbmc.log("FOX Episode")
 	episode(name,url,iconimage)
-elif mode==638:
-	xbmc.log("FOX Most Watched")
-	most_watched(name,url)
-elif mode==639:
-	xbmc.log("FOX More Shows")
-	more_shows(name,url)
 elif mode==650:
-	xbmc.log("FOX Shows")
+	xbmc.log("FOX Stream")
 	streams(name,url,iconimage)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
