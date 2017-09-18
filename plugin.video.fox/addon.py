@@ -91,7 +91,6 @@ def FOX_videos(name,url):
 			contentRating = jsob['member'][i]['contentRating'].upper()
 		else: contentRating = ''
 		if 'actors' in jsob['member'][i]:
-			xbmc.log('===== ACTORS =====')
 			a = len(jsob['member'][i]['actors'])
 			cast = []
 			for actors in range(a):
