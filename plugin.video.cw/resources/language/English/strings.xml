@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 
 <strings>
-    <string id="30001">Text Display</string>
-    <string id="30003">Encoding</string>
-    <string id="30100">UTF-8</string>
-    <string id="30105">CP1252</string>
-    <string id="30013">Parser</string>
-    <string id="30200">Html5lib</string>
-    <string id="30205">html.parser</string>
+    <!-- Default strings -->
+    <string id="32003">Stream Quality</string>
+    <string id="32004">540p</string>
+    <string id="32005">720p</string>
+    <string id="32006">1080p</string>
+    <string id="32020">Force View</string>
+    <string id="32021">Thumbnail</string>
+    <string id="32022">List</string>
+    <string id="32024">Media Info 2</string>
+    <string id="32025">Media Info</string>
+    <string id="32027">Media Info 3</string>
+    <string id="32030">Confluence View</string>
+    <string id="32200">Html5lib</string>
 </strings>

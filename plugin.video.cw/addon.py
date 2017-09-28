@@ -5,23 +5,34 @@
 # Released under GPL(v2 or later)
 
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
 import simplejson as json
-from bs4 import BeautifulSoup
-import html5lib
-
+import mechanize
 
 artbase = 'special://home/addons/plugin.video.cw/resources/media/'
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
+addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
 selfAddon = xbmcaddon.Addon(id='plugin.video.cw')
 self = xbmcaddon.Addon(id='plugin.video.cw')
 translation = selfAddon.getLocalizedString
 usexbmc = selfAddon.getSetting('watchinxbmc')
-#settings = xbmcaddon.Addon(id="plugin.video.cw")
+settings = xbmcaddon.Addon(id="plugin.video.cw")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 confluence_views = [500,501,502,503,504,508]
+__resource__   = xbmc.translatePath( os.path.join( _addon_path, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
+
+sys.path.append(__resource__)
+
+from uas import *
+
+br = mechanize.Browser()
+br.set_handle_robots(False)
+br.set_handle_equiv(False)
+br.addheaders = [('Host', 'www.cwtv.com')]
+br.addheaders = [('User-agent', ua)]
+xbmc.log('USER AGENT: ' + str(ua))
 
 plugin = "CW TV Network"
 
@@ -32,125 +43,97 @@ defaulticon = 'special://home/addons/plugin.video.cw/icon.png'
 
 local_string = xbmcaddon.Addon(id='plugin.video.cw').getLocalizedString
 addon_handle = int(sys.argv[1])
-#p = settings.getSetting(id="parser")
-#e = settings.getSetting(id="encoding")
-confluence_views = [500,501,502,503,504,508,515]
+confluence_views = [500,501,503,504,515]
+force_views = settings.getSetting(id="force_views")
 
 
 #533
 def sites():
-		addDir('CW TV Network', 'http://www.cwtv.com/shows/', 534, defaultimage)
-		addDir('CW Seed', 'http://www.cwseed.com/shows/', 535, artbase + 'seed.png', artbase + 'seed.jpg')
-		xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-
-#534
-def cw():
-		addDir('Episodes', 'http://www.cwtv.com/shows/', 633, defaultimage)
-		addDir('Clips', 'http://www.cwtv.com/shows/', 633, defaultimage)
-		xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-
-#535
-def seed():
-		addDir('Episodes', 'http://www.cwseed.com/shows/', 635, artbase + 'seed.png', artbase + 'seed.jpg')
-		addDir('Clips', 'http://www.cwseed.com/shows/', 635, artbase + 'seed.png', artbase + 'seed.jpg')
-		xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	addDir('CW TV Network', 'http://www.cwtv.com/shows/', 633, defaultimage)
+	addDir('CW Seed', 'http://www.cwseed.com/shows/', 633, artbase + 'seed.png', artbase + 'seed.jpg')
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #633
 def shows(name,url):
-	if name == 'Episodes':
-		mode = 30
-	else:
-		mode = 31
-	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('a',{'class':'hublink'})
-	for title in soup:
-		name = striphtml(str(title)).strip()
-		url = 'http://www.cwtv.com' + title.get('href')
-		image = title.find('img')['src']
-		add_directory2(name,url,mode,defaultfanart,image,plot='')#; i = i + 1
+	br.open('http://www.cwtv.com/')
+	response = br.open('http://www.cwtv.com/feed/mobileapp/shows?api_version=3')
+	xbmc.log('RESPONSE: ' + str(response.code))
+	page = response.get_data()
+	jdata = json.loads(page)
+	count = jdata['count']
+	xbmc.log('COUNT: ' + str(count))
+	for i in range(count):
+		if 'Network' in name:
+			if (jdata['items'][i]['airtime'] == 'STREAM NOW') or (jdata['items'][i]['airtime'] == '') or (jdata['items'][i]['airtime'] == 'COMING SOON') or (jdata['items'][i]['schedule'] == 'coming-soon'):
+				continue
+		elif 'Seed' in name:
+			if (jdata['items'][i]['show_type'] == 'cw-network'):
+				continue
+		title = jdata['items'][i]['title']
+		plot = striphtml(str(jdata['items'][i]['description']))
+		url = 'http://www.cwtv.com/shows/' + jdata['items'][i]['slug']
+		image = 'http://images.cwtv.com/images/cw/show-hub/' + jdata['items'][i]['slug'] + '.png'
+		add_directory2(title,url,30,defaultfanart,image,plot)
 		xbmcplugin.setContent(addon_handle, 'episodes')
-	xbmcplugin.endOfDirectory(addon_handle)
-
-
-#635
-def seed_shows(name,url):
-	if name == 'Episodes':
-		mode = 30
-	else:
-		mode = 31
-	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('li',{'class':'showitem'})
-	print len(soup)
-	for title in soup:
-		if title.find('div'):
-			name = striphtml(str(title)).strip()
-			url = 'http://www.cwseed.com' + (title.find('a')['href'])[:-1]
-			image = title.find('img')['data-src']
-			add_directory2(name,url,mode,artbase + 'seed.jpg',image,plot='')#; i = i + 1
-			xbmcplugin.setContent(addon_handle, 'episodes')
+	if force_views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #30
-def get_json(url):
+def get_json(name,url,iconimage):
 	show = url.rpartition('/')[-1]
-	url = 'http://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
-	xbmc.log('JSON_URL: ' + str(url))
-	response = urllib2.urlopen(url)
+	jurl = 'http://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
+	response = br.open(jurl)
+	response = br.open(jurl)
 	jdata = json.load(response); i = 0
+	if 'network' in jdata['videos'][0]['show_type']:
+		add_directory2('Show Clips',url,31,defaultfanart,iconimage,plot='Watch video clips from this show.')
 	count = len(jdata['videos'])
 	for i in range(count):
 		if jdata['videos'][i]['fullep'] != 1:
 			continue
-		title = jdata['videos'][i]['title']
-		image = jdata['videos'][i]['large_thumbnail']
-		ep = jdata['videos'][i]['episode']
-		airdate = jdata['videos'][i]['airdate']
-		description = jdata['videos'][i]['description_long']
-		duration = jdata['videos'][i]['duration_secs']
-		episode = jdata['videos'][i]['availability_asset_id'].rpartition('-')[-1]
-		#title = title + ' - ' + episode
-		url = 'https://www.cwtv.com/ioshlskeys/videos' + (image.split('thumbs')[-1]).split('_CWtv')[0] + '.m3u8'
-		li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
-		li.setProperty('fanart_image', image)
-		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Episode": ep, "Premiered": airdate})
-		li.addStreamInfo('video', { 'duration': duration })
-		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
-		xbmcplugin.setContent(addon_handle, 'episodes')
-    	xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
-		#add_directory2(title,url,30,image,image,plot=''); i = i + 1
+		get_stuff(jdata,i)
+	if force_views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
+	#add_directory2(title,url,30,image,image,plot=''); i = i + 1
 	xbmcplugin.endOfDirectory(addon_handle)
 
+
+def get_stuff(jdata,i):
+	title = jdata['videos'][i]['title']
+	image = jdata['videos'][i]['large_thumbnail']
+	ep = jdata['videos'][i]['episode']
+	airdate = jdata['videos'][i]['airdate']
+	description = jdata['videos'][i]['description_long']
+	duration = jdata['videos'][i]['duration_secs']
+	episode = jdata['videos'][i]['availability_asset_id'].rpartition('-')[-1]
+	url = 'https://www.cwtv.com/ioshlskeys/videos' + (image.split('thumbs')[-1]).split('_CWtv')[0] + '.m3u8'
+	li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
+	li.setProperty('fanart_image', image)
+	li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Episode": ep, "Premiered": airdate})
+	li.addStreamInfo('video', { 'duration': duration })
+	xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
+	xbmcplugin.setContent(addon_handle, 'episodes')
+	xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
 
 
 #31
 def get_clips(url):
 	show = url.rpartition('/')[-1]
 	url = 'http://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
-	response = urllib2.urlopen(url)
+	response = br.open(url)
+	page = response.get_data()
 	jdata = json.load(response); i = 0
 	count = len(jdata['videos'])
 	for i in range(count):
 		if jdata['videos'][i]['fullep'] != 0:
 			continue
-		title = jdata['videos'][i]['title']
-		image = jdata['videos'][i]['large_thumbnail']
-		ep = jdata['videos'][i]['episode']
-		airdate = jdata['videos'][i]['airdate']
-		description = jdata['videos'][i]['description_long']
-		episode = jdata['videos'][i]['availability_asset_id'].rpartition('-')[-1]
-		#title = title + ' - ' + episode
-		url = 'https://www.cwtv.com/ioshlskeys/videos' + (image.split('thumbs')[-1]).split('_CWtv')[0] + '.m3u8'
-		li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
-		li.setProperty('fanart_image', image)
-		li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Episode": ep, "Premiered": airdate})
-		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
-		xbmcplugin.setContent(addon_handle, 'episodes')
-    	xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
-		#add_directory2(title,url,30,image,image,plot=''); i = i + 1
+		get_stuff(jdata,i)
+	if force_views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
+	#add_directory2(title,url,30,image,image,plot=''); i = i + 1
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -158,19 +141,6 @@ def striphtml(data):
 	p = re.compile(r'<.*?>')
 	return p.sub('', data)
 
-
-def get_html(url):
-	req = urllib2.Request(url)
-	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
-
-	try:
-		response = urllib2.urlopen(req)
-		html = response.read()
-		response.close()
-	except urllib2.HTTPError:
-		response = False
-		html = False
-	return html
 
 def get_params():
 	param = []
@@ -191,16 +161,16 @@ def get_params():
 	return param
 
 def add_directory2(name,url,mode,fanart,thumbnail,plot,showcontext=False):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&thumbnail=" + urllib.quote_plus(thumbnail)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-		liz.setInfo( type="Video", infoLabels={ "Title": name,
-												"plot": plot} )
-		if not fanart:
-			fanart=''
-		liz.setProperty('fanart_image',fanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
-		return ok
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(thumbnail)
+	ok=True
+	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
+	liz.setInfo( type="Video", infoLabels={ "Title": name,
+											"plot": plot} )
+	if not fanart:
+		fanart=''
+	liz.setProperty('fanart_image',fanart)
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
+	return ok
 
 
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
@@ -261,21 +231,12 @@ elif mode == 4:
 elif mode==533:
 	print "CW TV Network Main Menu"
 	sites()
-elif mode==534:
-	print "CW TV Network Menu"
-	cw()
-elif mode==535:
-	print "CW Seed Menu"
-	seed()
 elif mode==633:
 	print "CW TV Network Main Menu"
 	shows(name,url)
-elif mode==635:
-	print "CW TV Network Seed Menu"
-	seed_shows(name,url)
 elif mode==30:
 	print "CW TV Episodes JSON"
-	get_json(url)
+	get_json(name,url,iconimage)
 elif mode==31:
 	print "CW TV Clips JSON"
 	get_clips(url)

@@ -7,7 +7,7 @@
     </extension>
     <extension point="xbmc.addon.metadata">
 		<summary>MetalChris' Kodi addons</summary>
-		<description>MetalChris' Kodi addons</description>
+		<description>Support provided at forum.kodi.tv or via my github.  I will not provide support at TVaddons, or any other forum.  If you can not provide a full, unedited, debug log, you will not receive support of any kind.</description>
         <platform>all</platform>
     </extension>
 </addon>
