@@ -1,0 +1,5 @@
+Version 0.0.2
+- Fixes for website changes 09/24/2017
+
+Version 0.0.1
+- Initial release.
