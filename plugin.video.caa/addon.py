@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, calendar, re, sys, os
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, calendar, re, sys
 #from bs4 import BeautifulSoup
 #import HTMLParser
 import simplejson as json
@@ -88,7 +88,7 @@ def VOD(name,url):
 		#xbmc.log('HAS VIDEO: ' + str(hasVideo))
 		title = data['events'][i]['mobileTitle']
 		#xbmc.log('TITLE: ' + str(title))
-		timeString = data['events'][i]['timeString']
+		#timeString = data['events'][i]['timeString']
 		event = data['events'][i]['type']
 		title = title + ' (' + event + ')'
 		eventID = data['events'][i]['eventID']
