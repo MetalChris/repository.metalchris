@@ -5,7 +5,7 @@
 # Released under GPL(v2 or later)
 
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
+import urllib, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
 import simplejson as json
 import mechanize
 
@@ -108,7 +108,6 @@ def get_stuff(jdata,i):
 	airdate = jdata['videos'][i]['airdate']
 	description = jdata['videos'][i]['description_long']
 	duration = jdata['videos'][i]['duration_secs']
-	episode = jdata['videos'][i]['availability_asset_id'].rpartition('-')[-1]
 	url = 'https://www.cwtv.com/ioshlskeys/videos' + (image.split('thumbs')[-1]).split('_CWtv')[0] + '.m3u8'
 	li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
 	li.setProperty('fanart_image', image)
@@ -124,7 +123,6 @@ def get_clips(url):
 	show = url.rpartition('/')[-1]
 	url = 'http://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
 	response = br.open(url)
-	page = response.get_data()
 	jdata = json.load(response); i = 0
 	count = len(jdata['videos'])
 	for i in range(count):
