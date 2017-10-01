@@ -5,38 +5,27 @@
 # Released under GPL(v2)
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
-#from bs4 import BeautifulSoup
-#import HTMLParser
 import simplejson as json
-#import html5lib
-#from urllib import urlopen
 #import requests
 from datetime import date, datetime, timedelta as td
 import time
-#import mechanize
-#import cookielib
 
 today = time.strftime("%m-%d-%Y")
 
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
 addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
-#CookieJar = cookielib.LWPCookieJar(os.path.join(addon_path_profile, 'cookies.lwp'))
-#br = mechanize.Browser()
-#br.set_cookiejar(CookieJar)
-#br.set_handle_robots(False)
-#br.set_handle_equiv(False)
-#br.addheaders = [('Host', 'www.campusinsiders.com')]
-#br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0')]
 
 selfAddon = xbmcaddon.Addon(id='plugin.video.caa')
 translation = selfAddon.getLocalizedString
-#usexbmc = selfAddon.getSetting('watchinxbmc')
+
+schools = ['charleston', 'delaware', 'drexel', 'elon', 'hofstra', 'madison', 'mary', 'northeastern','towson', 'uncw']
 
 defaultimage = 'special://home/addons/plugin.video.caa/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.caa/fanart.jpg'
 defaultvideo = 'special://home/addons/plugin.video.caa/icon.png'
 defaulticon = 'special://home/addons/plugin.video.caa/icon.png'
+artbase = 'special://home/addons/plugin.video.caa/resources/media/'
 
 addon_handle = int(sys.argv[1])
 confluence_views = [500,501,502,503,504,508]
@@ -52,11 +41,9 @@ def CATEGORIES():
 #5
 def LIVE(name,url):
 	response = get_html(url)
-	data = json.loads(response)#; i = 0
+	data = json.loads(response)
 	total = len(data['events'])
-	#xbmc.log('TOTAL: ' + str(total))
 	for i in range(total):
-		#xbmc.log('HAS VIDEO: ' + str(hasVideo))
 		title = data['events'][i]['mobileTitle']
 		timeString = data['events'][i]['timeString']
 		event = data['events'][i]['type']
@@ -70,31 +57,38 @@ def LIVE(name,url):
 		hasVideo = data['events'][i]['hasVideo']
 		if hasVideo != True:
 			continue
+		img_key = (data['events'][i]['customText']).split(' ')[-1].lower()
+		if img_key in schools:
+			image = artbase + img_key + '.png'
+		else:
+			image = defaultimage
 		url = 'https://neo-client.stretchinternet.com/streamservice.portal?clientID=' + str(clientID) + '&userID=-1&broadcastType=live&method=getStream&eventID=' + str(eventID) + '&streamType=video'
-		addDir2(title, url, 20, defaultimage, defaultfanart)
+		addDir2(title, url, 20, image, defaultfanart)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #6
 def VOD(name,url):
 	response = get_html(url)
-	data = json.loads(response)#; i = 0
+	data = json.loads(response)
 	total = len(data['events'])
-	#xbmc.log('TOTAL: ' + str(total))
+	xbmc.log('TOTAL: ' + str(total))
 	for i in range(total):
 		hasVideo = data['events'][i]['hasVideo']
 		if hasVideo != True:
 			continue
-		#xbmc.log('HAS VIDEO: ' + str(hasVideo))
 		title = data['events'][i]['mobileTitle']
-		#xbmc.log('TITLE: ' + str(title))
-		#timeString = data['events'][i]['timeString']
 		event = data['events'][i]['type']
 		title = title + ' (' + event + ')'
 		eventID = data['events'][i]['eventID']
 		clientID = data['events'][i]['clientID']
+		img_key = (data['events'][i]['customText']).split(' ')[-1].lower()
+		if img_key in schools:
+			image = artbase + img_key + '.png'
+		else:
+			image = defaultimage
 		url = 'https://neo-client.stretchinternet.com/streamservice.portal?clientID=' + str(clientID) + '&userID=-1&broadcastType=vod&method=getStream&eventID=' + str(eventID) + '&streamType=video'
-		addDir2(title, url, 10, defaultimage, defaultfanart)
+		addDir2(title, url, 10, image, defaultfanart)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
@@ -103,13 +97,9 @@ def ON_DEMAND():
 	current = datetime.utcnow() - td(hours=5)
 	for i in range(0,11):
 		aday = str(current - td(days=i)).split(' ')[0]
-		#xbmc.log('ADAY: ' + str(aday))
 		s = aday.replace('-','')
-		#xbmc.log('S: ' + str(s))
 		title = datetime(year=int(s[0:4]), month=int(s[4:6]), day=int(s[6:8]))
 		urlday = title.strftime("%m-%d-%Y")
-		#xbmc.log('UDAY: ' + str(urlday))
-		#day = title.strftime ("%Y-%m-%d")
 		title = title.strftime("%B %d, %Y")
 		title = str(title.replace(' 0', ' '))
 		url = 'https://neo-client.stretchinternet.com/portal-ws/getEvents.json?dateFilter=' + urlday +'&clientID=47302&broadcastType=vod&token=&school=&_=%5Bobject+Object%5D'
@@ -131,6 +121,7 @@ def VOD_JSON(name,url):
 	#xbmc.log('STREAMS: ' + str(streams))
 	stream = streams[0] + mP#[2] + streams[-1]
 	xbmc.log('STREAM: ' + str(stream))
+	#TEST_STREAM(stream)
 	#stream = 'rtmp://' + lB[2] +
 	#stream = re.sub("\#[^#]*", lB[2], streamHDURL)
 	PLAY(name, stream)
@@ -149,10 +140,21 @@ def GET_PAGE(name,url):
 	#xbmc.log('STREAMS: ' + str(streams))
 	stream = streams[0] + lB[2] + streams[-1] + ' live=true'
 	xbmc.log('STREAM: ' + str(stream))
+	#TEST_STREAM(stream)
+		#if r.status_code == 404:
 	#stream = 'rtmp://' + lB[2] +
 	#stream = re.sub("\#[^#]*", lB[2], streamHDURL)
 	PLAY(name, stream)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
+def TEST_STREAM(url):
+	try:
+		urllib2.urlopen(url)
+	except urllib2.HTTPError, e:
+		print(e.code)
+	except urllib2.URLError, e:
+		print(e.args)
 
 
 #99
@@ -162,20 +164,6 @@ def PLAY(name,url):
 	xbmc.Player().play( url, listitem )
 	sys.exit()
 	xbmcplugin.endOfDirectory(addon_handle)
-
-
-def striphtml(data):
-	p = re.compile(r'<.*?>')
-	return p.sub('', data)
-
-
-def sanitize(data):
-	output = ''
-	for i in data:
-		for current in i:
-			if ((current >= '\x20') and (current <= '\xD7FF')) or ((current >= '\xE000') and (current <= '\xFFFD')) or ((current >= '\x10000') and (current <= '\x10FFFF')):
-			   output = output + current
-	return output
 
 
 
