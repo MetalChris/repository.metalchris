@@ -284,7 +284,7 @@ def nhl_video(url):
 def nhl_stream(name,url):
         response = urllib2.urlopen(url)
         vid_data = json.load(response)
-	url = (vid_data["playbacks"][4]["url"]).replace('master_wired60.m3u8','asset_5000k.m3u8')
+	url = (vid_data["playbacks"][4]["url"])#.replace('master_wired60.m3u8','asset_5000k.m3u8')
 	listItem = xbmcgui.ListItem(path=str(url))
 	#listItem.setInfo('video', name)
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
