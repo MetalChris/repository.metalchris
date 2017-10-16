@@ -8,7 +8,7 @@ import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
 import simplejson as json
 import requests
-from urllib2 import Request, HTTPCookieProcessor
+#from urllib2 import Request, HTTPCookieProcessor
 import urlparse
 import httplib
 import html5lib
@@ -23,7 +23,7 @@ _addon_path = _addon.getAddonInfo('path')
 selfAddon = xbmcaddon.Addon(id='plugin.video.nhl-rewind')
 translation = selfAddon.getLocalizedString
 usexbmc = selfAddon.getSetting('watchinxbmc')
-settings = xbmcaddon.Addon(id="plugin.video.nhl-rewind")
+#settings = xbmcaddon.Addon(id="plugin.video.nhl-rewind")
 addon_handle = int(sys.argv[1])
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
@@ -42,10 +42,10 @@ pluginhandle = int(sys.argv[1])
 #QUALITY = settings.getSetting(id="quality")
 confluence_views = [500,501,502,503,504,508]
 
+
 def CATEGORIES():
 	addDir('NHL.tv', 'https://www.nhl.com/video/', 16, defaultimage)
 	addDir('FOX Sports', 'http://www.foxsports.com/nhl/video', 51, defaultimage)
-	#addDir('Fox Sports', 'http://feed.theplatform.com/f/BKQ29B/foxsports-all?byCustomValue={primary}{nhl}&sort=pubDate|desc&form=rss&range=1-10', 51, defaultimage)
 	addDir('NBC Sports', 'http://www.nbcsports.com/video/league/nhl', 89, defaultimage)
 	addDir('MSG Network', 'http://www.msgnetworks.com/teams/rangers.html', 80, defaultimage)
 	addDir('SportsNet.ca', 'http://www.sportsnet.ca/videos/leagues/nhl-video/', 20, defaultimage)
@@ -57,7 +57,6 @@ def CATEGORIES():
 
 #30
 def teams(url):
-	#print url
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html.parser')
 	for item in soup.find_all(attrs={'class': 'ticket-team_name h3'}):
@@ -130,11 +129,8 @@ def nbcsn_nhl(url):
 #91
 def nbcsn_smil(name,url):
 	html = get_html(url)
-	#print html
 	link = (re.compile('\\n(.+?)\\?').findall(str(html))[0]).split('index')[0] + 'master.m3u8'
-	#print link
 	listItem = xbmcgui.ListItem(path=str(link))
-	#listItem.setInfo('video', name)
 	xbmcplugin.setResolvedUrl(addon_handle, True, listItem)
 	return
 
@@ -240,10 +236,8 @@ def nhl_all(url):
 #11
 def nhl_video(url):
 	nextlink = (url.split('?'))[0]
-	#print nextlink
 	page = (url.split('=')[1])
 	page = int(page.split('&')[0]) + 1
-	#print page
 	response = urllib2.urlopen(url)
 	nhldata = json.load(response);i=0
 	for video in nhldata["docs"]:

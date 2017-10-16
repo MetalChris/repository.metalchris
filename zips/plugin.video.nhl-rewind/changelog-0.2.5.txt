@@ -1,5 +1,5 @@
 Version 0.2.5
-- Fixes for 2017 season - MSG Network, Fox Sports, Sportsnet.ca
+- Fixes for 2017 season - MSG Network, Fox Sports, Sportsnet.ca, NHL.tv
 - Remove more unnecessary code.
 
 Version 0.2.4
