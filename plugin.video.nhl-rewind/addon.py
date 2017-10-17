@@ -155,7 +155,7 @@ def msg_network(url):
 		url = item.find('a',{'class':'title_link'})['href'] + 'embed/?'
 		image = str(re.compile("url\\(\\'(.+?)\\'\\)").findall(str(item)))[2:-2]
 		add_directory3(title, url, 85, image, image, plot='')
-		addDir('Next Page', next_page, 86, image)
+	addDir('Next Page', next_page, 86, image)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
