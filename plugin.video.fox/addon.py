@@ -45,8 +45,7 @@ def shows(url):
 		page = 2
 	response = get_json(url)
 	jsob = json.loads(response)
-	totalItems = jsob['totalItems']
-	for i in range(totalItems):
+	for i in range(len(jsob['member'])):
 		try:seriesType = jsob['member'][i]['seriesType']
 		except IndexError:
 			continue
