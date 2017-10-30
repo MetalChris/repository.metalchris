@@ -45,9 +45,6 @@ def shows(url):
 		page = 2
 	response = get_json(url)
 	jsob = json.loads(response)
-	text_file = open("Output.txt", "w")
-	text_file.write(str(jsob))
-	text_file.close()
 	totalItems = jsob['totalItems']
 	for i in range(totalItems):
 		try:seriesType = jsob['member'][i]['seriesType']
