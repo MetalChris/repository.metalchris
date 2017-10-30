@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.discovery-channels" name="Discovery Channels" version="3.2.7" provider-name="MetalChris">
+<addon id="plugin.video.discovery-channels" name="Discovery Channels" version="3.2.8" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -12,9 +12,9 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Watch FREE full episodes from the various Discovery channels</summary>
+    <summary lang="en">Watch a selection of FREE full episodes and short videos</summary>
     <description lang="en">Watch FREE full episodes and short videos from the various Discovery channels including Discovery, Discovery Science, Investigation Discovery, Animal Planet, and more.</description>
-    <disclaimer lang="en"></disclaimer>
+    <disclaimer lang="en">Support provided at forum.kodi.tv or via my github.  I will not provide support at TVaddons, or any other forum.  Please provide a full, unedited, debug log when requesting support.</disclaimer>
     <language></language>
     <platform>all</platform>
     <license></license>

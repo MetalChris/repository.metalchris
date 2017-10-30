@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, platform, re, xbmcplugin, sys, os
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, platform, re, sys, os
 import requests
 import simplejson as json
 from bs4 import BeautifulSoup
@@ -29,11 +29,16 @@ br = mechanize.Browser()
 br.set_cookiejar(CookieJar)
 br.set_handle_robots(False)
 br.set_handle_equiv(False)
-#br.addheaders = [('Host', 'api.discovery.com')]
+br.addheaders = [('Host', 'www.discoverygo.com')]
 br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0')]
 #br.addheaders = [('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpZCI6ImRiZmIyZmZhZWYxYmJjMmUxZGIwMGM0MjYzZTg2OThjYTBkZmQ4NTgiLCJqdGkiOiJkYmZiMmZmYWVmMWJiYzJlMWRiMDBjNDI2M2U4Njk4Y2EwZGZkODU4IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLmRpc2NvdmVyeS5jb20iLCJhdWQiOiIzMDIwYTQwYzIzNTZhNjQ1YjRiNCIsInN1YiI6eyJmbG93IjoiYW5vbnltb3VzIiwiYXV0aGVudGljYXRvciI6IkRpc2NvdmVyeSIsInV1aWQiOiJFT1MtVVNOZXRzIChXZWJcL1NpdGVzKSIsImFhdCI6MTUwNDM5MTcwN30sImV4cCI6MTUwNDM5NTMwNywiaWF0IjoxNTA0MzkxNzA3LCJ0b2tlbl90eXBlIjoiYmVhcmVyIiwic2NvcGUiOnsiY29udGVudCI6W10sInN0cmVhbWluZyI6eyJ2b2QiOnsiYXV0aGVudGljYXRlZCI6eyJmaWx0ZXIiOnsibmV0d29ya3MuY29kZSI6W119fSwidW5hdXRoZW50aWNhdGVkIjpbXX0sImxpdmUiOnsiYXV0aGVudGljYXRlZCI6eyJmaWx0ZXIiOnsibmV0d29ya3MuY29kZSI6W119fSwidW5hdXRoZW50aWNhdGVkIjpbXX19LCJzZWFyY2giOltdLCJpbWFnZXMiOnsiYXNzZXQiOltdfX19.FnkVjccXgTKe6Urw5SF8-0_aFsUH-ff9MX21BgzDpCZDXA-AsZ_3zGSBtSzNHwGYFJHq-pTVTngi-KUSLKheAxh5qF5jdJqMZcQjv1MSfxV0mJzvW2JPvAeKgE3Uwv8s0VkiMJshF3zgu8pyuWpUQsH_2BFXYhaPL36-bboeGUBysbl_e0UrmQdCWkKtL92HPrOtw86HdhVGwPGtSf_fct5xh46Bksuep5cXveoFkYy7xxZM4WMyZ14MoQBix953SClQmPtYXtct7NIuAaoF22T-FpLuy6gcDtd1k_6i_LKoUSRpK_td0_oCyrgvcS6TEShDqj4WDIxXnKhE2wcfo79WCnQpEcr83Mxt0LmyFuaJSakTV6E0pU9qQHNPLbG5uUotGkrDDmH_mmQK3-OikdUdV_1MbNu6qbKC0Jf-d1y4uMdca_W31CqmFKjzvcXdRYTr_EGgmQZnSIeRF7X90yh7x9mcFv78nDN2fOiCAe_vcw-boIfYViHYYmjObH4_U1S08XTa9QqI08R9LSCI3TXK0jUmAlpvwmkrmApifMmd4Z5xc-SLvvabOL0vHASdBbcqwesgsHyJda98chnfewabs2V0SZOC263I2IfJ8VKt9ZdJIR06qL4Udwol3w4DAWEM7qaS0F-HssN4Bbhs4EwugP6sUT9-ehzOL612lgQ')]
 
 plugin = "Discovery Channels"
+
+headers = ({'Host': 'api.discovery.com',
+'Accept': '*/*',
+'Origin': 'https://www.discoverygo.com',
+'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/37.0.2062.120 Chrome/37.0.2062.120 Safari/537.36'})
 
 defaultimage = 'special://home/addons/plugin.video.discovery-channels/icon.png'
 defaulticon = 'special://home/addons/plugin.video.discovery-channels/icon.png'
@@ -46,7 +51,8 @@ p = settings.getSetting(id="parser")
 xbmc.log('PARSER: ' + str(p))
 player = settings.getSetting(id="player")
 xbmc.log('PLAYER: ' + str(player))
-confluence_views = [500,501,502,503,504,508,515]
+confluence_views = [500,501,503,504,515]
+force_views = settings.getSetting(id="force_views")
 
 def channels():
 	xbmc.log(str(platform.system()))
@@ -81,10 +87,11 @@ def channels():
 	dsck = settings.getSetting(id="dsck")
 	if dsck!='false':
 		addDir2('Discovery Kids', 'http://discoverykids.com/videos/', 535, artbase + 'discoverykids.jpg')
-	views = settings.getSetting(id="views")
-	if views != 'false':
+	#addDir2('Discovery JSON', 'https://www.discoverygo.com', 998, artbase + 'discovery.png')
+	if force_views != 'false':
 		xbmc.executebuiltin("Container.SetViewMode(500)")
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
 
 #525
 def dsc_menu(url):
@@ -141,21 +148,13 @@ def dsc_menu(url):
 	if not 'tlc.com' in site:
 		addDir('Find More Episodes From ' + name, url, 80, iconimage, artbase + 'fanart2.jpg')
 		addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
-	#else:
-		#addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
-		#xbmcplugin.setContent(addon_handle, 'episodes')
-	views = settings.getSetting(id="views")
-	if views != 'false':
-		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+	if force_views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #80
 def find_more(url):
-		#site = 'https://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + 'go.com'
-		#xbmc.log(site
-		#base = url.partition('/')[0]
-		#xbmc.log(base
 		br.set_handle_robots( False )
 		response = br.open(url)
 		page = response.get_data()
@@ -188,9 +187,8 @@ def find_more(url):
 			runtime = GetInHMS(int(duration))
 			add_directory3(title, pageurl, 531, artbase + 'fanart2.jpg', icon, plot=description + ' (' + runtime.replace('00:','') + ') ' + expiry)
 		xbmcplugin.setContent(addon_handle, 'episodes')
-		views = settings.getSetting(id="views")
-		if views != 'false':
-			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+		if force_views != 'false':
+			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 		xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -201,10 +199,11 @@ def discovery_shows(name,url):
 		opener.addheaders.append(('Cookie', r.cookies))
 		f = opener.open(url)
 		page = f.read()
-		try: m3u8 = re.compile('streamUrl(.+?)hdsStreamUrl').findall(page)[0]
+		try: m3u8 = re.compile('ssdaiStreamUrl(.+?)cuePoints').findall(page)[0]
 		except IndexError:
 			xbmcgui.Dialog().notification(name, ' Episode Not Available', iconimage, 5000, False)
 			return
+		m3u8 = m3u8.replace('&amp;','&').replace('%3A',':')
 		if QUALITY =='2':
 			url = (str(m3u8.replace('\/','/'))[13:-13])
 		elif QUALITY =='1':
@@ -226,19 +225,15 @@ def discovery_clips(url, iconimage):
 	except urllib2.HTTPError:
 		xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
 		return
-	#try: dscdata = json.load(response)
-	#except ValueError:
-		#xbmcgui.Dialog().notification(name, ' No Streams Available', iconimage, 5000, False)
-		#return
-	#list_clips(dscdata)
 	soup = BeautifulSoup(html,'html5lib').find_all("a",{"class":"thumbnailTile__link"})
-	#xbmc.log(soup[0]
 	for item in soup:
 		title = item.find('div',{'class':'thumbnailTile__lineTwo'}).text.encode('ascii', 'ignore')
 		if 'Season' in title:
 			continue
 		link = site + item.get('href')
 		add_directory2(title, link, 550, artbase + 'fanart2.jpg', iconimage,plot='')
+	if force_views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -254,9 +249,6 @@ def get_clips(name,url):
 		xbmcgui.Dialog().notification(name, 'Currently Unavailable.  Try Again Later', iconimage, 5000, False)
 		xbmc.log('CURRENTLY UNAVAILABLE')
 		return
-	#xbmc.log('COOKIES: ' + str(r.cookies))
-	#xbmc.log(r.request.headers
-	#auth = re.findall(r'%2522%253A%2522.*\n', str(r.cookies), flags=re.MULTILINE)
 	auth = 'Bearer ' + re.compile('%2522%253A%2522(.+?)%2522%252C%2522').findall(str(r.cookies))[0]
 	opener.addheaders.append(('Host', 'api.discovery.com'))
 	opener.addheaders.append(('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0'))
@@ -276,7 +268,6 @@ def other_shows(url, iconimage):
 	xbmc.log('ICONIMAGE: ' + str(iconimage))
 	site = url.replace('/tv-shows/','')
 	xbmc.log('SITE: ' + str(site))
-	#add_directory2('Search', url, 538, artbase + 'fanart2.jpg', iconimage,plot='')
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib').find_all("div",{"class":"headerMain__showDropDesktop"})[0]
 	for show in soup.find_all("a")[1:]:
@@ -289,18 +280,9 @@ def other_shows(url, iconimage):
 			mode = 534
 		if 'aerospace' in link:
 			continue
-			#xbmc.log('LINK: ' + str(link))
-		#if 'velocity' in url:
-			#link = velocity_clips(link)
-			#mode = 542
-		#else:
-			#link = url.replace('videos', 'tv-shows') + show.get('data-ssid').split('/')[-1] + '?flat=2'
-		#mode = 534
 		add_directory2(tvshow, link, mode, artbase + 'fanart2.jpg', iconimage,plot='')
-		#xbmc.log(link
-		views = settings.getSetting(id="views")
-		if views != 'false':
-			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+		if force_views != 'false':
+			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -320,9 +302,8 @@ def tlc_clips(url, iconimage):
 		link = show.find('a')['href']
 		link = link + '?flat=1'
 		add_directory2(tvshow, link, 532, artbase + 'fanart2.jpg', iconimage,plot='')
-		views = settings.getSetting(id="views")
-		if views != 'false':
-			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+		if force_views != 'false':
+			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -341,9 +322,8 @@ def dsc_kids(url):
 		title = cat.title()
 		i = i + 1
 		add_directory2(title, link, 536, artbase + 'fanart2.jpg', iconimage,plot='')
-		views = settings.getSetting(id="views")
-		if views != 'false':
-			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+		if force_views != 'false':
+			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -359,9 +339,8 @@ def kids_clips(url,iconimage):
 		image = item.find('img')['src']
 		link = item.find('a')['href']
 		add_directory3(title, link, 537, artbase + 'fanart2.jpg', image,plot)
-		views = settings.getSetting(id="views")
-		if views != 'false':
-			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+		if force_views != 'false':
+			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -424,9 +403,8 @@ def get_search(url):
 		description = striphtml(str(item.find('div',{'class':'item-detail'}))).replace('\n','').strip().split('http')[0]
 		add_directory3(title, url, 540, artbase + 'fanart2.jpg', icon, plot=description)# + ' (' + runtime.replace('00:','') + ')')
 	add_directory2('Next Page', nextpage, 539, artbase + 'fanart2.jpg', iconimage, plot='')
-	views = settings.getSetting(id="views")
-	if views != 'false':
-		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+	if force_views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -487,9 +465,8 @@ def list_clips(dscdata):
 		li.addStreamInfo('video', { 'duration': duration })
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=15)
 		xbmcplugin.setContent(addon_handle, 'episodes')
-		views = settings.getSetting(id="views")
-		if views != 'false':
-			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
+		if force_views != 'false':
+			xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -726,6 +703,9 @@ elif mode==550:
 elif mode == 99:
 	xbmc.log("PLAY Video")
 	PLAY(name,url)
+elif mode==998:
+	xbmc.log("Get JSON")
+	dsc_json(name,url)
 elif mode==999:
 	xbmc.log("Play Video")
 	play(url)

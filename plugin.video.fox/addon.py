@@ -36,14 +36,23 @@ QUALITY = settings.getSetting(id="quality")
 confluence_views = [500,501,502,503,504,508,515]
 airdate = ''
 
+url = 'https://api.fox.com/fbc-content/v1_4/screenpanels/58daf1b54672070001df1400/items?itemsPerPage=25'
 
 #633
-def shows():
-	response = get_json('https://api.fox.com/fbc-content/v1_4/screenpanels/58daf1b54672070001df1400/items?itemsPerPage=50')
+def shows(url):
+	page = 1
+	if 'page=2' in url:
+		page = 2
+	response = get_json(url)
 	jsob = json.loads(response)
+	text_file = open("Output.txt", "w")
+	text_file.write(str(jsob))
+	text_file.close()
 	totalItems = jsob['totalItems']
 	for i in range(totalItems):
-		seriesType = jsob['member'][i]['seriesType']
+		try:seriesType = jsob['member'][i]['seriesType']
+		except IndexError:
+			continue
 		title = jsob['member'][i]['name']
 		if (seriesType == 'special'):# or (title == 'MasterChef'):
 			continue
@@ -54,6 +63,9 @@ def shows():
 		url2 = jsob['member'][i]['url']
 		url = url1 + '___' + url2
 		add_directory2(title, url, 636, fanart, thumbnail, plot='')
+	if page != 2:
+		url = 'https://api.fox.com/fbc-content/v1_4/screenpanels/58daf1b54672070001df1400/items?itemsPerPage=25&page=2'
+		add_directory2('Next Page', url, 633, fanart, thumbnail, plot='')
 		#xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_TITLE)
 	#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
@@ -282,14 +294,15 @@ xbmc.log("Mode: " + str(mode))
 xbmc.log("URL: " + str(url))
 xbmc.log("Name: " + str(name))
 
-if mode == None or url == None or len(url) < 1:
+if mode == None:# or url == None or len(url) < 1:
+	url = 'https://api.fox.com/fbc-content/v1_4/screenpanels/58daf1b54672070001df1400/items?itemsPerPage=25'
 	xbmc.log("Generate Main Menu")
-	shows()
+	shows(url)
 elif mode == 4:
 	xbmc.log("Play Video")
 elif mode==633:
 	xbmc.log("FOX Shows")
-	shows()
+	shows(url)
 elif mode==636:
 	xbmc.log("FOX Videos")
 	FOX_videos(name,url)
