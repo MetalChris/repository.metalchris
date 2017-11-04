@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.caa" name="CAA TV" version="2017.11.04" provider-name="MetalChris">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="script.module.requests" version="2.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Watch live games and events, and replays on demand on CAA.TV</summary>
+    <description lang="en">CAA.TV, the free digital portal of the Colonial Athletic Association, can be accessed from any internet connected device and will give league fans access to nearly every live event being contested across the conference.</description>
+    <disclaimer lang="en">For support go to my github. No support without a full, unedited debug log.  No support at TVAddons or any other forum.</disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license>GPL(v2) or Later</license>
+    <forum></forum>
+    <website>http://addons.the-antinet.net</website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>

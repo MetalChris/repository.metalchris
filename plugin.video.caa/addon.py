@@ -4,10 +4,9 @@
 # Written by MetalChris
 # Released under GPL(v2)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, sys
 import simplejson as json
-#import requests
-from datetime import date, datetime, timedelta as td
+from datetime import datetime, timedelta as td
 import time
 
 today = time.strftime("%m-%d-%Y")
@@ -32,10 +31,9 @@ confluence_views = [500,501,502,503,504,508]
 
 
 def CATEGORIES():
-	addDir('CAA.TV Live', 'https://neo-client.stretchinternet.com/portal-ws/getEvents.json?dateFilter=' + today +'&clientID=47302&broadcastType=live&token=&school=&_=%5Bobject+Object%5D', 5, defaultimage)
-	#addDir('CAA.TV Schedule', 'https://watchstadium.com/schedule/', 10, defaultimage)
+	addDir('CAA.TV Live', 'https://neo-client.stretchinternet.com/portal-ws/getEvents.json?dateFilter=' + today +'&clientID=47302&broadcastType=live&token=&school=&_=%5Bobject+Object%5D', 15, defaultimage)
 	addDir('CAA.TV On Demand', 'https://neo-client.stretchinternet.com/portal-ws/getEvents.json?dateFilter=' + today +'&clientID=47302&broadcastType=vod&token=&school=&_=%5Bobject+Object%5D', 7, defaultimage)
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #5
@@ -44,14 +42,13 @@ def LIVE(name,url):
 	data = json.loads(response)
 	total = len(data['events'])
 	for i in range(total):
+		sport = data['events'][i]['type']
+		if name != sport:
+			continue
 		title = data['events'][i]['mobileTitle']
 		timeString = data['events'][i]['timeString']
 		event = data['events'][i]['type']
-		isLive = data['events'][i]['isLive']
-		if isLive == True:
-			title = '[LIVE] ' + title + ' (' + event + ')'
-		else:
-			title = '[' + timeString +'] ' + title + ' (' + event + ')'
+		title = '[' + timeString +'] ' + title + ' (' + event + ')'
 		eventID = data['events'][i]['eventID']
 		clientID = data['events'][i]['clientID']
 		hasVideo = data['events'][i]['hasVideo']
@@ -67,6 +64,25 @@ def LIVE(name,url):
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
+#15
+def GET_SPORTS(name,url):
+	if 'Live' in name:
+		mode = 5
+	else:
+		mode = 6
+	sports = []
+	response = get_html(url)
+	data = json.loads(response)
+	total = len(data['events'])
+	for i in range(total):
+		sport = data['events'][i]['type']
+		if not sport in sports:
+			sports.append(sport)
+	for sport in sorted(sports):
+		addDir(sport, url, mode, defaultimage, defaultfanart)
+	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+
+
 #6
 def VOD(name,url):
 	response = get_html(url)
@@ -74,6 +90,9 @@ def VOD(name,url):
 	total = len(data['events'])
 	xbmc.log('TOTAL: ' + str(total))
 	for i in range(total):
+		sport = data['events'][i]['type']
+		if name != sport:
+			continue
 		hasVideo = data['events'][i]['hasVideo']
 		if hasVideo != True:
 			continue
@@ -103,8 +122,8 @@ def ON_DEMAND():
 		title = title.strftime("%B %d, %Y")
 		title = str(title.replace(' 0', ' '))
 		url = 'https://neo-client.stretchinternet.com/portal-ws/getEvents.json?dateFilter=' + urlday +'&clientID=47302&broadcastType=vod&token=&school=&_=%5Bobject+Object%5D'
-		addDir(title,url,6, defaultimage)
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+		addDir(title,url,15, defaultimage)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #10
@@ -112,20 +131,13 @@ def VOD_JSON(name,url):
 	response = get_html(url)
 	data = json.loads(response)
 	mountPointServiceUrl = data['mountPointServiceUrl']
-	#xbmc.log('MPU: ' + str(mountPointServiceUrl))
 	mP = get_html(mountPointServiceUrl)
-	#mP = mountPointServiceUrl.split('/')
-	#xbmc.log('MP: ' + str(mP))
 	streamHDURL = data['streamURL']
 	streams = streamHDURL.split('#')
-	#xbmc.log('STREAMS: ' + str(streams))
-	stream = streams[0] + mP#[2] + streams[-1]
+	stream = streams[0] + mP
 	xbmc.log('STREAM: ' + str(stream))
-	#TEST_STREAM(stream)
-	#stream = 'rtmp://' + lB[2] +
-	#stream = re.sub("\#[^#]*", lB[2], streamHDURL)
 	PLAY(name, stream)
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #20
@@ -134,18 +146,13 @@ def GET_PAGE(name,url):
 	data = json.loads(response)
 	loadBalancerUrl = data['loadBalancerUrl']
 	lB = loadBalancerUrl.split('/')
-	#xbmc.log('LB: ' + str(lB))
 	streamHDURL = data['streamURL']
 	streams = streamHDURL.split('#')
-	#xbmc.log('STREAMS: ' + str(streams))
-	stream = streams[0] + lB[2] + streams[-1] + ' live=true'
+	parts = streams[-1].split('/')
+	stream = 'https://d15xyumcalkui.cloudfront.net/' + parts[1] + '/_definst_/' + parts[2] + '/playlist.m3u8'
 	xbmc.log('STREAM: ' + str(stream))
-	#TEST_STREAM(stream)
-		#if r.status_code == 404:
-	#stream = 'rtmp://' + lB[2] +
-	#stream = re.sub("\#[^#]*", lB[2], streamHDURL)
 	PLAY(name, stream)
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 def TEST_STREAM(url):
@@ -271,6 +278,9 @@ elif mode == 7:
 elif mode == 10:
 	xbmc.log("CAA.TV Get Stream")
 	VOD_JSON(name,url)
+elif mode == 15:
+	xbmc.log("CAA TV Sports")
+	GET_SPORTS(name,url)
 elif mode == 20:
 	xbmc.log("CAA.TV Get Stream")
 	GET_PAGE(name,url)
