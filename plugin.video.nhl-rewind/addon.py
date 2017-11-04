@@ -109,7 +109,7 @@ def get_fox_page(name,url):
 	redirect = re.compile('video_url": "(.+?)"').findall(str(html))[0]
 	url = resolve_http_redirect(redirect)
 	xbmc.log('FOX URL: ' + str(url))
-	play_url(name,url)
+	play(name,url)
 	sys.exit()
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
@@ -216,6 +216,15 @@ def play_url(name,url):
 	xbmc.Player().play( url, listitem )
 	sys.exit()
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
+def play(name,url):
+	xbmc.log('STREAM: ' + str(url))
+	item = xbmcgui.ListItem(name, path=url)
+	item.setProperty('IsPlayable', 'true')
+	item.setProperty('IsFolder', 'false')
+	xbmcplugin.setResolvedUrl(int(sys.argv[1]), succeeded=True, listitem=item)
+	return
 
 
 #16
