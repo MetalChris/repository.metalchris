@@ -94,7 +94,7 @@ def cats(program):
 #11
 def vod(url):
 	addDir('Featured','http://www.huntchannel.tv',13,defaulticon)
-	addDir('Recently Added','http://huntchannel.tv/feed/',14,defaulticon)
+	#addDir('Recently Added','http://huntchannel.tv/feed/',14,defaulticon)
 	addDir('All Shows','http://www.huntchannel.tv/wp-admin/admin-ajax.php',100,defaulticon)
 	xbmcplugin.endOfDirectory(addon_handle)
 
@@ -103,9 +103,9 @@ def vod(url):
 def get_live(name,url,iconimage):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'player-embed'})
-	iframe = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2]
-	if 'http:' not in iframe:
-		iframe = 'http:' + iframe
+	iframe = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('html','js')
+	if 'http' not in iframe:
+		iframe = 'http' + iframe
 	xbmc.log('IFRAME: ' + str(iframe))
 	html = get_html(iframe)
 	m3u8 = str(re.compile('file": "(.+?)"').findall(str(html)))[2:-2]#[0])
@@ -123,7 +123,7 @@ def get_vod(url):
 	titles = re.compile('<li>(.+?)</li>').findall(str(soup))
 	for title in titles:
 		url = str(re.compile('href=(.+?)>').findall(str(title)))[3:-3]
-		title = striphtml(title)
+		title = striphtml(title).replace('&amp;','&')
 		add_directory2(title,url,30,defaultfanart,defaultimage,plot='')
 	xbmcplugin.endOfDirectory(addon_handle)
 
