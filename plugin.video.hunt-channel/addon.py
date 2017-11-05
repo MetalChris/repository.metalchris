@@ -108,7 +108,8 @@ def get_live(name,url,iconimage):
 		iframe = 'http' + iframe
 	xbmc.log('IFRAME: ' + str(iframe))
 	html = get_html(iframe)
-	m3u8 = str(re.compile('file": "(.+?)"').findall(str(html)))[2:-2]#[0])
+	m3u8 = str(re.compile('source0.src = (.+?);').findall(str(html)))[2:-2].split(", '")[-1].replace("')","")
+	xbmc.log('M3U8: ' + str(m3u8))
 	listitem = xbmcgui.ListItem('Hunt Channel' + ' ' + name, thumbnailImage=defaulticon)
 	listitem.setProperty('mimetype', 'video/x-mpegurl')
 	xbmc.Player().play( m3u8, listitem )
