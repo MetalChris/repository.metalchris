@@ -225,6 +225,7 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 	#liz.setProperty('fanart_image',fanart)
 	liz.setArt({'thumb':defaulticon,'fanart':defaultfanart})
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
+	return ok
 
 
 def unescape(s):
