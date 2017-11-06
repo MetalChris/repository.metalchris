@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.caa" name="CAA TV" version="2017.11.04" provider-name="MetalChris">
+<addon id="plugin.video.caa" name="CAA TV" version="2017.11.05" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
     <import addon="script.module.requests" version="2.9.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
@@ -16,8 +15,13 @@
     <platform>all</platform>
     <license>GPL(v2) or Later</license>
     <forum></forum>
-    <website>http://addons.the-antinet.net</website>
+    <website>http://www.caa.tv</website>
     <email></email>
-    <source></source>
+    <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.caa</source>
+    <news>v.2017.11.05[CR]- Code changes for Kodi compliance[CR]v.2017.11.04[CR]- Code cleanup[CR]v.2017.10.08[CR]- Fix for live streams (?)[CR]- Add subcategories for each sport[CR]v.2017.10.01[CR]- Initial release</news>
+    <assets>
+        <icon>resources/images/icon.png</icon>
+        <fanart>resources/images/fanart.jpg</fanart>
+    </assets>
   </extension>
 </addon>
