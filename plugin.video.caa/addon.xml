@@ -2,7 +2,6 @@
 <addon id="plugin.video.caa" name="CAA TV" version="2017.11.05" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.requests" version="2.9.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>

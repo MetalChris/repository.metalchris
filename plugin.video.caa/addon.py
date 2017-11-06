@@ -148,7 +148,6 @@ def VOD_JSON(name,url):
 	stream = streams[0] + mP
 	xbmc.log('STREAM: ' + str(stream), level=xbmc.LOGDEBUG)
 	return stream
-	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #20
@@ -169,7 +168,6 @@ def GET_STREAM(name,url):
 	xbmc.log('STREAMS: ' + str(urls), level=xbmc.LOGDEBUG)
 	stream = TEST_STREAMS(urls)
 	return stream
-	xbmcplugin.endOfDirectory(addon_handle)
 
 
 def TEST_STREAMS(url):
@@ -218,7 +216,6 @@ def get_params():
 
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-	ok = True
 	liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
 	liz.setInfo(type="Video", infoLabels={"mediatype":"video","label":name,"title":name,"genre":"Sports"})
 	#liz.setInfo(type="Video", infoLabels={"Title": name})
