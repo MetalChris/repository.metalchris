@@ -16,8 +16,11 @@ _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
 addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
 
-selfAddon = xbmcaddon.Addon(id='plugin.video.caa')
+ADDON_ID = 'plugin.video.caa'
+selfAddon = xbmcaddon.Addon(id=ADDON_ID)
+ADDON_VERSION = selfAddon.getAddonInfo('version')
 translation = selfAddon.getLocalizedString
+settings = xbmcaddon.Addon(id="plugin.video.caa")
 
 schools = ['charleston', 'delaware', 'drexel', 'elon', 'hofstra', 'madison', 'mary', 'northeastern','towson', 'uncw']
 
@@ -26,6 +29,8 @@ defaultfanart = 'special://home/addons/plugin.video.caa/fanart.jpg'
 defaultvideo = 'special://home/addons/plugin.video.caa/icon.png'
 defaulticon = 'special://home/addons/plugin.video.caa/icon.png'
 artbase = 'special://home/addons/plugin.video.caa/resources/media/'
+
+plugin = 'CAA TV'
 
 addon_handle = int(sys.argv[1])
 confluence_views = [500,501,502,503,504,508]
@@ -52,21 +57,23 @@ def LIVE(name,url):
 		title = '[' + timeString +'] ' + title + ' (' + event + ')'
 		eventID = data['events'][i]['eventID']
 		clientID = data['events'][i]['clientID']
+		m_type = 'video'
 		hasVideo = data['events'][i]['hasVideo']
 		if hasVideo != True:
-			continue
+			title = title + ' * Audio Only *'
+			m_type = 'audio'
 		img_key = (data['events'][i]['customText']).split(' ')[-1].lower()
 		if img_key in schools:
 			image = os.path.join(artbase,img_key + '.png')
 		else:
 			image = defaultimage
-		url = 'https://neo-client.stretchinternet.com/streamservice.portal?clientID=' + str(clientID) + '&userID=-1&broadcastType=live&method=getStream&eventID=' + str(eventID) + '&streamType=video'
-		stream = GET_STREAM(name,url)
-		xbmc.log('DATA: ' + str(stream), level=xbmc.LOGDEBUG)
+		jurl = 'https://neo-client.stretchinternet.com/streamservice.portal?clientID=' + str(clientID) + '&userID=-1&broadcastType=live&method=getStream&eventID=' + str(eventID) + '&streamType=' + str(m_type)
+		url = 'plugin://plugin.video.caa?mode=20&url=' + urllib.quote_plus(jurl)
 		li = xbmcgui.ListItem(title)
+		li.setProperty('IsPlayable', 'true')
 		li.setInfo(type="Video", infoLabels={"mediatype":"video","label":title,"title":title,"genre":"Sports"})
 		li.setArt({'thumb':image,'fanart':defaultfanart})
-		xbmcplugin.addDirectoryItem(handle=addon_handle, url=stream, listitem=li, isFolder=False)
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
@@ -99,12 +106,14 @@ def VOD(name,url):
 		sport = data['events'][i]['type']
 		if name != sport:
 			continue
-		hasVideo = data['events'][i]['hasVideo']
-		if hasVideo != True:
-			continue
 		title = data['events'][i]['mobileTitle']
 		event = data['events'][i]['type']
 		title = title + ' (' + event + ')'
+		m_type = 'video'
+		hasVideo = data['events'][i]['hasVideo']
+		if hasVideo != True:
+			title = title + ' * Audio Only *'
+			m_type = 'audio'
 		eventID = data['events'][i]['eventID']
 		clientID = data['events'][i]['clientID']
 		img_key = (data['events'][i]['customText']).split(' ')[-1].lower()
@@ -112,13 +121,13 @@ def VOD(name,url):
 			image = os.path.join(artbase,img_key + '.png')
 		else:
 			image = defaultimage
-		url = 'https://neo-client.stretchinternet.com/streamservice.portal?clientID=' + str(clientID) + '&userID=-1&broadcastType=vod&method=getStream&eventID=' + str(eventID) + '&streamType=video'
-		stream = VOD_JSON(name,url)
-		xbmc.log('DATA: ' + str(stream), level=xbmc.LOGDEBUG)
+		jurl = 'https://neo-client.stretchinternet.com/streamservice.portal?clientID=' + str(clientID) + '&userID=-1&broadcastType=vod&method=getStream&eventID=' + str(eventID) + '&streamType=' + str(m_type)
+		url = 'plugin://plugin.video.caa?mode=10&url=' + urllib.quote_plus(jurl)
 		li = xbmcgui.ListItem(title)
+		li.setProperty('IsPlayable', 'true')
 		li.setInfo(type="Video", infoLabels={"mediatype":"video","label":title,"title":title,"genre":"Sports"})
 		li.setArt({'thumb':image,'fanart':defaultfanart})
-		xbmcplugin.addDirectoryItem(handle=addon_handle, url=stream, listitem=li, isFolder=False)
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
@@ -138,46 +147,79 @@ def ON_DEMAND():
 
 
 #10
-def VOD_JSON(name,url):
+def VOD_JSON(url):
+	xbmc.log('VURL: ' + str(url), level=xbmc.LOGDEBUG)
 	response = get_html(url)
 	data = json.loads(response)
+	u_Reason = data['unauthorizedReason']
+	if len(u_Reason) > 1:
+		xbmcgui.Dialog().notification(plugin, u_Reason, defaultimage, 10000, False)
+		xbmc.log('* UNAUTHORIZED *')
+		return
 	mountPointServiceUrl = data['mountPointServiceUrl']
 	mP = get_html(mountPointServiceUrl)
 	streamHDURL = data['streamURL']
 	streams = streamHDURL.split('#')
 	stream = streams[0] + mP
 	xbmc.log('STREAM: ' + str(stream), level=xbmc.LOGDEBUG)
-	return stream
+	PLAY(name, stream)
 
 
 #20
-def GET_STREAM(name,url):
+def GET_STREAM(url):
 	urls = []
 	xbmc.log('URL: ' + str(url), level=xbmc.LOGDEBUG)
 	response = get_html(url)
 	data = json.loads(response)
+	u_Reason = data['unauthorizedReason']
+	if len(u_Reason) > 1:
+		xbmcgui.Dialog().notification(plugin, u_Reason, defaultimage, 10000, False)
+		xbmc.log('* UNAUTHORIZED *')
+		return
 	loadBalancerUrl = data['loadBalancerUrl']
 	lB = loadBalancerUrl.split('/')
 	streamHDURL = data['streamURL']
 	streams = streamHDURL.split('#')
 	parts = streams[-1].split('/')
-	stream1 = 'http://d15xyumcalkui.cloudfront.net/' + parts[1] + '/_definst_/' + parts[2] + '/playlist.m3u8 live=true'
+	stream1 = 'https://d15xyumcalkui.cloudfront.net/' + parts[1] + '/_definst_/' + parts[2] + '/playlist.m3u8'# live=true'
 	urls.append(stream1)
-	stream2 = streams[0] + lB[2] + streams[2]
+	stream2 = streams[0] + lB[2] + streams[2]# + ' swfVfy=true live=true'
 	urls.append(stream2)
 	xbmc.log('STREAMS: ' + str(urls), level=xbmc.LOGDEBUG)
 	stream = TEST_STREAMS(urls)
-	return stream
+	#return stream
+	PLAY(name, stream)
 
 
 def TEST_STREAMS(url):
-	try:response = urllib2.urlopen(url[0], timeout=5)
-	except socket.error:
-		xbmc.log('SOCKET ERROR', level=xbmc.LOGDEBUG)
+	req = urllib2.Request(url[0])
+	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0')
+	try:response = urllib2.urlopen(req, timeout=10)
+	except urllib2.HTTPError:
+		xbmc.log('* HTTP Error *')
 		stream = url[1]
 		return stream
+	#except socket.timeout:
+		#xbmc.log('TIMEOUT', level=xbmc.LOGDEBUG)
+		#stream = url[1]
+		#return stream
+	except socket.error:
+		xbmc.log('* SOCKET ERROR *')
+		stream = url[1]
+		return stream
+	#print url
 	stream = url[0]
 	return stream
+
+
+#99
+def PLAY(name,url):
+	listitem = xbmcgui.ListItem(path=url)
+	xbmc.log('### SETRESOLVEDURL ###')
+	listitem.setProperty('IsPlayable', 'true')
+	xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+	xbmc.log('URL: ' + str(url), level=xbmc.LOGDEBUG)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 
@@ -193,7 +235,6 @@ def get_html(url):
 		response = False
 		html = False
 	return html
-
 
 def get_params():
 	param = []
@@ -214,17 +255,33 @@ def get_params():
 	return param
 
 
-def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
-	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-	liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+def addDir(name,url,mode,iconimage, fanart=False, infoLabels=False):
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+	#ok=True
+	liz=xbmcgui.ListItem(name)
 	liz.setInfo(type="Video", infoLabels={"mediatype":"video","label":name,"title":name,"genre":"Sports"})
-	#liz.setInfo(type="Video", infoLabels={"Title": name})
-	liz.setProperty('IsPlayable', 'true')
+	#liz.setProperty('IsPlayable', 'true')
+	#liz.setInfo( type="Video", infoLabels={ "Title": name } )
 	if not fanart:
 		fanart=defaultfanart
 	#liz.setProperty('fanart_image',fanart)
 	liz.setArt({'thumb':defaulticon,'fanart':defaultfanart})
-	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+	return ok
+
+
+def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+	#ok=True
+	liz=xbmcgui.ListItem(name)
+	liz.setInfo(type="Video", infoLabels={"mediatype":"video","label":name,"title":name,"genre":"Sports"})
+	#liz.setProperty('IsPlayable', 'true')
+	#liz.setInfo( type="Video", infoLabels={ "Title": name } )
+	if not fanart:
+		fanart=defaultfanart
+	#liz.setProperty('fanart_image',fanart)
+	liz.setArt({'thumb':defaulticon,'fanart':defaultfanart})
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
 	return ok
 
 
@@ -256,33 +313,33 @@ try:
 except:
 	pass
 
-xbmc.log("Mode: " + str(mode), level=xbmc.LOGDEBUG)
-xbmc.log("URL: " + str(url), level=xbmc.LOGDEBUG)
-xbmc.log("Name: " + str(name), level=xbmc.LOGDEBUG)
+xbmc.log("Mode: " + str(mode))
+xbmc.log("URL: " + str(url))
+xbmc.log("Name: " + str(name))
 
 if mode == None or url == None or len(url) < 1:
-	xbmc.log("CAA.TV Menu", level=xbmc.LOGDEBUG)
+	xbmc.log("CAA.TV Menu")
 	CATEGORIES()
 elif mode == 5:
-	xbmc.log("CAA.TV Live", level=xbmc.LOGDEBUG)
+	xbmc.log("CAA.TV Live")
 	LIVE(name,url)
 elif mode == 6:
-	xbmc.log("CAA.TV Live", level=xbmc.LOGDEBUG)
+	xbmc.log("CAA.TV Live")
 	VOD(name,url)
 elif mode == 7:
-	xbmc.log("CAA.TV On Demand", level=xbmc.LOGDEBUG)
+	xbmc.log("CAA.TV On Demand")
 	ON_DEMAND()
 elif mode == 10:
-	xbmc.log("CAA.TV Get Stream", level=xbmc.LOGDEBUG)
-	VOD_JSON(name,url)
+	xbmc.log("CAA.TV Get Stream")
+	VOD_JSON(url)
 elif mode == 15:
-	xbmc.log("CAA TV Sports", level=xbmc.LOGDEBUG)
+	xbmc.log("CAA TV Sports")
 	GET_SPORTS(name,url)
 elif mode == 20:
-	xbmc.log("CAA.TV Get Stream", level=xbmc.LOGDEBUG)
-	GET_STREAM(name,url)
+	xbmc.log("CAA.TV Get Stream")
+	GET_STREAM(url)
 elif mode == 99:
-	xbmc.log("Play Video", level=xbmc.LOGDEBUG)
+	xbmc.log("Play Video")
 	PLAY(name,url)
 
 
