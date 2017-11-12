@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.reuters" name="Reuters TV" version="0.0.2" provider-name="MetalChris">
+<addon id="plugin.video.reuters" name="Reuters TV" version="0.0.3" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -17,6 +17,6 @@
         <license>GPL 2.0 or Later</license>
         <summary lang="en">Reuters TV: Live Breaking News, US, World, Business, Finance</summary>
         <description lang="en">Keep up with the world’s events live and straight from the source with Reuters TV feeds from all over the world. From the International Space Station to St. Peter’s in Rome, we’re there.</description>
-        <disclaimer lang="en"></disclaimer>
+        <disclaimer lang="en">For support go to my github. No support without a full, unedited debug log.  No support at TVAddons or any other forum.</disclaimer>
     </extension>
 </addon>

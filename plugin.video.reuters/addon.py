@@ -40,10 +40,10 @@ plugin = 'Reuters TV'
 
 
 def CATEGORIES():
-	addDir('Live Stream', baseurl + '/live', 20, defaultimage)
-	addDir('Upcoming', baseurl + '/live', 25, defaultimage)
+	addDir('Live Stream', baseurl + 'live', 20, defaultimage)
+	addDir('Upcoming', baseurl + 'live', 25, defaultimage)
 	addDir('Top Stories', 'http://www.reuters.tv/data/json/' + edition + '&time=' + LENGTH, 10, defaultimage)
-	addDir('Categories', baseurl + '/categories' + edition, 30, defaultimage)
+	addDir('Categories', baseurl + 'categories' + edition, 30, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -118,7 +118,7 @@ def UPCOMING(name,url):
 		title = live_time + ': ' + item.find('h2').text.encode('ascii','ignore')
 		if 'LIVE' in title:
 			mode = 20
-			url = baseurl + '/live'
+			url = baseurl + 'live'
 		else:
 			mode = None
 			url = baseurl #+ item.find('a')['href']
@@ -135,7 +135,7 @@ def UPCOMING(name,url):
 	#if 'LIVE_UPCOMING' in jsob[-1]:
 		#xbmc.log('LIVE_UPCOMING: YES')
 	for item in jdata:
-		title = jdata['items'][i]['title']
+		title = jdata['items'][i]['title'].encode('ascii','ignore')
 		status = jdata['items'][i]['type']
 		stream = jdata['items'][i]['resources'][-1]['uri']
 		image = defaultimage #'http:' + item.find('img')['src']
@@ -152,7 +152,7 @@ def CATS(name,url):
 	xbmc.log('SOUP LENGTH: ' + str(len(soup)))
 	for item in soup:
 		title = item.find('h3').text.title()
-		url = baseurl + item.find('a')['href']
+		url = 'http://www.reuters.tv' + item.find('a')['href']
 		image = 'http:' + item.find('img')['src']
 		addDir(title, url, 40, image)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
@@ -168,7 +168,7 @@ def VIDEOS(name,url):
 		title = item.find('h3').text.encode('ascii','ignore')#.title()
 		url = item.find('a')['href']#baseurl +
 		image = item.find('img')['src']#'http:' +
-		addDir(title, url, 50, image)
+		addDir2(title, url, 50, image)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
@@ -176,11 +176,11 @@ def VIDEOS(name,url):
 def VIDEO(name,url):
 	response = br.open(url)
 	html = response.get_data()
-	video_url = (re.compile('video=(.+?)">').findall(html)[-1]).replace('%3A',':').replace('%2F','/')
-	if QUALITY == '2':
-		video_url = video_url.replace('2000','5000')
-	if QUALITY == '1':
-		video_url = video_url.replace('2000','4000')
+	#vid = re.findall(r'<!--.*-->', html)
+	items=re.findall("https://ajo.prod.reuters.tv/rest/v2/playlist/assets/.*$",html,re.MULTILINE)
+	xbmc.log('ITEMS: ' + str(items[-1]))
+	xbmc.log('VID: ' + str(len(items)))
+	video_url = (items[0].split(',m'))[0] + '/web'
 	xbmc.log('VIDEO URL: ' + str(video_url))
 	PLAY(name, video_url)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
@@ -190,6 +190,8 @@ def VIDEO(name,url):
 def PLAY(name,url):
 	listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
 	listitem.setInfo(type="Video", infoLabels={"Title": name})
+	#listitem.setProperty('IsPlayable', 'true')
+	#xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
 	xbmc.Player().play( url, listitem )
 	sys.exit()
 	xbmcplugin.endOfDirectory(addon_handle)

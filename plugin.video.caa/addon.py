@@ -12,28 +12,22 @@ import socket
 
 today = time.strftime("%m-%d-%Y")
 
-_addon = xbmcaddon.Addon()
-_addon_path = _addon.getAddonInfo('path')
-addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
-
-ADDON_ID = 'plugin.video.caa'
-selfAddon = xbmcaddon.Addon(id=ADDON_ID)
-ADDON_VERSION = selfAddon.getAddonInfo('version')
+addon_id = 'plugin.video.caa'
+selfAddon = xbmcaddon.Addon(id=addon_id)
 translation = selfAddon.getLocalizedString
-settings = xbmcaddon.Addon(id="plugin.video.caa")
+#addon_version = selfAddon.getAddonInfo('version')
+#settings = xbmcaddon.Addon(id=addon_id)
 
 schools = ['charleston', 'delaware', 'drexel', 'elon', 'hofstra', 'madison', 'mary', 'northeastern','towson', 'uncw']
 
 defaultimage = 'special://home/addons/plugin.video.caa/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.caa/fanart.jpg'
-defaultvideo = 'special://home/addons/plugin.video.caa/icon.png'
 defaulticon = 'special://home/addons/plugin.video.caa/icon.png'
 artbase = 'special://home/addons/plugin.video.caa/resources/media/'
 
 plugin = 'CAA TV'
 
 addon_handle = int(sys.argv[1])
-confluence_views = [500,501,502,503,504,508]
 
 
 def CATEGORIES():
@@ -60,7 +54,7 @@ def LIVE(name,url):
 		m_type = 'video'
 		hasVideo = data['events'][i]['hasVideo']
 		if hasVideo != True:
-			title = title + ' * Audio Only *'
+			title = title + ' * ' + translation(30002) + ' *'
 			m_type = 'audio'
 		img_key = (data['events'][i]['customText']).split(' ')[-1].lower()
 		if img_key in schools:
@@ -112,7 +106,7 @@ def VOD(name,url):
 		m_type = 'video'
 		hasVideo = data['events'][i]['hasVideo']
 		if hasVideo != True:
-			title = title + ' * Audio Only *'
+			title = title + ' * ' + translation(30002) + ' *'
 			m_type = 'audio'
 		eventID = data['events'][i]['eventID']
 		clientID = data['events'][i]['clientID']
@@ -183,11 +177,10 @@ def GET_STREAM(url):
 	parts = streams[-1].split('/')
 	stream1 = 'https://d15xyumcalkui.cloudfront.net/' + parts[1] + '/_definst_/' + parts[2] + '/playlist.m3u8'# live=true'
 	urls.append(stream1)
-	stream2 = streams[0] + lB[2] + streams[2]# + ' swfVfy=true live=true'
+	stream2 = streams[0] + lB[2] + streams[2]
 	urls.append(stream2)
 	xbmc.log('STREAMS: ' + str(urls), level=xbmc.LOGDEBUG)
 	stream = TEST_STREAMS(urls)
-	#return stream
 	PLAY(name, stream)
 
 
@@ -207,7 +200,6 @@ def TEST_STREAMS(url):
 		xbmc.log('* SOCKET ERROR *')
 		stream = url[1]
 		return stream
-	#print url
 	stream = url[0]
 	return stream
 
@@ -267,21 +259,6 @@ def addDir(name,url,mode,iconimage, fanart=False, infoLabels=False):
 	#liz.setProperty('fanart_image',fanart)
 	liz.setArt({'thumb':defaulticon,'fanart':defaultfanart})
 	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-	return ok
-
-
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-	#ok=True
-	liz=xbmcgui.ListItem(name)
-	liz.setInfo(type="Video", infoLabels={"mediatype":"video","label":name,"title":name,"genre":"Sports"})
-	#liz.setProperty('IsPlayable', 'true')
-	#liz.setInfo( type="Video", infoLabels={ "Title": name } )
-	if not fanart:
-		fanart=defaultfanart
-	#liz.setProperty('fanart_image',fanart)
-	liz.setArt({'thumb':defaulticon,'fanart':defaultfanart})
-	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
 	return ok
 
 

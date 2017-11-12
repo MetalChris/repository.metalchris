@@ -17,6 +17,7 @@
     <language></language>
     <platform>all</platform>
     <license>GPL(v2) or Later</license>
+    <broken>Login is broken</broken>
     <forum></forum>
     <website></website>
     <email></email>

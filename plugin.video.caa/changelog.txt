@@ -1,3 +1,7 @@
+Version 2017.11.12
+- Fix paths for assests in addon.xml
+- Add audio only streams
+
 Version 2017.11.11
 - Implement setResolvedUrl for playback
 

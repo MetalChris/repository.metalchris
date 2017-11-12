@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, xbmcplugin, sys
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, xbmcplugin, sys, os
 from bs4 import BeautifulSoup
 import html5lib
 import cookielib
@@ -12,6 +12,7 @@ import cookielib
 artbase = 'special://home/addons/plugin.video.carbon-tv/resources/media/'
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
+addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
 selfAddon = xbmcaddon.Addon(id='plugin.video.carbon-tv')
 self = xbmcaddon.Addon(id='plugin.video.carbon-tv')
 translation = selfAddon.getLocalizedString
@@ -37,26 +38,18 @@ username = settings.getSetting(id="username")
 password = settings.getSetting(id="password")
 views = settings.getSetting(id="views")
 confluence_views = [500,501,502,503,504,508,515]
-values = {'data[User][email]' : username,'data[User][password]' : password,'data[User][remember_me]' : '0', 'data[User][remember_me]' : '1'}
+payload = {'data[User][email]' : username,'data[User][password]' : password,'data[User][remember_me]' : '0','data[User][remember_me]' : '1'}
+
 
 
 #10
 def cats(url):
-	data = urllib.urlencode(values)
-	cookies = cookielib.CookieJar()
-	opener = urllib2.build_opener(
-		urllib2.HTTPRedirectHandler(),
-		urllib2.HTTPHandler(debuglevel=0),
-		urllib2.HTTPSHandler(debuglevel=0),
-		urllib2.HTTPCookieProcessor(cookies))
-	response = opener.open(baseurl, data)#55
-	response = opener.open('http://www.carbontv.com/channels', data)
-	html = response.read()
+	html = get_html('http://www.carbontv.com/channels')
 	check = re.compile('isLoggedInTest = (.+?);').findall(str(html))
 	xbmc.log(str(check))
-	if check[0] != 'true':
-		xbmcgui.Dialog().notification(plugin, 'Login Failed', iconimage, 5000, False)
-		return
+	#if check[0] != 'true':
+		#xbmcgui.Dialog().notification(plugin, 'Login Failed', iconimage, 5000, False)
+		#return
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'content-listing channels-listing clearfix'})
 	for item in soup:
 		title = item.find('h2').string.encode('utf-8').title()
@@ -69,7 +62,6 @@ def cats(url):
 		else:
 			mode = 15
 		add_directory2(title,url,mode,image,image,plot='')
-	#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -104,17 +96,16 @@ def videos(url):
 		duration = striphtml(str(item.find('div',{'class':'thumb-duration'})))#.string.encode('utf-8')
 		runtime = get_sec(duration)
 		thumbnail = item.find('img',{'class':'category-image full-image'})['src']
-		purl = 'plugin://plugin.video.carbon-tv?mode=30&url=' + url + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
+		purl = 'plugin://plugin.video.carbon-tv?mode=30&url=' + urllib.quote_plus(url) + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
 		li.setProperty('fanart_image', thumbnail)
 		li.setProperty('mimetype', 'video/mp4')
+		li.setProperty('IsPlayable', 'true')
 		li.setInfo(type="video", infoLabels={ 'Title': title, 'Plot': '' })
 		li.addStreamInfo('video', { 'duration': runtime })
 		li.addContextMenuItems([('Mark as Watched/Unwatched', 'Action(ToggleWatched)')])
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li, isFolder=False)
 		xbmcplugin.setContent(addon_handle, 'episodes')
-		#add_directory2(title,url,30,thumbnail,thumbnail,plot='')
-		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmc.log('DURATION: ' + str(runtime))
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
@@ -136,17 +127,10 @@ def streams(name,url):
 		qkey = 487061#keys[-7]
 	#stream = (thumbnail.split('version')[0]).replace('cfvod.kaltura.com','carbonmedia-a.akamaihd.net').replace('thumbnail','serveFlavor') + 'v/2/flavorId/' + key + '/forceproxy/true/name/a.mp4'
 	stream = 'https://cdnapisec.kaltura.com/p/1897241/sp/189724100/playManifest/entryId/' + key + '/format/download/protocol/https/flavorParamIds/' + str(qkey)
+	xbmc.log('STREAM: ' + str(stream))
 	listitem = xbmcgui.ListItem(name, path=stream, thumbnailImage=thumbnail)
 	listitem.setProperty('IsPlayable', 'true')
-	xbmc.executebuiltin("Action(ToggleWatched)")
-	xbmc.Player().play( stream, listitem )
-	xbmc.sleep(1000)
-	xbmc.log('===== PLAYING =====')
-	#if not xbmc.getCondVisibility("Player.HasMedia"):
-		#xbmc.sleep(1000)
-	#xbmc.log('===== EXIT =====')
-	sys.exit()
-	#xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+	xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
 
 
 def get_sec(time_str):
@@ -180,6 +164,18 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot):
 	liz.setProperty('fanart_image',fanart)
 	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
 	return ok
+
+
+def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=True):
+		u=sys.argv[0]+"?url="+urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
+		ok=True
+		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+		liz.setInfo( type="Video", infoLabels={ "Title": name } )
+		if not fanart:
+			fanart=defaultfanart
+		liz.setProperty('fanart_image', artbase + 'fanart5.jpg')
+		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+		return ok
 
 def get_html(url):
 	req = urllib2.Request(url)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.caa" name="CAA TV" version="2017.11.11" provider-name="MetalChris">
+<addon id="plugin.video.caa" name="CAA TV" version="2017.11.12" provider-name="MetalChris">
   <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="xbmc.python" version="2.20.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
@@ -17,12 +17,18 @@
     <website>http://www.caa.tv</website>
     <email></email>
     <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.caa</source>
-    <news>v.2017.11.05[CR]- Code changes for Kodi compliance[CR]v.2017.11.04[CR]- Code cleanup[CR]v.2017.10.08[CR]- Fix for live streams (?)[CR]- Add subcategories for each sport[CR]v.2017.10.01[CR]- Initial release</news>
+    <news>v.2017.11.12[CR]- Fix paths for assets in addon.xml[CR]- Add audio only streams[CR]v.2017.11.11[CR]- Implement setResolvedUrl[CR]v.2017.11.05[CR]- Code changes for Kodi compliance[CR]v.2017.11.04[CR]- Code cleanup[CR]v.2017.10.08[CR]- Fix for live streams (?)[CR]- Add subcategories for each sport[CR]v.2017.10.01[CR]- Initial release</news>
     <assets>
-        <icon>resources/images/icon.png</icon>
-        <fanart>resources/images/fanart.jpg</fanart>
-        <screenshot>resources/images/screenshot01.png</screenshot>
-        <screenshot>resources/images/screenshot02.png</screenshot>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+        <screenshot>resources/media/screenshot001.png</screenshot>
+        <screenshot>resources/media/screenshot002.png</screenshot>
+        <screenshot>resources/media/screenshot003.png</screenshot>
+        <screenshot>resources/media/screenshot004.png</screenshot>
+        <screenshot>resources/media/screenshot005.png</screenshot>
+        <screenshot>resources/media/screenshot006.png</screenshot>
+        <screenshot>resources/media/screenshot007.png</screenshot>
+        <screenshot>resources/media/screenshot008.png</screenshot>
     </assets>
   </extension>
 </addon>
