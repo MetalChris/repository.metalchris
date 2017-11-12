@@ -1,0 +1,19 @@
+Version 2017.11.12
+- Fix paths for assests in addon.xml
+- Add audio only streams
+
+Version 2017.11.11
+- Implement setResolvedUrl for playback
+
+Version 2017.11.05
+- Code changes for Kodi compliance
+
+Version 2017.11.04
+- Code cleanup
+
+Version 2017.10.08
+- Fix for live streams (?)
+- Add subcategories for each sport
+
+Version 2017.10.01
+- Initial release
