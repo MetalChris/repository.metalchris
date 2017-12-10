@@ -195,13 +195,13 @@ def ia_sub2_video(url):
 #67
 def get_links(name,url):
 		html = get_html(url)
-		match = re.compile('<meta property="og:video" content="(.+?)"/>').findall(html)
+		match = re.compile('<meta property="og:video" content="(.+?)"').findall(html)
 		xbmc.log('MATCH: ' + str(match))
 		if str(match) == '[]':
 			xbmc.log('NOTHING TO PLAY')
 			xbmcgui.Dialog().notification('IA [Video]', 'No Playable File on Archive.org', xbmcgui.NOTIFICATION_INFO, 5000)
 			sys.exit()
-		plot = str(re.compile('<meta property="og:description" content="(.+?)"/>').findall(html))[2:-2]
+		plot = str(re.compile('<meta property="og:description" content="(.+?)"').findall(html))[2:-2]
 		plot = plot.replace('\\xc2\\xa0',' ').replace('\\xe2\\x80\\x99','\'').replace('\\xe2\\x80\\x98','')
 		#image = str(re.compile('<meta property="og:image" content="(.+?)"/>').findall(html))[2:-2]
 		#infoLabels = {'title':name, 'plot':plot}
@@ -454,7 +454,7 @@ def play(name,url):
 
 def plot_info(url):
 		html = get_html(url)
-		plot = str(re.compile('<meta property="og:description" content="(.+?)"/>').findall(html))[2:-2]
+		plot = str(re.compile('<meta property="og:description" content="(.+?)"').findall(html))[2:-2]
 		xbmcgui.Dialog().ok('Plot Info', plot)
 
 

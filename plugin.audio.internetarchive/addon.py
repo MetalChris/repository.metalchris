@@ -66,6 +66,8 @@ def ia_categories():
 						title = re.compile('</span> (.+?)</').findall(link)[0]
 					if 'All Audio' in title:
 						mode = 61
+					elif title == 'Live Music Archive':
+						mode = 64
 					else:
 						mode = 62
 				url = url + '&page=1'
@@ -155,27 +157,82 @@ def ia_sub2_audio(name,url):
 
 #63
 def ia_audio_files(url):
-			html = get_html(url)
-			tracks = re.compile('"title":"(.+?)",').findall(html);	i = 0
-			for track in tracks:
-				title = str(track.split('.')[-1])
-				try:song = re.compile('"file":"(.+?)mp3').findall(html)[i]
-				except IndexError:
-					pass
-				duration = re.compile('duration(.+?)sources').findall(html)[i]
-				duration = duration[2:-2]
-				i = i + 1
-				tracknumber = int(i)
-				url = 'https://archive.org' + str(song) + 'mp3'
-				infoLabels = {'title':title, 'duration':duration, 'tracknumber':tracknumber}
-				li = xbmcgui.ListItem(title, iconImage=artbase + 'ia.png', thumbnailImage=artbase + 'ia.png')
-				li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
-				#li.setProperty(Playcount)
-				li.setInfo(type = 'music', infoLabels = infoLabels)
-				li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url))])
-				xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=70)
-				xbmcplugin.setContent(addon_handle, 'episodes')
-			xbmcplugin.endOfDirectory(addon_handle)
+	html = get_html(url)
+	tracks = re.compile('"title":"(.+?)",').findall(html);	i = 0
+	for track in tracks:
+		title = str(track.split('.')[-1])
+		try:song = re.compile('"file":"(.+?)mp3').findall(html)[i]
+		except IndexError:
+			pass
+		duration = re.compile('duration(.+?)sources').findall(html)[i]
+		duration = duration[2:-2]
+		i = i + 1
+		tracknumber = int(i)
+		url = 'https://archive.org' + str(song) + 'mp3'
+		infoLabels = {'title':title, 'duration':duration, 'tracknumber':tracknumber}
+		li = xbmcgui.ListItem(title, iconImage=artbase + 'ia.png', thumbnailImage=artbase + 'ia.png')
+		li.setProperty('fanart_image',  artbase + 'internetarchive.jpg')
+		#li.setProperty(Playcount)
+		li.setInfo(type = 'music', infoLabels = infoLabels)
+		li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s)' % (sys.argv[0], url))])
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, totalItems=70)
+		xbmcplugin.setContent(addon_handle, 'episodes')
+	xbmcplugin.endOfDirectory(addon_handle)
+
+
+#64
+def ia_live_audio(name,url):
+		page = (url)[-1]
+		#print 'page= ' + str(page)
+		thisurl = url[:-7]
+		#print 'thisurl= ' + str(thisurl)
+		req = urllib2.Request(url)
+		try: data = urllib2.urlopen(req, timeout = 5)
+		except urllib2.HTTPError , e:
+			print 'Error Type= ' + str(type(e))    #not catch
+			print 'Error Args= ' + str(e.args)
+			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
+			#dialog = xbmcgui.Dialog()
+			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
+			return
+		except urllib2.URLError , e:
+			print 'Error Type= ' + str(type(e))
+			print 'Error Args= ' + str(e.args)
+			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
+			#dialog = xbmcgui.Dialog()
+			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
+			return
+		#except socket.timeout , e:
+			#print 'Error Type= ' + str(type(e))
+			#print 'Error Args= ' + str(e.args)
+			#line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
+			#dialog = xbmcgui.Dialog()
+			#xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
+			#return
+		try: soup = BeautifulSoup(data,'html.parser').find_all('div',{'class': 'collection-title'})
+		except SSLError:
+			e = sys.exc_info()[1]
+			print 'ERROR: ' + str(e)
+			print 'Error Type= ' + str(type(e))    #not catch
+			print 'Error Args= ' + str(e.args)
+			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
+			#dialog = xbmcgui.Dialog()
+			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
+			return
+		xbmc.log('SOUP:' + str(len(soup)))
+		for item in soup:
+			l = item.find('a')['href']
+			purl = 'https://archive.org' + l
+			title = item.find('a').text.encode('ascii','ignore').strip()
+			url = purl + '&page=1'
+			add_directory2(title,url, 62, artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+			xbmcplugin.setContent(pluginhandle, 'episodes')
+		page = str(int(page) + 1)
+		#thisurl = thisurl.replace('?','')
+		url = thisurl + '&page=' + page
+		print 'IA Next Page URL= ' + str(url)
+		add_next('Next Page', url, 64,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
+		xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #81
@@ -464,6 +521,9 @@ elif mode == 62:
 elif mode == 63:
 	print "Get Audio Files"
 	ia_audio_files(url)
+elif mode == 64:
+	print "Get IA Audio Live Categories"
+	ia_live_audio(name,url)
 elif mode == 65:
 	print "IA Search"
 	ia_search()

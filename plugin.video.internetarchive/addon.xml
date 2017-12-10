@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.internetarchive" name="Internet Archive [Video]" version="3.0.9" provider-name="MetalChris">
+<addon id="plugin.video.internetarchive" name="Internet Archive [Video]" version="3.1.0" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.2.0"/>
@@ -10,7 +10,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Watch thousands of free videos and movies from the Internet Archive</summary>
     <description lang="en">Internet Archive is a non-profit digital library.  Choose from thousands of digital movies uploaded by Archive users which range from classic full-length films, to daily alternative news broadcasts, to cartoons and concerts.</description>
-    <disclaimer lang="en"></disclaimer>
+    <disclaimer lang="en">Support provided at forum.kodi.tv or via my github.  I will not provide support at TVaddons, or any other forum.  Please provide a full, unedited, debug log when requesting support.</disclaimer>
     <language></language>
     <platform>all</platform>
     <license></license>

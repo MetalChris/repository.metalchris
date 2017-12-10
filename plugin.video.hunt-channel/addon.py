@@ -116,8 +116,8 @@ def get_live(name,url,iconimage):
 #21
 def sc_videos(name,url):
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'slideshow_container  slide_container_small'})
-	#xbmc.log('SOUP: ' + str(soup))
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'slideshow_container'})
+	xbmc.log('SOUP: ' + str(soup))
 	for iframe in soup:
 		i_url = iframe.find('iframe')['src']
 		xbmc.log('IFRAME: ' + str(i_url))
