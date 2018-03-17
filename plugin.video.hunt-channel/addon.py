@@ -95,14 +95,15 @@ def cats(program):
 def get_live(name,url,iconimage):
 	html = get_html(url)
 	#soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'player-embed'})
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'entry-content'})
+	soup = BeautifulSoup(html,'html5lib').find_all('iframe')
 	#xbmc.log('SOUP: ' + str(soup))
-	for iframe in soup:
-		i_url = iframe.find('iframe')['src']
+	#for iframe in soup:
+		#i_url = iframe.find('src')
 	#iframe = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('html','js')
+	i_url = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2]
 	#if 'http' not in iframe:
 		#iframe = 'http' + iframe
-	#xbmc.log('IFRAME: ' + str(i_url))
+	xbmc.log('IFRAME: ' + str(i_url))
 	html = get_html(i_url)
 	m3u8 = str(re.compile('source0.src = (.+?);').findall(str(html)))[2:-2].split(", '")[-1].replace("')","")
 	#xbmc.log('M3U8: ' + str(m3u8))
