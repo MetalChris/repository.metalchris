@@ -14,5 +14,6 @@
         <summary lang="en">FilmRise</summary>
         <description lang="en">Watch free TV shows from FilmRise</description>
         <disclaimer lang="en">Don't blame me if you have nightmares.</disclaimer>
+    <broken>Download the release from Lunatixz. It works better.</broken>
     </extension>
 </addon>

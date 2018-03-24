@@ -11,6 +11,7 @@ import json
 import datetime
 from pytz import timezone
 from requests import Session
+import requests
 
 artbase = 'special://home/addons/plugin.video.hunt-channel/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -94,19 +95,12 @@ def cats(program):
 #12
 def get_live(name,url,iconimage):
 	html = get_html(url)
-	#soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'player-embed'})
 	soup = BeautifulSoup(html,'html5lib').find_all('iframe')
-	#xbmc.log('SOUP: ' + str(soup))
-	#for iframe in soup:
-		#i_url = iframe.find('src')
-	#iframe = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('html','js')
-	i_url = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2]
-	#if 'http' not in iframe:
-		#iframe = 'http' + iframe
+	i_url = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('https','http').replace('html','js')
 	xbmc.log('IFRAME: ' + str(i_url))
 	html = get_html(i_url)
-	m3u8 = str(re.compile('source0.src = (.+?);').findall(str(html)))[2:-2].split(", '")[-1].replace("')","")
-	#xbmc.log('M3U8: ' + str(m3u8))
+	m3u8 = str(re.compile('file": "(.+?)"').findall(str(html)))[2:-2]
+	xbmc.log('M3U8: ' + str(m3u8))
 	listitem = xbmcgui.ListItem('Hunt Channel' + ' ' + name, thumbnailImage=defaulticon)
 	listitem.setProperty('mimetype', 'video/x-mpegurl')
 	xbmc.Player().play( m3u8, listitem )
@@ -148,14 +142,23 @@ def sc_streams(name,url):
 
 #100
 def more(url):
+	count = 0
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'inner-entry'})
 	xbmc.log('SOUP: ' + str(len(soup)))
 	for title in soup:
+		count = count + 1
 		show = title.find('h1').text.encode('utf-8')
 		url = title.find('a')['href']
-		image = title.find('img')['src']
+		#image = title.find('img')['src']
+		if title.find('img'):
+			image = title.find('img')['src']
+		else:
+			image = defaultimage
 		add_directory2(show,url,21,defaultfanart,image,plot='')
+	if count > 99:
+		next_page = 'http://www.huntchannel.tv/shows/page/2/'
+		add_directory2('Next Page',next_page,100,defaultfanart,defaultimage,plot='')
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -207,11 +210,13 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot):
 	return ok
 
 def get_html(url):
+	xbmc.log('URL: ' + str(url))
 	req = urllib2.Request(url)
-	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
+	#req.add_header('Host','content.jwplatform.com')
+	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0')
 
 	try:
-		response = urllib2.urlopen(req)
+		response = urllib2.urlopen(req, timeout=30)
 		html = response.read()
 		response.close()
 	except urllib2.HTTPError:
@@ -222,7 +227,7 @@ def get_html(url):
 def get_iframe(url):
 	req = urllib2.Request(url)
 	req.add_header('Host', 'player.vimeo.com')
-	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
+	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0')
 	req.add_header('Referer', 'http://huntchannel.tv/')
 
 	try:
