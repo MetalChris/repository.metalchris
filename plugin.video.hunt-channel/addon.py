@@ -11,7 +11,6 @@ import json
 import datetime
 from pytz import timezone
 from requests import Session
-import requests
 
 artbase = 'special://home/addons/plugin.video.hunt-channel/resources/media/'
 _addon = xbmcaddon.Addon()
