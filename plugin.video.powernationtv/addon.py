@@ -4,14 +4,25 @@
 # Written by MetalChris
 # Released under GPL(v2 or Later)
 
-import xbmcaddon, urllib, xbmcgui, xbmcplugin, urllib2, re, sys
+import xbmcaddon, urllib, xbmcgui, xbmcplugin, urllib2, re, sys, os
 from bs4 import BeautifulSoup
 import html5lib
+import mechanize
+import cookielib
 
+
+settings = xbmcaddon.Addon(id="plugin.video.powernationtv")
+_addon = xbmcaddon.Addon()
+_addon_path = _addon.getAddonInfo('path')
+addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
 selfAddon = xbmcaddon.Addon(id='plugin.video.powernationtv')
 translation = selfAddon.getLocalizedString
-
-API_KEY = '8d2b83696759583b589b42e70006a2a423626ac7'
+cookies = xbmc.translatePath(os.path.join(addon_path_profile+'cookies.lwp'))
+CookieJar = cookielib.LWPCookieJar(os.path.join(addon_path_profile, 'cookies.lwp'))
+br = mechanize.Browser()
+br.set_cookiejar(CookieJar)
+br.set_handle_robots(False)
+br.set_handle_equiv(False)
 
 defaultimage = 'special://home/addons/plugin.video.powernationtv/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.powernationtv/fanart.jpg'
@@ -19,9 +30,9 @@ defaultvideo = 'special://home/addons/plugin.video.powernationtv/icon.png'
 defaulticon = 'special://home/addons/plugin.video.powernationtv/icon.png'
 baseurl = 'http://www.powerblocknetwork.com/'
 
-pluginhandle = int(sys.argv[1])
 addon_handle = int(sys.argv[1])
-confluence_views = [500,501,502,503,504,508]
+confluence_views = [500,501,503,504,515]
+force_views = settings.getSetting(id="force_views")
 plugin = 'PowerNation TV'
 
 
@@ -32,80 +43,205 @@ def CATEGORIES():
         url = show.find('a')['href']
         if not 'http:' in url:
             url = 'http:' + show.find('a')['href']
-        title = str((re.compile('title="(.+?)"')).findall(str(show)))[2:-2]
+        image = baseurl + show.find('img')['src']
+        title = show.find('a')['title']
         if ' - ' in title:
             title = title.split(' - ')[0]
         if len(str(title)) > 30:
             continue
-        if len(str(title)) == 0:
-            title = 'Xtreme Off-Road'
+        #if len(str(title)) == 0:
+            #title = 'Xtreme Off-Road'
         if '/' in title:
-            mode = 30
+            continue
+            #mode = 35
         if '2' in title:
-            mode = 60
+            continue
+            #mode = 60
         else:
             mode = 10
-        image = baseurl + show.find('img')['src']
         addDir(title, url, mode, image)
+    if force_views != 'false':
+        xbmc.executebuiltin("Container.SetViewMode(500)")
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #10
 def INDEX(url):
-    html = get_html(url)
-    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'episode-info'});e=0
-    #titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype faux-h2'});e=0
-    #if len(titles) != len(soup):
-        #titles = BeautifulSoup(html,'html5lib').find_all('p',{'class':'lighttype'});e=0
+    html = get_html(url); murl = url
+    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'episode'});e=0
     for episode in soup:
         #If it's a "coming soon" show, skip it
         if episode.find(class_="coming_soon"):
             continue
-        title = episode.find('a').text.encode('ascii','ignore').strip()
+        title = episode.find('div', {'class': 'title'}).text.encode('ascii','ignore').strip()
         url = episode.find('a')['href']
-        if not 'http:' in url:
-            url = 'http:' + episode.find('a')['href']
-        image = defaultimage#episode.find('img')['src']
-        #If it has metadata, add it to the episode info
-        if episode.find('meta'):
-            plot = episode.find(itemprop="description")['content'].encode('utf-8').strip()
-            episodeNumber = episode.find(itemprop="episodeNumber")['content'].encode('utf-8').strip()
-            season = episodeNumber[2:6]
-            episodeNum = episodeNumber[-2:]
-            aired = episode.find(itemprop="datePublished")['content'].encode('utf-8').strip()
-            addDir(title, url, 20, image, image, {'plot': plot, 'season': season, 'episode': episodeNum, 'aired': aired});e=e+1
+        if not 'https:' in url:
+            url = 'https:' + episode.find('a')['href']
+        image = re.compile('src="(.+?)"').findall(str(episode))[0].replace('&amp;','&')
+        if episode.find('i'):
+            #If it has metadata, add it to the episode info
+            plot = episode.find('div', {'class':'description'}).text.encode('ascii','ignore').strip()
+            season_info = episode.find('div', {'class':'season'}).text.encode('ascii','ignore').strip().split(',')
+            season = season_info[0].split(' ')[1]
+            episode = season_info[1].split(' ')[2]
+            infolabels = {'plot': plot, 'season': season, 'episode':episode}
+            addDir(title, url, 20, image, defaultfanart, infolabels);e=e+1
         else:
-            addDir(title, url, 20, image, image)#;e=e+1
-    xbmcplugin.setContent(pluginhandle, 'episodes')
+            season_info = episode.find('div', {'class':'season'}).text.encode('ascii','ignore').strip()
+            title = title + ' - ' + str(season_info)
+            addDir(title, url, 15, image, defaultfanart);e=e+1            
+        xbmcplugin.setContent(addon_handle, 'episodes')
+    #xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
+    addDir('More Episodes', murl, 25, defaultimage, defaultfanart)
     #Fix the sort to be proper episode number order
-    #xbmcplugin.addSortMethod(pluginhandle, xbmcplugin.SORT_METHOD_EPISODE)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
+    if force_views != 'false':
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
+    xbmcplugin.endOfDirectory(addon_handle)
+
+
+#15
+def BUILD(url):
+    html = get_html(url)
+    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'episode'});e=0
+    for episode in soup:
+        #If it's a "coming soon" show, skip it
+        if episode.find(class_="coming_soon"):
+            continue
+        title = episode.find('div', {'class': 'title'}).text.encode('ascii','ignore').strip()
+        url = episode.find('a')['href']
+        if not 'https:' in url:
+            url = 'https:' + episode.find('a')['href']
+        image = re.compile('src="(.+?)"').findall(str(episode))[0].replace('&amp;','&')
+        if not episode.find('div', {'class':'season'}):
+            continue
+        if episode.find('i'):
+            #If it has metadata, add it to the episode info
+            plot = episode.find('div', {'class':'description'}).text.encode('ascii','ignore').strip()
+            season_info = episode.find('div', {'class':'season'}).text.encode('ascii','ignore').strip().split(',')
+            season = season_info[0].split(' ')[1]
+            episode = season_info[1].split(' ')[2]
+            infolabels = {'plot': plot, 'season': season, 'episode':episode}
+            addDir(title, url, 20, image, defaultfanart, infolabels);e=e+1
+        else:
+            season_info = episode.find('div', {'class':'season'}).text.encode('ascii','ignore').strip()
+            title = title + ' - ' + str(season_info)
+            addDir(title, url, 15, image, defaultfanart);e=e+1            
+        xbmcplugin.setContent(addon_handle, 'episodes')
+    #Fix the sort to be proper episode number order
+    xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
+    if force_views != 'false':
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
+    xbmcplugin.endOfDirectory(addon_handle)
 
 
 #20
 def IFRAME(name,url):
-    html = get_html(url)
-    soup = BeautifulSoup(html,'html5lib').find_all('script')
-    xbmc.log('SOUP: ' + str(len(soup)))
-    iframe = re.compile('script src="(.+?)"').findall(str(soup))
-    for item in iframe:
-        if 'jwplatform' in item:
-            xbmc.log('MATCH')
-            xbmc.log('ITEM: ' + str(item))
-            iframe = 'http:' + item
-            data = get_html(iframe)
-            try: stream = re.compile('"file": "(.+?)"').findall(str(data))[0]
-            except IndexError:
-                xbmcgui.Dialog().notification(name, translation(30000), defaultimage, 5000, False)
-                sys.exit()
-            listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
-            xbmc.log('STREAM: ' + str(stream))
-            xbmc.Player().play( "http:" + stream, listitem )
-            sys.exit()
+    br = mechanize.Browser()
+    br.set_handle_robots(False)
+    br.set_cookiejar(CookieJar)
+    xbmc.log('URL: ' + str(url))
+    urls = url.split('/')
+    key = urls[4]
+    data_key = 'id:' + str(key)
+    params = {'id': str(key)}
+    params = urllib.urlencode(params)
+    xbmc.log('PARAMS: ' + str(params))
+    s = br.open(url).read()
+    X_CSRF_TOKEN = re.compile('name="csrf-token" content="(.+?)"').findall(s)
+    xbmc.log('X_CSRF_TOKEN: ' + str(X_CSRF_TOKEN))
+
+    br.addheaders = [('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0'),
+                ('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8'),
+                ('Accept', 'application/json, text/javascript, */*; q=0.01'),
+                ('X-Requested-With', 'XMLHttpRequest'),
+                ('X-CSRF-TOKEN', X_CSRF_TOKEN[0]),
+                ('Host', 'Host: www.powernationtv.com'),
+                ('Referer', url)]      
+    page = br.open('https://www.powernationtv.com/episode/meta', params).read()
+    #xbmc.log(page[:100])
+
+    stream = re.compile('hls_url":"(.+?)"').findall(page)[0].replace('\\','').replace('https','http')
+    listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
+    xbmc.log('STREAM: ' + str(stream))
+    xbmc.Player().play( stream, listitem )
+    sys.exit()
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
+#25
+def SEASONS(url):
+    html = get_html(url)
+    seasons = BeautifulSoup(html,'html5lib').find_all('div',{'class':'season-dropdown'})
+    soup = BeautifulSoup(str(seasons),'html5lib').find_all('li')
+    for season in soup:
+        title = season.find('a').text.encode('ascii','ignore').strip()
+        if not 'Season' in title:
+            continue
+        value = re.compile('season="(.+?)"').findall(str(season))[0]
+        addDir(title, url + '?' + value, 30, defaultimage, defaultfanart)
+    if force_views != 'false':
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
+    xbmcplugin.endOfDirectory(addon_handle)
+
+
 #30
+def GET_SEASON(name,url):
+    value = url.split('?')[-1]
+    url = url.split('?')[0]
+    br = mechanize.Browser()
+    br.set_handle_robots(False)
+    br.set_cookiejar(CookieJar)
+    xbmc.log('URL: ' + str(url))
+    params = {'season': str(value)}
+    params = urllib.urlencode(params)
+    xbmc.log('PARAMS: ' + str(params))
+    s = br.open(url).read()
+    X_CSRF_TOKEN = re.compile('name="csrf-token" content="(.+?)"').findall(s)
+    xbmc.log('X_CSRF_TOKEN: ' + str(X_CSRF_TOKEN))
+    br.addheaders = [('Host', 'Host: www.powernationtv.com'),
+                ('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0'),
+                ('Accept', 'application/json, text/javascript, */*; q=0.01'),
+                ('Referer', url),
+                ('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8'),
+                ('X-CSRF-TOKEN', X_CSRF_TOKEN[0]),
+                ('X-Requested-With', 'XMLHttpRequest')]
+    br.set_handle_robots(False)
+    br.set_cookiejar(CookieJar)
+    page = br.open('https://www.powernationtv.com/episode/filter', params).read()
+    html = re.compile('{"html":"(.+?)"}').findall(page)
+    html = html[0].replace('\\n','').replace('\\','')
+    #xbmc.log('Page: ' + str(html))
+    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'episode'});e=0
+    for episode in soup:
+        #If it's a "coming soon" show, skip it
+        if episode.find(class_="coming_soon"):
+            continue
+        title = episode.find('div', {'class': 'title'}).text.encode('ascii','ignore').strip()
+        url = episode.find('a')['href']
+        if not 'https:' in url:
+            url = 'https:' + episode.find('a')['href']
+        image = re.compile('src="(.+?)"').findall(str(episode))[0].replace('&amp;','&')
+        if episode.find('i'):
+            #If it has metadata, add it to the episode info
+            plot = episode.find('div', {'class':'description'}).text.encode('ascii','ignore').strip()
+            season_info = episode.find('div', {'class':'season'}).text.encode('ascii','ignore').strip().split(',')
+            season = season_info[0].split(' ')[1]
+            episode = season_info[1].split(' ')[2]
+            infolabels = {'plot': plot, 'season': season, 'episode':episode}
+            addDir(title, url, 20, image, defaultfanart, infolabels);e=e+1
+        else:
+            season_info = episode.find('div', {'class':'season'}).text.encode('ascii','ignore').strip()
+            title = title + ' - ' + str(season_info)
+            addDir(title, url, 15, image, defaultfanart);e=e+1            
+        xbmcplugin.setContent(addon_handle, 'episodes')
+    #xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
+    #Fix the sort to be proper episode number order
+    if force_views != 'false':
+        xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
+    xbmcplugin.endOfDirectory(addon_handle)
+
+
+#35
 def YMM(name,url):
     html = get_html(url)
     soup = BeautifulSoup(html,'html5lib').find_all('a',{'class':'lighttype'})
@@ -116,7 +252,7 @@ def YMM(name,url):
         if not 'http:' in url:
             url = 'http:' + url
         addDir(title, url, 40, defaultimage)
-    xbmcplugin.setContent(pluginhandle, 'episodes')
+    xbmcplugin.setContent(addon_handle, 'episodes')
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -133,7 +269,7 @@ def MODELS(name,url):
             url = 'http:' + models.find('a')['href']
         image = models.find('img')['src']
         addDir(title, url, 50, image)
-    xbmcplugin.setContent(pluginhandle, 'episodes')
+    xbmcplugin.setContent(addon_handle, 'episodes')
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -166,7 +302,7 @@ def TECH(name,url):
         if not 'http:' in url:
             url = 'http:' + url
         addDir(title, url, 20, defaultimage)
-    xbmcplugin.setContent(pluginhandle, 'episodes')
+    xbmcplugin.setContent(addon_handle, 'episodes')
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -188,7 +324,6 @@ def sanitize(data):
 def get_html(url):
     req = urllib2.Request(url)
     req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:47.0) Gecko/20100101 Firefox/47.0')
-    #req.add_header('X-API-KEY:','8d2b83696759583b589b42e70006a2a423626ac7')
 
     try:
         response = urllib2.urlopen(req)
@@ -224,7 +359,7 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
     if type(infoLabels) is not bool:
-        liz.setInfo(type="Video", infoLabels={"Title": name, "plot": infoLabels['plot'], "episode": infoLabels['episode'], "season": infoLabels['season'], "aired": infoLabels['aired']})
+        liz.setInfo(type="Video", infoLabels={"Title": name, "plot": infoLabels['plot'], "episode": infoLabels['episode'], "season": infoLabels['season']})
     else:
         liz.setInfo(type="Video", infoLabels={"Title": name})
     liz.setProperty('IsPlayable', 'true')
@@ -298,10 +433,19 @@ if mode == None or url == None or len(url) < 1:
 elif mode == 10:
     xbmc.log("PowerNation TV Videos")
     INDEX(url)
+elif mode == 15:
+    xbmc.log("PowerNation TV Build Videos")
+    BUILD(url)
 elif mode == 20:
     xbmc.log("PowerNation TV Play Video")
     IFRAME(name,url)
+elif mode == 25:
+    xbmc.log("PowerNation TV Seasons")
+    SEASONS(url)
 elif mode == 30:
+    xbmc.log("PowerNation TV Get Season")
+    GET_SEASON(name,url)
+elif mode == 35:
     xbmc.log("PowerNation TV YMM Makes")
     YMM(name,url)
 elif mode == 40:

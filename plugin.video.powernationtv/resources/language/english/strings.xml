@@ -1,5 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
 <strings>
-    <string id="30000">Stream Not Available </string>
-    <string id="30001">Event Blacked-Out in Your Region.</string>
-    <string id="30002">Connection Timed Out.  Try Again.</string>
+    <!-- Default strings -->
+    <string id="32020">Force View</string>
+    <string id="32021">Thumbnail</string>
+    <string id="32022">List</string>
+    <string id="32024">Media Info 2</string>
+    <string id="32025">Media Info</string>
+    <string id="32027">Media Info 3</string>
+    <string id="32030">Confluence View</string>
 </strings>
