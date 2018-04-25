@@ -89,7 +89,7 @@ def INDEX(url):
         else:
             season_info = episode.find('div', {'class':'season'}).text.encode('ascii','ignore').strip()
             title = title + ' - ' + str(season_info)
-            addDir(title, url, 15, image, defaultfanart);e=e+1            
+            addDir(title, url, 15, image, defaultfanart);e=e+1
         xbmcplugin.setContent(addon_handle, 'episodes')
     #xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
     addDir('More Episodes', murl, 25, defaultimage, defaultfanart)
@@ -142,7 +142,6 @@ def IFRAME(name,url):
     xbmc.log('URL: ' + str(url))
     urls = url.split('/')
     key = urls[4]
-    data_key = 'id:' + str(key)
     params = {'id': str(key)}
     params = urllib.urlencode(params)
     xbmc.log('PARAMS: ' + str(params))
@@ -156,7 +155,7 @@ def IFRAME(name,url):
                 ('X-Requested-With', 'XMLHttpRequest'),
                 ('X-CSRF-TOKEN', X_CSRF_TOKEN[0]),
                 ('Host', 'Host: www.powernationtv.com'),
-                ('Referer', url)]      
+                ('Referer', url)]
     page = br.open('https://www.powernationtv.com/episode/meta', params).read()
     #xbmc.log(page[:100])
 
