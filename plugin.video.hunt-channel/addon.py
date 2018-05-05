@@ -10,7 +10,6 @@ import html5lib
 import json
 import datetime
 from pytz import timezone
-from requests import Session
 
 artbase = 'special://home/addons/plugin.video.hunt-channel/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -110,21 +109,18 @@ def get_live(name,url,iconimage):
 #21
 def sc_videos(name,url):
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'slideshow_container'})
-	xbmc.log('SOUP: ' + str(soup))
-	for iframe in soup:
-		i_url = iframe.find('iframe')['src']
-		xbmc.log('IFRAME: ' + str(i_url))
-	html = get_html(i_url)
-	pjson = re.compile('playlist_videos = (.+?);\n').findall(str(html))
-	#xbmc.log('PJSON: ' + str(pjson[:300]))
-	data = json.loads(pjson[0])
-	for i in range(len(data)):
-		title = data[i]['title'].encode('utf-8')
-		url = data[i]['embed_code'].split('src=\"')[-1].rpartition('" ')[0]
-		image = data[i]['thumbnail'].replace('200','400').replace('150','300').split('?')[0]
+	huntjson = re.compile('] = (.+?);\\n').findall(html)[0]
+	hdata = json.loads(huntjson)
+	total = hdata['total']
+	xbmc.log('TOTAL: ' + str(total))
+	if total > 25:
+		total = 25
+	for i in range(total):
+		v_id = str(hdata['pages']['default']['1'][i])
+		title = unicode(hdata['video_set'][v_id]['name']).encode('utf-8', errors='ignore')
+		image = (hdata['video_set'][v_id]['thumbnail_small']).split('?')[0]
+		url = 'https://player.vimeo.com/video/' + v_id
 		add_directory(title,url,22,defaultfanart,image,plot='')
-	#xbmc.log('URL: ' + str(url))
 	xbmcplugin.setContent(addon_handle, 'episodes')
 	xbmcplugin.endOfDirectory(addon_handle)
 
@@ -132,10 +128,38 @@ def sc_videos(name,url):
 #22
 def sc_streams(name,url):
 	html = get_html(url)
-	source = re.compile('source0.src = (.+?)\\);').findall(str(html))[0].split(' ')
-	#xbmc.log('SOURCE: ' + str(source[-1].replace('\'','')))
+	stream_json = re.compile('var a=(.+?);if').findall(html)[1]
+	try:stream_data = json.loads(stream_json)
+	except ValueError:
+			xbmcgui.Dialog().notification(name, 'Stream Not Available', defaultimage, 5000, False)
+			sys.exit()		
+	cdn = stream_data['request']['files']['hls']['default_cdn']
+	xbmc.log('CDN: ' + str(cdn))
+	if cdn != 'level3':
+		url = str(stream_data['request']['files']['hls']['cdns'][str(cdn)]['url'])
+		opener = urllib2.build_opener()
+		try:request = opener.open(url)
+		except urllib2.HTTPError:
+			xbmcgui.Dialog().notification(name, 'Stream Not Available', defaultimage, 5000, False)
+			sys.exit()
+		data = request.read()
+		#xbmc.log('DATA: ' + str(data))
+		bitrates = re.compile('AVERAGE-BANDWIDTH=(.+?),').findall(str(data))
+		bitrates = list(map(int, bitrates))
+		highest = max(bitrates)
+		xbmc.log('HIGHEST: ' + str(highest))
+		index = bitrates.index(highest)
+		xbmc.log('INDEX: ' + str(index))
+		xbmc.log('BITRATES: ' + str(bitrates))
+		streams = re.findall(r'../.*\n', str(data), flags=re.MULTILINE)
+		streams = map(lambda each:each.strip('..').strip('\n'), streams)
+		xbmc.log('STREAMS: ' + str(streams))
+		stream = str(stream_data['request']['files']['hls']['cdns'][str(cdn)]['url']).rpartition('/')[0].rpartition('/')[0] + str(streams[index])
+	else:
+		stream = stream_data['request']['files']['hls']['cdns'][str(cdn)]['url']
+	xbmc.log('STREAM: ' + str(stream))
 	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
-	xbmc.Player().play( source[-1].replace('\'',''), listitem )
+	xbmc.Player().play( stream, listitem )
 	sys.exit()
 
 
@@ -184,7 +208,7 @@ def hplay(name,url,iconimage):
 
 
 def add_directory(name,url,mode,fanart,thumbnail,plot):
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&thumbnail=" + urllib.quote_plus(thumbnail)
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)# + "&thumbnail=" + urllib.quote_plus(thumbnail)
 	ok=True
 	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
 	liz.setInfo( type="Video", infoLabels={ "Title": name,
@@ -197,7 +221,7 @@ def add_directory(name,url,mode,fanart,thumbnail,plot):
 
 
 def add_directory2(name,url,mode,fanart,thumbnail,plot):
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&thumbnail=" + urllib.quote_plus(thumbnail)
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)# + "&thumbnail=" + urllib.quote_plus(thumbnail)
 	ok=True
 	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
 	liz.setInfo( type="Video", infoLabels={ "Title": name,
@@ -257,7 +281,7 @@ def get_params():
 	return param
 
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
-	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
+	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)# + "&iconimage=" + urllib.quote_plus(iconimage)
 	ok = True
 	liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
 	liz.setInfo(type="Video", infoLabels={"Title": name})
@@ -270,7 +294,7 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 
 
 def addDir2(name,url,mode,iconimage, fanart=True, infoLabels=False):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
+		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)# + "&iconimage=" + urllib.quote_plus(iconimage)
 		ok=True
 		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
 		liz.setInfo( type="Video", infoLabels={ "Title": name } )
