@@ -132,7 +132,7 @@ def sc_streams(name,url):
 	try:stream_data = json.loads(stream_json)
 	except ValueError:
 			xbmcgui.Dialog().notification(name, 'Stream Not Available', defaultimage, 5000, False)
-			sys.exit()		
+			sys.exit()
 	cdn = stream_data['request']['files']['hls']['default_cdn']
 	xbmc.log('CDN: ' + str(cdn))
 	if cdn != 'level3':
