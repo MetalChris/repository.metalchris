@@ -94,10 +94,14 @@ def cats(program):
 def get_live(name,url,iconimage):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib').find_all('iframe')
+	##xbmc.log('SOUP: ' + str(soup))
 	i_url = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('https','http').replace('html','js')
 	xbmc.log('IFRAME: ' + str(i_url))
 	html = get_html(i_url)
-	m3u8 = str(re.compile('file": "(.+?)"').findall(str(html)))[2:-2]
+	huntjson = 'https:' + str(re.compile('playlist": "(.+?)"').findall(str(html)))[2:-2]
+	xbmc.log('HUNTJSON: ' + str(huntjson))
+	html = get_html(huntjson)
+	m3u8 = str(re.compile('file":"(.+?)"').findall(str(html)))[2:-2]
 	xbmc.log('M3U8: ' + str(m3u8))
 	listitem = xbmcgui.ListItem('Hunt Channel' + ' ' + name, thumbnailImage=defaulticon)
 	listitem.setProperty('mimetype', 'video/x-mpegurl')
@@ -128,38 +132,24 @@ def sc_videos(name,url):
 #22
 def sc_streams(name,url):
 	html = get_html(url)
-	stream_json = re.compile('var a=(.+?);if').findall(html)[1]
-	try:stream_data = json.loads(stream_json)
-	except ValueError:
-			xbmcgui.Dialog().notification(name, 'Stream Not Available', defaultimage, 5000, False)
-			sys.exit()
-	cdn = stream_data['request']['files']['hls']['default_cdn']
-	xbmc.log('CDN: ' + str(cdn))
-	if cdn != 'level3':
-		url = str(stream_data['request']['files']['hls']['cdns'][str(cdn)]['url'])
-		opener = urllib2.build_opener()
-		try:request = opener.open(url)
-		except urllib2.HTTPError:
-			xbmcgui.Dialog().notification(name, 'Stream Not Available', defaultimage, 5000, False)
-			sys.exit()
-		data = request.read()
-		#xbmc.log('DATA: ' + str(data))
-		bitrates = re.compile('AVERAGE-BANDWIDTH=(.+?),').findall(str(data))
-		bitrates = list(map(int, bitrates))
-		highest = max(bitrates)
-		xbmc.log('HIGHEST: ' + str(highest))
-		index = bitrates.index(highest)
-		xbmc.log('INDEX: ' + str(index))
-		xbmc.log('BITRATES: ' + str(bitrates))
-		streams = re.findall(r'../.*\n', str(data), flags=re.MULTILINE)
-		streams = map(lambda each:each.strip('..').strip('\n'), streams)
-		xbmc.log('STREAMS: ' + str(streams))
-		stream = str(stream_data['request']['files']['hls']['cdns'][str(cdn)]['url']).rpartition('/')[0].rpartition('/')[0] + str(streams[index])
-	else:
-		stream = stream_data['request']['files']['hls']['cdns'][str(cdn)]['url']
-	xbmc.log('STREAM: ' + str(stream))
+	width = re.compile('"width":(.+?),').findall(html)
+	del width[-1]
+	width = (map(int, width))
+	##xbmc.log('WIDTH: ' + str(width))
+	highest = max(width)
+	##xbmc.log('HIGHEST: ' + str(highest))
+	highest = width.index(max(width))
+	##xbmc.log('HIGHEST: ' + str(highest))
+	stream_link = re.compile('url":"(.+?)"').findall(html)
+	##stream_json = re.compile('var a=(.+?);if').findall(html)[0]
+	streams = []
+	for stream in stream_link:
+		if 'mp4' in stream:
+			streams.append(stream)
+			xbmc.log('STREAM: ' + str(stream))
+	##xbmc.log('STREAMS: ' + str(len(streams)))
 	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
-	xbmc.Player().play( stream, listitem )
+	xbmc.Player().play( streams[highest], listitem )
 	sys.exit()
 
 
