@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.cfl" name="CFL Video" version="0.1.4" provider-name="MetalChris">
+<addon id="plugin.video.cfl" name="CFL Video" version="0.1.5" provider-name="MetalChris">
   <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="xbmc.python" version="2.20.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
@@ -15,11 +14,10 @@
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
-    <license></license>
+    <license>GPL(v2 or later)</license>
     <forum></forum>
-    <website></website>
+    <website>https://www.cfl.ca/videos</website>
     <email></email>
     <source></source>
-    <broken>Currently unable to scrape the site properly.</broken>
   </extension>
 </addon>
