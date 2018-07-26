@@ -4,9 +4,11 @@
 # Written by MetalChris
 # Released under GPL(v2 or later)
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
+
+import OpenSSL, urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys, os
 from bs4 import BeautifulSoup
 import html5lib
+import mechanize
 
 artbase = 'special://home/addons/plugin.video.cfl/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -17,7 +19,11 @@ usexbmc = selfAddon.getSetting('watchinxbmc')
 settings = xbmcaddon.Addon(id="plugin.video.cfl")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
-confluence_views = [500,501,502,503,504,508]
+__resource__   = xbmc.translatePath( os.path.join( _addon_path, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
+
+sys.path.append(__resource__)
+
+from uas import *
 
 plugin = "CFL Video"
 
@@ -31,11 +37,21 @@ pubId = '4401740954001'
 local_string = xbmcaddon.Addon(id='plugin.video.cfl').getLocalizedString
 pluginhandle = int(sys.argv[1])
 confluence_views = [500,501,502,503,504,508,515]
-baseurl = 'http://www.cfl.ca/videos'
+baseurl = 'http://www.cfl.ca/videos/'
+
+br = mechanize.Browser()
+br.addheaders = [('Host', 'www.cfl.ca')]
+#br.addheaders = [('Accept-Encoding', 'gzip, deflate, br')]
+#br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/48.0')]
+br.addheaders = [('User-agent', ua)]
+xbmc.log('UA: ' + str(ua))
 
 
 def cfl(baseurl):
-	html = get_html('http://www.cfl.ca/videos')
+	br.set_handle_robots( False )
+	response = br.open('https://www.cfl.ca/videos/')
+	xbmc.log(str(response.code))
+	html = response.get_data()
 	soup = BeautifulSoup(html,'html5lib').find_all("ul",{"id":"dropdown-filter-featured"})[0]
 	for anchor in soup.find_all('a'):
 		title = anchor.text
@@ -46,7 +62,10 @@ def cfl(baseurl):
 
 #53
 def cfl_2016(url):
-	html = get_html(url)
+	br.set_handle_robots( False )
+	response = br.open(url)
+	xbmc.log(str(response.code))
+	html = response.get_data()
 	soup = BeautifulSoup(html,'html5lib').find_all("div",{"class":"video-items-section"})[0]
 	for item in soup.find_all("div",{"class":"landing-video-cell"}):
 		h2 = item.find('h2')
@@ -66,7 +85,10 @@ def cfl_2016(url):
 #55
 def get_stream(url):
 	xbmc.log('URL: ' + str(url))
-	html = get_html(url)
+	br.set_handle_robots( False )
+	response = br.open(url)
+	xbmc.log(str(response.code))
+	html = response.get_data()
 	soup = BeautifulSoup(html,'html5lib').find_all("iframe",{"class":"brightcove-iframe"})[0]
 	xbmc.log('SOUP: ' + str(soup))
 	key = re.compile('videoId=(.+?)&amp;').findall(str(soup))[0]
@@ -119,7 +141,7 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot):
 def get_html(url):
 	req = urllib2.Request(url)
 	req.add_header('Host','www.cfl.ca')
-	req.add_header('User-Agent','Roku/DVP-4.3 (024.03E01057A), Mozilla/5.0 (iPad; CPU OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B410 Safari/600.1.4')
+	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0')
 
 	try:
 		response = urllib2.urlopen(req)
@@ -199,7 +221,7 @@ print "Name: " + str(name)
 
 if mode == None or url == None or len(url) < 1:
 	print "Generate Main Menu"
-	cfl(url)
+	cfl(baseurl)
 elif mode == 1:
 	print "Indexing Videos"
 	INDEX(url)

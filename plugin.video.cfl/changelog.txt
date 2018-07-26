@@ -1,3 +1,7 @@
+Version 2018.07.25
+- Switch to Mechanize
+- Add OpenSSL
+
 Version 0.1.5
 - Revived for 2018
 
