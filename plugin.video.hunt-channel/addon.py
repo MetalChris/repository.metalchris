@@ -93,18 +93,17 @@ def cats(program):
 #12
 def get_live(name,url,iconimage):
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('iframe')
-	##xbmc.log('SOUP: ' + str(soup))
-	i_url = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('https','http').replace('html','js')
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'style':'position: relative; padding-bottom: 10%; overflow: hidden;'})
+	xbmc.log('SOUP Length: ' + str(len(soup)))
+	i_url = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('html','js')
 	xbmc.log('IFRAME: ' + str(i_url))
 	html = get_html(i_url)
-	huntjson = 'https:' + str(re.compile('playlist": "(.+?)"').findall(str(html)))[2:-2]
-	xbmc.log('HUNTJSON: ' + str(huntjson))
-	html = get_html(huntjson)
-	m3u8 = str(re.compile('file":"(.+?)"').findall(str(html)))[2:-2]
+	source = re.compile('source0.src = (.+?);').findall(html)[0]
+	m3u8 = str(re.compile("'[^']*'").findall(str(source)))[3:-3]
 	xbmc.log('M3U8: ' + str(m3u8))
 	listitem = xbmcgui.ListItem('Hunt Channel' + ' ' + name, thumbnailImage=defaulticon)
 	listitem.setProperty('mimetype', 'video/x-mpegurl')
+	#PLAY(name,m3u8)
 	xbmc.Player().play( m3u8, listitem )
 	sys.exit()
 	xbmcplugin.endOfDirectory(addon_handle)
@@ -174,6 +173,15 @@ def more(url):
 		add_directory2('Next Page',next_page,100,defaultfanart,defaultimage,plot='')
 	xbmcplugin.endOfDirectory(addon_handle)
 
+
+#99
+def PLAY(name,url):
+	listitem = xbmcgui.ListItem(path=url)
+	xbmc.log('### SETRESOLVEDURL ###')
+	listitem.setProperty('IsPlayable', 'true')
+	xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+	xbmc.log('URL: ' + str(url), level=xbmc.LOGDEBUG)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 def striphtml(data):

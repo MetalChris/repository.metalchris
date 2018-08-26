@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.hunt-channel" name="Hunt Channel" version="0.1.7" provider-name="MetalChris">
+<addon id="plugin.video.hunt-channel" name="Hunt Channel" version="0.1.8" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -22,6 +22,6 @@
     <website>http://www.huntchannel.tv</website>
     <email></email>
     <source></source>
-    <news>v.0.1.7[CR]Fixes for website changes (2018.05.19)[CR]v.0.1.6[CR]Fixes for website changes (2018.05.05)[CR]v.0.1.5[CR]Fixes for website changes (2018.03.23)[CR]v.0.1.4[CR]Fixes for website changes (2018.03.17)[CR]v.0.1.3[CR]Fix for updated version of BeautifulSoup (4.5.3)[CR]v.0.1.2[CR]Fixes for website changes (2017.11.05)[CR]v.0.1.1[CR]Another attempt at fixing the Live Stream[CR]v.0.1.0[CR]- Fix for Live Stream[CR]- Remove Recently Added videos[CR]v.0.9.0[CR]- Fixes for videos without sound - I still hate vimeo![CR]v0.8.0[CR]- Fix to get all shows listed</news>
+    <news>v.0.1.8[CR]Fixes for website changes (2018.08.25)[CR]v.0.1.7[CR]Fixes for website changes (2018.05.19)[CR]v.0.1.6[CR]Fixes for website changes (2018.05.05)[CR]v.0.1.5[CR]Fixes for website changes (2018.03.23)[CR]v.0.1.4[CR]Fixes for website changes (2018.03.17)[CR]v.0.1.3[CR]Fix for updated version of BeautifulSoup (4.5.3)[CR]v.0.1.2[CR]Fixes for website changes (2017.11.05)[CR]v.0.1.1[CR]Another attempt at fixing the Live Stream[CR]v.0.1.0[CR]- Fix for Live Stream[CR]- Remove Recently Added videos[CR]v.0.9.0[CR]- Fixes for videos without sound - I still hate vimeo![CR]v0.8.0[CR]- Fix to get all shows listed</news>
   </extension>
 </addon>
