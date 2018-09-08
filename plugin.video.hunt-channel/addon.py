@@ -98,7 +98,9 @@ def get_live(name,url,iconimage):
 	i_url = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('html','js')
 	xbmc.log('IFRAME: ' + str(i_url))
 	html = get_html(i_url)
-	source = re.compile('source0.src = (.+?);').findall(html)[0]
+	source = re.compile("container.offsetHeight, '(.+?)'").findall(html)
+	#source = re.compile('source0.src = (.+?);').findall(html)#[0]
+	xbmc.log('SOURCE: ' + str(source))
 	m3u8 = str(re.compile("'[^']*'").findall(str(source)))[3:-3]
 	xbmc.log('M3U8: ' + str(m3u8))
 	listitem = xbmcgui.ListItem('Hunt Channel' + ' ' + name, thumbnailImage=defaulticon)
@@ -112,17 +114,24 @@ def get_live(name,url,iconimage):
 #21
 def sc_videos(name,url):
 	html = get_html(url)
-	huntjson = re.compile('] = (.+?);\\n').findall(html)[0]
+	soup = BeautifulSoup(html,'html5lib').find_all('p')
+	xbmc.log('SOUP: ' + str(len(soup)))
+	for p in soup:
+		if p.find('script'):
+			j_url = p.find('script')['src']
+	j_html = get_html(j_url)
+	huntjson = re.compile('playlist_videos = (.+?);\\n').findall(j_html)[0]
 	hdata = json.loads(huntjson)
-	total = hdata['total']
+	item_dict = json.loads(huntjson)
+	total = len(item_dict)
 	xbmc.log('TOTAL: ' + str(total))
 	if total > 25:
 		total = 25
 	for i in range(total):
-		v_id = str(hdata['pages']['default']['1'][i])
-		title = unicode(hdata['video_set'][v_id]['name']).encode('utf-8', errors='ignore')
-		image = (hdata['video_set'][v_id]['thumbnail_small']).split('?')[0]
-		url = 'https://player.vimeo.com/video/' + v_id
+		v_id = str(hdata[i]['id'])
+		title = unicode(hdata[i]['title']).encode('utf-8', errors='ignore')
+		image = (hdata[i]['thumbnail']).replace('https','http').replace('_200x150','').split('?')[0]
+		url = 'https://player.zype.com/embed/' + v_id + '.js?api_key=HNkh1fiq8f4D4_AIdWM6Gdk5Cw7G9FNLKzmNTokdOWLxIckLp3ddL5aYBic4KMWw&amp;autoplay=false&amp;info%5Bplaylist_id%5D=59ee659a1c4f96151b000226'
 		add_directory(title,url,22,defaultfanart,image,plot='')
 	xbmcplugin.setContent(addon_handle, 'episodes')
 	xbmcplugin.endOfDirectory(addon_handle)
@@ -131,25 +140,22 @@ def sc_videos(name,url):
 #22
 def sc_streams(name,url):
 	html = get_html(url)
-	width = re.compile('"width":(.+?),').findall(html)
-	del width[-1]
-	width = (map(int, width))
-	##xbmc.log('WIDTH: ' + str(width))
-	highest = max(width)
-	##xbmc.log('HIGHEST: ' + str(highest))
-	highest = width.index(max(width))
-	##xbmc.log('HIGHEST: ' + str(highest))
-	stream_link = re.compile('url":"(.+?)"').findall(html)
-	##stream_json = re.compile('var a=(.+?);if').findall(html)[0]
+	stream_link = re.compile("container.offsetHeight, '(.+?)'").findall(html)
 	streams = []
 	for stream in stream_link:
 		if 'mp4' in stream:
 			streams.append(stream)
 			xbmc.log('STREAM: ' + str(stream))
-	##xbmc.log('STREAMS: ' + str(len(streams)))
+	stream = get_redirected_url(stream)
 	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
-	xbmc.Player().play( streams[highest], listitem )
+	xbmc.Player().play( stream.replace('https','http'), listitem )
 	sys.exit()
+
+
+def get_redirected_url(url):
+	opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
+	request = opener.open(url)
+	return request.url
 
 
 #100
