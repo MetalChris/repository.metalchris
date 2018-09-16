@@ -5,7 +5,7 @@
 # Released under GPL(v2 or later)
 
 
-import urllib, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
 import simplejson as json
 import mechanize
 
@@ -26,6 +26,7 @@ __resource__   = xbmc.translatePath( os.path.join( _addon_path, 'resources', 'li
 sys.path.append(__resource__)
 
 from uas import *
+#from ahole import *
 
 br = mechanize.Browser()
 br.set_handle_robots(False)
@@ -65,7 +66,8 @@ def shows(name,url):
 	xbmc.log('COUNT: ' + str(count))
 	for i in range(count):
 		if 'Network' in name:
-			if (jdata['items'][i]['airtime'] == 'STREAM NOW') or (jdata['items'][i]['airtime'] == '') or (jdata['items'][i]['airtime'] == 'COMING SOON') or (jdata['items'][i]['schedule'] == 'coming-soon'):
+			if (jdata['items'][i]['airtime'] == '') or (jdata['items'][i]['airtime'] == 'COMING SOON') or (jdata['items'][i]['schedule'] == 'coming-soon'):
+			#if (jdata['items'][i]['airtime'] == 'STREAM NOW') or (jdata['items'][i]['airtime'] == '') or (jdata['items'][i]['airtime'] == 'COMING SOON') or (jdata['items'][i]['schedule'] == 'coming-soon'):
 				continue
 		elif 'Seed' in name:
 			if (jdata['items'][i]['show_type'] == 'cw-network'):
@@ -78,12 +80,14 @@ def shows(name,url):
 		xbmcplugin.setContent(addon_handle, 'episodes')
 	if force_views != 'false':
 		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
+	xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_TITLE)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #30
 def get_json(name,url,iconimage):
 	show = url.rpartition('/')[-1]
+	xbmc.log('SHOW: ' + str(show))
 	jurl = 'http://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
 	response = br.open(jurl)
 	response = br.open(jurl)
@@ -108,7 +112,9 @@ def get_stuff(jdata,i):
 	airdate = jdata['videos'][i]['airdate']
 	description = jdata['videos'][i]['description_long']
 	duration = jdata['videos'][i]['duration_secs']
-	url = 'https://www.cwtv.com/ioshlskeys/videos' + (image.split('thumbs')[-1]).split('_CWtv')[0] + '.m3u8'
+	#url = 'https://www.cwtv.com/ioshlskeys/videos' + (image.split('thumbs')[-1]).split('_CWtv')[0] + '.m3u8'
+	mpx_url = jdata['videos'][i]['mpx_url']
+	url = get_m3u8(mpx_url)
 	li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
 	li.setProperty('fanart_image', image)
 	li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Episode": ep, "Premiered": airdate})
@@ -116,6 +122,31 @@ def get_stuff(jdata,i):
 	xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
 	xbmcplugin.setContent(addon_handle, 'episodes')
 	xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
+
+
+def get_m3u8(url):
+	html = get_html(url)
+	#xbmc.log('HTML: ' + str(html))
+	m3u8_url = re.compile('video src="(.+?)" ').findall(str(html))[0]
+	data = get_html(m3u8_url)
+	streams = re.findall(r'https.*m3u8', str(data), flags=re.MULTILINE)
+	xbmc.log('M3U8: ' + str(streams))
+	return streams[-1]
+
+
+def get_html(url):
+	req = urllib2.Request(url)
+	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0')
+
+	try:
+		response = urllib2.urlopen(req)
+		html = response.read()
+		response.close()
+	except urllib2.HTTPError:
+		response = False
+		html = False
+	return html
+
 
 
 #31
