@@ -6,4 +6,7 @@
         <setting id="views" type="enum" label="32030" lvalues="32021|32022|32024|32025|32027" default="2" enable="!eq(-1,false)"/>
         <setting type="sep" />
         </category>
+        <category label="Logging">
+        <setting id='log_notice' type ="bool" label="32040" default="false"/>
+        </category>
 </settings>
