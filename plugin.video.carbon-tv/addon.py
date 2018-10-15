@@ -8,6 +8,8 @@ import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, xbmcplugin,
 from bs4 import BeautifulSoup
 import html5lib
 import cookielib
+import requests
+import json
 
 artbase = 'special://home/addons/plugin.video.carbon-tv/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -22,115 +24,216 @@ addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 confluence_views = [500,501,502,503,504,508]
 xbmc_monitor = xbmc.Monitor()
+__resource__   = xbmc.translatePath( os.path.join( _addon_path, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
+
+sys.path.append(__resource__)
+
+from uas import *
+
+cookiejar = cookielib.LWPCookieJar()
 
 plugin = "CarbonTV"
 
-defaultimage = 'special://home/addons/plugin.video.carbon-tv/icon.png'
+defaultimage = 'special://home/addons/plugin.video.carbon-tv/resources/media/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.carbon-tv/resources/media/fanart.jpg'
-defaulticon = 'special://home/addons/plugin.video.carbon-tv/icon.png'
-baseurl = 'https://www.carbontv.com/users/login'
+defaulticon = 'special://home/addons/plugin.video.carbon-tv/resources/media/icon.png'
 
 local_string = xbmcaddon.Addon(id='plugin.video.carbon-tv').getLocalizedString
 addon_handle = int(sys.argv[1])
-pluginhandle = int(sys.argv[1])
+download = settings.getSetting(id="download")
 q = settings.getSetting(id="quality")
 username = settings.getSetting(id="username")
 password = settings.getSetting(id="password")
 views = settings.getSetting(id="views")
+log_notice = settings.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 confluence_views = [500,501,502,503,504,508,515]
-payload = {'data[User][email]' : username,'data[User][password]' : password,'data[User][remember_me]' : '0','data[User][remember_me]' : '1'}
 
+login_url = 'https://www.carbontv.com/users/login'
+shows_url = 'https://www.carbontv.com/shows'
 
 
 #10
 def cats(url):
-	html = get_html('http://www.carbontv.com/channels')
-	check = re.compile('isLoggedInTest = (.+?);').findall(str(html))
-	xbmc.log(str(check))
-	#if check[0] != 'true':
-		#xbmcgui.Dialog().notification(plugin, 'Login Failed', iconimage, 5000, False)
-		#return
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'content-listing channels-listing clearfix'})
+	html = get_html('https://www.carbontv.com/shows/')
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'navbar-item-login-signup'})
+	xbmc.log('SOUP: ' + str(soup),level=log_level)
+	if 'Signup/Login' in str(soup):
+		xbmc.log('STATUS: ' + 'Logged Out',level=log_level)
+	html = get_html('https://www.carbontv.com/shows/')
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'menu'})
 	for item in soup:
-		title = item.find('h2').string.encode('utf-8').title()
-		url = 'http://www.carbontv.com' + item.find('a',{'class':'channels-cta'})['href']
+		title = item.get('data-menu-name')
+		if title == 'All' or title == 'Sort':
+			continue
+		key = item.get('data-menu-id')
+		url = 'https://www.carbontv.com/shows/more?type=channel&id=' + str(key) + '&sort=asc&limit=100&offset=0'
+		if key == '9' or  key == '10':
+			url = url.replace('channel','network')
 		if 'cams' in url:
 			continue
-		image = item.find('img')['src']
-		if 'pbr' in url:
-			mode = 11
-		else:
-			mode = 15
-		add_directory2(title,url,mode,image,image,plot='')
-	xbmcplugin.endOfDirectory(addon_handle)
-
-
-#11
-def pbr(url):
-	addDir2('On Demand','http://www.carbontv.com/videos/recent/episodes/limit:999/show_id:88/',20,artbase + 'pbr.jpg')
-	addDir2('Highlights','http://www.carbontv.com/videos/recent/clips/limit:999/show_id:88/',20,artbase + 'pbr.jpg')
+		add_directory2(title,url,15,defaultfanart,defaultimage,plot='')
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #15
 def shows(url):
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('article',{'class':'content-third content-image-container'})
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'show'})
 	for item in soup:
-		title = item.find('h3').string.encode('utf-8').strip()
-		image = item.find('img')['src']
-		show_id = image.split('/')
-		url = 'http://www.carbontv.com/videos/recent/episodes/limit:999/show_id:' + show_id[9]
-		add_directory2(title,url,20,image,image,plot='')
+		title = item.find('div',{'class':'show-name truncate'}).string.encode('utf-8').strip()
+		image = item.find('img',{'class':'show-thumb'})['src']
+		url = 'http://www.carbontv.com' + item.find('a')['href']
+		add_directory2(title,url,20,defaultfanart,image,plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #20
+def seasons(url):
+	response = get_html(url)
+	season_number = BeautifulSoup(response,'html5lib')
+	if season_number.find('span',{'class':'season-number'}):
+		xbmc.log('FOUND', level=log_level)
+		s = BeautifulSoup(response,'html5lib').find_all('div',{'tabindex':'0'})
+		seasons = BeautifulSoup(str(s),'html5lib').find_all('li')
+		for season in seasons:
+			season = season.text
+			title = 'Season ' + season
+			xbmc.log('SEASON: ' + str(season),level=log_level)
+			surl = url + 'seasons/' + season + '/episodes/?limit=100&offset=0'
+			xbmc.log('URL: ' + str(surl),level=log_level)
+			add_directory2(title,surl,25,defaultfanart,defaultimage,plot='')
+	else:
+		xbmc.log('EPISODES ONLY', level=log_level)
+		surl = url + 'episodes/?limit=100&offset=0'
+		xbmc.log('URL: ' + str(surl),level=log_level)
+		videos(surl)
+	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+
+
+#25
 def videos(url):
 	response = get_html(url)
-	soup = BeautifulSoup(response,'html5lib').find_all('article',{'class':'content-quarter content-image-container'})
-	for item in soup:
-		title = item.find('h5').string.encode('utf-8').strip()
-		url = 'http://www.carbontv.com' + item.find('a',{'class':'content-image video-link'})['href']
-		duration = striphtml(str(item.find('div',{'class':'thumb-duration'})))#.string.encode('utf-8')
-		runtime = get_sec(duration)
-		thumbnail = item.find('img',{'class':'category-image full-image'})['src']
+	jsob = re.compile('"content">\n(.+?)</').findall(response)[0]
+	data = json.loads(str(jsob))
+	total = (data['currentCount']); titles = []
+	xbmc.log('TOTAL: ' + str(total),level=log_level)
+	for i in range(total):
+		title = (data['items'][i]['name']).encode('utf-8')
+		if title in titles:
+			continue
+		titles.append(title)
+		dtitle = re.sub('[^0-9a-zA-Z]+', '_', title)
+		embed_code = data['items'][i]['embed_code']
+		downloadUrl = 'http://cdnapi.kaltura.com/p/1897241/sp/189724100/playManifest/entryId/' + embed_code + '/format/download/protocol/http/flavorParamIds/0'
+		url = 'http://www.carbontv.com' + data['items'][i]['path']
+		duration = data['items'][i]['duration']
+		runtime = (duration/1000)
+		thumbnail = data['items'][i]['preview_image_url']
+		season = data['items'][i]['season_number']
+		episode = data['items'][i]['video_number']
 		purl = 'plugin://plugin.video.carbon-tv?mode=30&url=' + urllib.quote_plus(url) + "&name=" + urllib.quote_plus(title) + "&iconimage=" + urllib.quote_plus(thumbnail)
 		li = xbmcgui.ListItem(title, iconImage=thumbnail, thumbnailImage=thumbnail)
-		li.setProperty('fanart_image', thumbnail)
+		li.addStreamInfo('video', { 'duration': runtime })
+		li.setProperty('fanart_image', defaultfanart)
 		li.setProperty('mimetype', 'video/mp4')
 		li.setProperty('IsPlayable', 'true')
-		li.setInfo(type="video", infoLabels={ 'Title': title, 'Plot': '' })
-		li.addStreamInfo('video', { 'duration': runtime })
-		li.addContextMenuItems([('Mark as Watched/Unwatched', 'Action(ToggleWatched)')])
+		li.setInfo(type="video", infoLabels={ 'Title': title, 'Plot': '', 'season': season, 'episode': episode })
+		li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s&name=%s)' % (sys.argv[0], downloadUrl,dtitle))])
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li, isFolder=False)
 		xbmcplugin.setContent(addon_handle, 'episodes')
-	xbmc.log('DURATION: ' + str(runtime))
+	xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #30
-def streams(name,url):
-	response = get_html(url)
-	duration = re.compile('duration" content="(.+?)"').findall(str(response))[0]
-	runtime = int(get_sec(duration)*1000)
-	xbmc.log('DURATION: ' + str(runtime))
-	link = re.compile('<link rel="video_src" href="(.+?)"').findall(str(response))[0]
-	thumbnail = re.compile('<link rel="image_src" href="(.+?)"').findall(str(response))[0]
+def streams(name,url,iconimage):
+	html = get_html(url)
+	soup = BeautifulSoup(html,'html5lib')
+	link = url = soup.find("meta",  property="og:video:url")['content']
+	xbmc.log('LINK: ' + str(link),level=log_level)
 	key = link.split('=')[-1]
-	if q =='2':
-		qkey = 487091#keys[-1]
-	elif q =='1':
-		qkey = 487081#keys[-4]
-	elif q =='0':
-		qkey = 487061#keys[-7]
-	#stream = (thumbnail.split('version')[0]).replace('cfvod.kaltura.com','carbonmedia-a.akamaihd.net').replace('thumbnail','serveFlavor') + 'v/2/flavorId/' + key + '/forceproxy/true/name/a.mp4'
-	stream = 'https://cdnapisec.kaltura.com/p/1897241/sp/189724100/playManifest/entryId/' + key + '/format/download/protocol/https/flavorParamIds/' + str(qkey)
-	xbmc.log('STREAM: ' + str(stream))
-	listitem = xbmcgui.ListItem(name, path=stream, thumbnailImage=thumbnail)
+	xbmc.log('KEY: ' + str(key),level=log_level)
+	response = get_html(link)
+	jsob = re.compile('window.kalturaIframePackageData =(.+?);\n').findall(response)[0]
+	data = json.loads(str(jsob))
+	item_dict = json.loads(str(jsob))
+	dataUrl = ((data['entryResult']['meta']['dataUrl']).split('format')[0])
+	xbmc.log('DATAURL: ' + str(dataUrl),level=log_level)
+	flavorParamsIds = data['entryResult']['meta']['flavorParamsIds']
+	xbmc.log('FLAVORID: ' + str(flavorParamsIds),level=log_level)
+	stream = dataUrl + 'flavorIds/' + flavorParamsIds + '/format/applehttp/protocol/https/a.m3u8'
+	xbmc.log('STREAM: ' + str(stream),level=log_level)
+	listitem = xbmcgui.ListItem(name, path=stream, thumbnailImage=iconimage)
 	listitem.setProperty('IsPlayable', 'true')
 	xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+
+
+#80
+def downloader(url,name):
+	path = addon.getSetting('download')
+	if path == "":
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,10000,%s)"
+				%(translation(30001), translation(30010), defaulticon))
+		addon.openSettings(label="Download")
+		path = addon.getSetting('download')
+	if path == "":
+		return
+	file_name = name + '.mp4'
+	dlsn = settings.getSetting(id="status")
+	bsize = settings.getSetting(id="bsize")
+	try: u = urllib2.urlopen(url)
+	except urllib2.HTTPError:
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)"
+				%(translation(30000), translation(30015), defaulticon))
+		return
+	meta = u.info()
+	file_size = float(meta.getheaders("Content-Length")[0])
+	file_sizeMB = float(file_size/(1024*1024))
+	ret = xbmcgui.Dialog().yesno('Download Selected File?', str(file_name), '', str("%.2f" % file_sizeMB) + ' MB')
+	if ret == False:
+		return videos
+	else:
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)"
+				%(translation(30000), translation(30014), defaulticon))
+	xbmc.log('URL: ' + str(url),level=log_level)
+	xbmc.log('Filename: ' + str(file_name),level=log_level)
+	xbmc.log('Download Location: ' + str(download),level=log_level)
+	f = open(download+file_name, 'wb')
+	xbmc.log("Downloading: %s %s MB" % (file_name, "%.2f" % file_sizeMB),level=log_level)
+	file_size_dl = 0
+	block_sz = int(bsize)
+	progress = xbmcgui.DialogProgress()
+	if dlsn!='false':
+		progress.create('CarbonTV')
+	while True:
+		bfr = u.read(block_sz)
+		if not bfr:
+			break
+		file_size_dl += float(len(bfr))
+		file_size_dlMB = float(file_size_dl/(1024*1024))
+		status = float(file_size_dl * 100. / file_size)
+		message = "%.2f  [%3.2f%%]" % (file_size_dlMB, file_size_dl * 100. / file_size)
+		message = message + chr(8)*(len(message)+1)
+		if dlsn!='false':
+			progress.update(int(status),'Download in Progress...','',str(file_size_dlMB) + ' MB of ' + ("%.2f" % float(file_sizeMB)) + ' MB')
+		xbmc.sleep(500)
+		f.write(bfr)
+		if dlsn!='false':
+			if progress.iscanceled():
+				os.remove(download+file_name)
+				return
+	f.close()
+	if dlsn!='false':
+		progress.close()
+	xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)"
+			%(translation(30000), translation(30016), defaulticon))
+	xbmc.log('Download Completed',level=log_level)
 
 
 def get_sec(time_str):
@@ -146,13 +249,6 @@ def striphtml(data):
 	return p.sub('', data)
 
 
-def play(url):
-	item = xbmcgui.ListItem(path=url)
-	item.setProperty('IsPlayable', 'true')
-	item.setProperty('IsFolder', 'false')
-	return xbmcplugin.setResolvedUrl(int(sys.argv[1]), succeeded=True, listitem=item)
-
-
 def add_directory2(name,url,mode,fanart,thumbnail,plot):
 	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&thumbnail=" + urllib.quote_plus(thumbnail)
 	ok=True
@@ -166,20 +262,9 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot):
 	return ok
 
 
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=True):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-		liz.setInfo( type="Video", infoLabels={ "Title": name } )
-		if not fanart:
-			fanart=defaultfanart
-		liz.setProperty('fanart_image', artbase + 'fanart5.jpg')
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-		return ok
-
 def get_html(url):
 	req = urllib2.Request(url)
-	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
+	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
 
 	try:
 		response = urllib2.urlopen(req)
@@ -242,26 +327,32 @@ try:
 except:
 	pass
 
-xbmc.log("Mode: " + str(mode))
-xbmc.log("URL: " + str(url))
-xbmc.log("Name: " + str(name))
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-	xbmc.log("Generate Main Menu")
+	xbmc.log("Generate Main Menu",level=log_level)
 	cats(url)
 elif mode == 4:
-	xbmc.log("Play Video")
-elif mode==11:
-	xbmc.log('CarbonTV PBR')
-	pbr(url)
+	xbmc.log("Play Video",level=log_level)
+elif mode==10:
+	xbmc.log('CarbonTV Categories',level=log_level)
+	cats(url)
 elif mode==15:
-	xbmc.log('CarbonTV Shows')
+	xbmc.log('CarbonTV Shows',level=log_level)
 	shows(url)
 elif mode==20:
-	xbmc.log("CarbonTV Videos")
+	xbmc.log("CarbonTV Seasons",level=log_level)
+	seasons(url)
+elif mode==25:
+	xbmc.log("CarbonTV Videos",level=log_level)
 	videos(url)
 elif mode==30:
-	xbmc.log("CarbonTV Streams")
-	streams(name,url)
+	xbmc.log("CarbonTV Streams",level=log_level)
+	streams(name,url,iconimage)
+elif mode == 80:
+	xbmc.log("CarbonTV Download File",level=log_level)
+	downloader(url,name)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

@@ -1,7 +1,17 @@
 <settings>
-    <setting label="30001" type="lsep"/>
-    <setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/>
-    <setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/>
-    <setting label="32032" type="lsep"/>
-    <setting id="quality" type="enum" label="30003" lvalues="30004|30005|30006" enable="!eq(3,false)" default="2"/>
+    <category label="Account">
+        <setting label="30001" type="lsep"/>
+        <setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/>
+        <setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/>
+    </category>
+    <category label="Download">
+        <setting label="Not all videos available for download." type="lsep"/>
+        <setting id="download" type="folder" source="files" label="30011"  option="writeable" default=""/>
+        <setting id="status" type="bool"  label="30012"  default="True"/>
+        <setting label="30013" type="slider" id="bsize" default="5242880" range="1048576,1048576,10485760" option="int" />
+    </category>
+    <category label="Kodi Log">
+        <setting label="Enable this option before creating a log to report problems." type="lsep"/>
+        <setting id='log_notice' type ="bool" label="32040" default="false"/>
+    </category>
 </settings>

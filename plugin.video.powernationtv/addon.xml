@@ -23,6 +23,7 @@
         <website>http://www.powernationtv.com</website>
         <email></email>
         <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.powernationtv</source>
+        <news>Version 2018.10.03[CR]- Skip episodes that require a paid subscription[CR]- Add log notices option in settings[CR]Version 2018.04.24[CR]- Add option in settings to force views[CR]Version 2018.04.23[CR]- Fix for website changes (April 2018)[CR]Version 0.0.4[CR]- Fix for ascii errors[CR]Version 0.0.3[CR]- Fixes for website changes (April 3, 3017)[CR]Version 0.0.2 (Thanks to Zymbiosis!)[CR]- Unified all tabs to spaces for better cross-editor compatibility.[CR]- Skip "coming soon" episodes.[CR]-Add additional media information (description, season, episode, date).[CR]- Default sort by episode number.[CR]- Fix stream url to properly handle new and old shows while allowing auto stream quality selection (m3u8).[CR]Version 0.0.1[CR]- Initial Release[CR]</news>
     <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
