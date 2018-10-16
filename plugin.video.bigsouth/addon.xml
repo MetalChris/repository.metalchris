@@ -3,7 +3,7 @@
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/> 
+    <import addon="script.module.html5lib" version="0.999.0"/>
     <import addon="script.module.simplejson" version="3.3.0"/>
     <import addon="script.module.requests" version="2.9.1"/>
     </requires>
@@ -17,5 +17,6 @@
         <summary lang="en">Big South Sports</summary>
         <description lang="en">Watch live and on demand events from the Big South Conference, a collegiate athletic conference affiliated with the NCAA's Division I.</description>
         <disclaimer lang="en"></disclaimer>
+        <broken>The Big South website is no longer offering streaming events.</broken>
     </extension>
 </addon>
