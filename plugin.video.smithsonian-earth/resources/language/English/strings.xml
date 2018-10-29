@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 
 <strings>
+    <string id="30000">Enable Log Notices</string>
     <string id="30001">Login Details</string>
-    <string id="30003">Stream Quality</string>
-    <string id="30004">Lowest</string>
-    <string id="30005">Low</string>
-    <string id="30006">Medium Low</string>
-    <string id="30007">Medium</string>
-    <string id="30008">Medium High</string>
-    <string id="30009">High</string>
-    <string id="30010">Higher</string>
-    <string id="30011">Best</string>
-    <string id="30020">Force Views</string>
     <string id="30200">User Account</string>
     <string id="30201">Username</string>
     <string id="30202">Password</string>
     <string id="30203">Hide Login Message</string>
+    <string id="32020">Force Views</string>
+    <string id="32021">Thumbnail</string>
+    <string id="32022">List</string>
+    <string id="32024">Media Info 2</string>
+    <string id="32025">Media Info</string>
+    <string id="32027">Media Info 3</string>
+    <string id="32030">Confluence View</string>
     <string id="32032">Bitrate</string>
     <string id="32034">Views</string>
 

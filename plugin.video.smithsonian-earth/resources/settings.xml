@@ -4,10 +4,14 @@
     <setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/>
     <setting id="status" type="bool"  label="30203"  default="True"/>
 	</category>
-	<category label="30003">
-    <setting id="quality" type="enum" label="30013" lvalues="30004|30005|30006|30007|30008|30009|30010|30011" enable="!eq(3,false)" default="7"/>
+	<category label="Views">
+	<setting type="lsep" label="Confluence View Settings (Might not work with other skins)" />
+	<setting type="sep" />
+	<setting id='force_views' type ="bool" label="32020" default="false"/>
+	<setting id="views" type="enum" label="32030" lvalues="32021|32022|32024|32025|32027" default="2" enable="!eq(-1,false)"/>
+	<setting type="sep" />
 	</category>
-    <category label="32034">
-	<setting id="views" type="bool" label="30020" default="true"/>
-    </category>
+	<category label="Logging">
+	<setting id='log_notice' type ="bool" label="30000" default="false"/>
+	</category>
 </settings>
