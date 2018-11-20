@@ -15,11 +15,8 @@
 
 import os, sys, socket, urllib2
 import xbmc, xbmcgui, xbmcaddon
-if sys.version_info < (2, 7):
-	import simplejson
-else:
-	import json as simplejson
 import time
+import json
 
 # This is a throwaway variable to deal with a python bug
 throwaway = time.strptime('20110101','%Y%m%d')
@@ -35,7 +32,14 @@ sys.path.append(__resource__)
 
 from utilities import *
 
-LOC_URL          = 'http://maps.googleapis.com/maps/api/geocode/json?address=%s'
+log_notice = __addon__.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
+
+LOC_URL          = 'https://devru-latitude-longitude-find-v1.p.mashape.com/latlon.php?location=%s'
 #LOC_QUERY        = 'http://maps.googleapis.com/maps/api/geocode/json?address="%s"'
 API_URL          = 'http://api.weatherunlocked.com/api/current/'
 APP_ID		= __addon__.getSetting(id="APP_ID")
@@ -53,7 +57,6 @@ def log(txt):
 	if isinstance (txt,str):
 		txt = txt.decode("utf-8")
 	message = u'%s: %s' % (__addonid__, txt)
-	#xbmc.log(msg=message.encode("utf-8"), level=#xbmc.logDEBUG)
 
 def set_property(name, value):
 	WEATHER_WINDOW.setProperty(name, value)
@@ -73,31 +76,45 @@ def location(loc):
 	locs   = []
 	locids = []
 	query = find_location(loc)
-	data = parse_data(query)
-	listitem   = data['results'][0]['formatted_address']
-	location = listitem
-	lat = data['results'][0]['geometry']['location']['lat']
-	lng = data['results'][0]['geometry']['location']['lng']
-	locationid = str(lat) + ',' + str(lng)
-	items.append(listitem)
-	locs.append(location)
-	locids.append(locationid)
+	data = json.loads(query)
+	total = len(data['Results'])
+	if total == 0:
+		dialog = xbmcgui.Dialog()
+		ok = dialog.ok('Kodi', 'No results found.')
+		pass
+	xbmc.log('TOTAL: ' + str(total),level=log_level)
+	cities = []; lls = []
+	for i in range(total):
+		location = data['Results'][i]['name']
+		lat = data['Results'][i]['lat']
+		lng = data['Results'][i]['lon']
+		locationid = str(lat) + ',' + str(lng)
+		items.append(location)
+		locs.append(location)
+		locids.append(locationid)
 	return items, locs, locids
 
 def find_location(loc):
 	query = urllib2.quote(loc)
+	xbmc.log('QUERY: ' + str(query),level=log_level)
 	url = LOC_URL % query
+	req = urllib2.Request(url)
+	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/50.0')
+	req.add_header('X-Mashape-Key','Qy1sTKFh52mshmLUd5de5hAzIhscp1313exjsnkRPm7LeH25sf')
+	req.add_header('X-Mashape-Host','devru-latitude-longitude-find-v1.p.mashape.com')
+
 	try:
-		req = urllib2.urlopen(url)
-		response = req.read()
-		req.close()
-	except:
-		response = ''
-	return response
+		response = urllib2.urlopen(req)
+		html = response.read()
+		response.close()
+	except urllib2.HTTPError:
+		response = False
+		html = False
+	return html
 
 def parse_data(reply):
 	try:
-		data = simplejson.loads(reply)
+		data = json.loads(reply)
 	except:
 		log('failed to parse weather data')
 		data = ''
@@ -131,9 +148,9 @@ def forecast(loc,locid):
 		clear()
 
 def get_weather(locid):
-	xbmc.log('GET WEATHER')
+	xbmc.log('GET WEATHER',level=log_level)
 	url = API_URL + str(locid) + '?app_id=' + APP_ID + '&app_key=' + API_KEY
-	xbmc.log('GET WEATHER URL:' + str(url))
+	xbmc.log('GET WEATHER URL:' + str(url),level=log_level)
 	try:
 		req = urllib2.Request(url)
 		req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:47.0) Gecko/20100101 Firefox/47.0')
@@ -146,9 +163,9 @@ def get_weather(locid):
 	return data
 
 def get_forecast(locid):
-	xbmc.log('GET FORECAST')
+	xbmc.log('GET FORECAST',level=log_level)
 	url = API_URL.replace('current','forecast') + str(locid) + '?app_id=' + APP_ID + '&app_key=' + API_KEY
-	xbmc.log('GET FORECAST URL:' + str(url))
+	xbmc.log('GET FORECAST URL:' + str(url),level=log_level)
 	try:
 		req = urllib2.Request(url)
 		req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:47.0) Gecko/20100101 Firefox/47.0')
@@ -158,13 +175,13 @@ def get_forecast(locid):
 		#xbmc.log(str(fdata))
 		req.close()
 	except:
-		xbmc.log('EXCEPTION!')
+		xbmc.log('EXCEPTION!',level=log_level)
 		response = ''
 		#get_forecast(locid)
 	return fdata
 
 def clear():
-	xbmc.log('CLEAR')
+	xbmc.log('CLEAR',level=log_level)
 	set_property('Current.Condition'     , 'N/A')
 	set_property('Current.Temperature'   , '0')
 	set_property('Current.Wind'          , '0')
@@ -184,7 +201,7 @@ def clear():
 		set_property('Day%i.FanartCode'  % count, 'na')
 
 def properties(data,fdata,loc,locid):
-	xbmc.log('PROPERTIES')
+	xbmc.log('PROPERTIES',level=log_level)
 	wdata = parse_data(data)
 	weathercode = WEATHER_CODES[(wdata['wx_icon']).lower().replace('.gif','')]
 	set_property('Current.Location'      , loc)
@@ -203,13 +220,13 @@ def properties(data,fdata,loc,locid):
 	forecast = parse_data(fdata)
 	set_property('Today.Sunrise'         , str(forecast['Days'][0]['sunrise_time']))
 	set_property('Today.Sunset'          , str(forecast['Days'][0]['sunset_time']))
-	xbmc.log('HOUR: ' + str(HOUR))
+	xbmc.log('HOUR: ' + str(HOUR),level=log_level)
 	if HOUR < 12:
 		offset = 1
 	else:
 		offset = 0
 	for count in range(offset,(offset+6)):
-		xbmc.log('OFFSET: ' + str(offset))
+		xbmc.log('OFFSET: ' + str(offset),level=log_level)
 		set_property('Day%i.HighTemp'    % count, str(forecast['Days'][count+1]['temp_max_c']))
 		set_property('Day%i.LowTemp'     % count, str(forecast['Days'][count+1]['temp_min_c']))
 		fdate = str(forecast['Days'][count+1]['date'])
@@ -223,7 +240,7 @@ def properties(data,fdata,loc,locid):
 		weathercode = WEATHER_CODES[str(forecast['Days'][count+1]['Timeframes'][3]['wx_icon']).lower().replace('.gif','')]
 		set_property('Day%i.OutlookIcon' % count, '%s.png' % weathercode)
 		count = count + 1
-xbmc.log('version %s started: %s' % (__version__, sys.argv))
+xbmc.log('version %s started: %s' % (__version__, sys.argv),level=log_level)
 
 set_property('WeatherProvider', __addonname__)
 set_property('WeatherProviderLogo', xbmc.translatePath(os.path.join(__cwd__, 'resources', 'banner.png')))

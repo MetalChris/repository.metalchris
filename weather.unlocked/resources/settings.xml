@@ -8,8 +8,11 @@
 		<setting id="Location2id" type="text" visible="false" default=""/>
 		<setting id="Location3id" type="text" visible="false" default=""/>
 	</category>
-	<category label="API Key">
-    		<setting id="APP_ID" type="text" label="32114" default="" enable="!eq(-1,false)"/>
-    		<setting id="API_KEY" type="text" label="32115" default=""  enable="!eq(-2,false)"/>
+	<category label="32116">
+		<setting id="APP_ID" type="text" label="32114" default="" enable="!eq(-1,false)"/>
+		<setting id="API_KEY" type="text" label="32115" default=""  enable="!eq(-2,false)"/>
+	</category>
+	<category label="32117">
+		<setting id='log_notice' type ="bool" label="32118" default="false"/>
 	</category>
 </settings>

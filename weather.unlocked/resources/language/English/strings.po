@@ -41,3 +41,15 @@ msgstr ""
 msgctxt "#32115"
 msgid "API KEY"
 msgstr ""
+
+msgctxt "#32116"
+msgid "API Keys"
+msgstr ""
+
+msgctxt "#32117"
+msgid "Logging"
+msgstr ""
+
+msgctxt "#32118"
+msgid "Enable Log Notifications"
+msgstr ""

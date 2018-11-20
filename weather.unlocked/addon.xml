@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="weather.unlocked" name="Weather Unlocked" version="0.0.7" provider-name="MetalChris">
+<addon id="weather.unlocked" name="Weather Unlocked" version="2018.11.11" provider-name="MetalChris">
 	<requires>
 		<import addon="xbmc.python" version="2.1.0"/>
-		<import addon="script.module.simplejson" version="3.3.0"/>
 	</requires>
 	<extension point="xbmc.python.weather" library="addon.py"/>
 	<extension point="xbmc.addon.metadata">
