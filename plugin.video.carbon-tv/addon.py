@@ -5,10 +5,11 @@
 # Released under GPL(v2) or Later
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, xbmcplugin, sys, os
+from urllib import urlopen
 from bs4 import BeautifulSoup
 import html5lib
 import cookielib
-import requests
+import requests, pickle
 import json
 
 artbase = 'special://home/addons/plugin.video.carbon-tv/resources/media/'
@@ -30,8 +31,6 @@ sys.path.append(__resource__)
 
 from uas import *
 
-cookiejar = cookielib.LWPCookieJar()
-
 plugin = "CarbonTV"
 
 defaultimage = 'special://home/addons/plugin.video.carbon-tv/resources/media/icon.png'
@@ -41,7 +40,6 @@ defaulticon = 'special://home/addons/plugin.video.carbon-tv/resources/media/icon
 local_string = xbmcaddon.Addon(id='plugin.video.carbon-tv').getLocalizedString
 addon_handle = int(sys.argv[1])
 download = settings.getSetting(id="download")
-q = settings.getSetting(id="quality")
 username = settings.getSetting(id="username")
 password = settings.getSetting(id="password")
 views = settings.getSetting(id="views")
@@ -56,15 +54,46 @@ confluence_views = [500,501,502,503,504,508,515]
 login_url = 'https://www.carbontv.com/users/login'
 shows_url = 'https://www.carbontv.com/shows'
 
+s = requests.Session()
+headers = {'User-Agent': ua}
+
+#5
+def login(shows_url):
+	r = s.get('https://www.carbontv.com', headers=headers)
+	xbmc.log('RESPONSE_CODE: ' + str(r.status_code),level=log_level)
+	#xbmc.log(str(r.text.encode('utf-8')[:7500]),level=log_level)
+	#xbmc.log('SESSION_COOKIES: ' + str((s.cookies.get_dict())),level=log_level)
+	cookie_file = os.path.join(addon_path_profile, 'cookies.txt')
+	with open(cookie_file, 'wb') as f:
+		pickle.dump(s.cookies.get_dict(), f)
+	csrfToken = re.compile("csrfToken': '(.+?)'").findall(str((s.cookies.get_dict())))[0]
+	payload = {
+		'_method': 'POST',
+		'_csrfToken': csrfToken,
+		'email' : username,
+		'password' : password,
+		'remember_me' : '0'
+		}
+	p = s.post('https://www.carbontv.com/users/login', data=payload, cookies=s.cookies.get_dict(), headers=headers)
+	xbmc.log('RESPONSE_CODE: ' + str(r.status_code),level=log_level)
+	r = s.get('https://www.carbontv.com', cookies=s.cookies.get_dict())
+	xbmc.log('RESPONSE_CODE: ' + str(r.status_code),level=log_level)
+	#xbmc.log(str(r.text.encode('utf-8')[:10000]),level=log_level)
+	if 'Signup/Login' in str(r.text.encode('utf-8')):
+	    xbmcgui.Dialog().notification(plugin, 'Login Failed', defaultimage, 5000, False)
+	else:
+		xbmcgui.Dialog().notification(plugin, 'Login Successful', defaultimage, 2500, False)
+		cats(shows_url)
+
 
 #10
 def cats(url):
-	html = get_html('https://www.carbontv.com/shows/')
+	r = s.get(shows_url, cookies=s.cookies.get_dict())
+	html = r.text.encode('utf-8')
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'navbar-item-login-signup'})
-	xbmc.log('SOUP: ' + str(soup),level=log_level)
+	xbmc.log('SOUP: ' + str(striphtml(str(soup))),level=log_level)
 	if 'Signup/Login' in str(soup):
 		xbmc.log('STATUS: ' + 'Logged Out',level=log_level)
-	html = get_html('https://www.carbontv.com/shows/')
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'menu'})
 	for item in soup:
 		title = item.get('data-menu-name')
@@ -82,25 +111,26 @@ def cats(url):
 
 #15
 def shows(url):
-	html = get_html(url)
+	r = s.get(url, cookies=s.cookies.get_dict())
+	html = r.text.encode('utf-8')
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'show'})
 	for item in soup:
 		title = item.find('div',{'class':'show-name truncate'}).string.encode('utf-8').strip()
 		image = item.find('img',{'class':'show-thumb'})['src']
 		url = 'http://www.carbontv.com' + item.find('a')['href']
 		add_directory2(title,url,20,defaultfanart,image,plot='')
-		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #20
 def seasons(url):
-	response = get_html(url)
+	r = s.get(url, cookies=s.cookies.get_dict())
+	response = r.text.encode('utf-8')
 	season_number = BeautifulSoup(response,'html5lib')
 	if season_number.find('span',{'class':'season-number'}):
 		xbmc.log('FOUND', level=log_level)
-		s = BeautifulSoup(response,'html5lib').find_all('div',{'tabindex':'0'})
-		seasons = BeautifulSoup(str(s),'html5lib').find_all('li')
+		soup = BeautifulSoup(response,'html5lib').find_all('div',{'tabindex':'0'})
+		seasons = BeautifulSoup(str(soup),'html5lib').find_all('li')
 		for season in seasons:
 			season = season.text
 			title = 'Season ' + season
@@ -118,7 +148,8 @@ def seasons(url):
 
 #25
 def videos(url):
-	response = get_html(url)
+	r = s.get(url, cookies=s.cookies.get_dict())
+	response = r.text.encode('utf-8')
 	jsob = re.compile('"content">\n(.+?)</').findall(response)[0]
 	data = json.loads(str(jsob))
 	total = (data['currentCount']); titles = []
@@ -153,12 +184,15 @@ def videos(url):
 
 #30
 def streams(name,url,iconimage):
-	html = get_html(url)
+	r = s.get(url, cookies=s.cookies.get_dict())
+	html = r.text.encode('utf-8')
 	soup = BeautifulSoup(html,'html5lib')
-	link = url = soup.find("meta",  property="og:video:url")['content']
+	link = soup.find("meta",  property="og:video:url")['content']
 	xbmc.log('LINK: ' + str(link),level=log_level)
 	key = link.split('=')[-1]
 	xbmc.log('KEY: ' + str(key),level=log_level)
+	r = s.get(link, cookies=s.cookies.get_dict())
+	response = r.text.encode('utf-8')
 	response = get_html(link)
 	jsob = re.compile('window.kalturaIframePackageData =(.+?);\n').findall(response)[0]
 	data = json.loads(str(jsob))
@@ -333,7 +367,7 @@ xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
 	xbmc.log("Generate Main Menu",level=log_level)
-	cats(url)
+	login(url)
 elif mode == 4:
 	xbmc.log("Play Video",level=log_level)
 elif mode==10:

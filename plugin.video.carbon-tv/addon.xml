@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.carbon-tv" name="CarbonTV" version="2018.10.14" provider-name="MetalChris">
+<addon id="plugin.video.carbon-tv" name="CarbonTV" version="2018.10.16" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
     <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.mechanize" version="0.2.6"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
@@ -21,7 +20,7 @@
     <website>http://www.carbontv.com</website>
     <email></email>
     <source>https://raw.githubusercontent.com/MetalChris/repository.metalchris/master/plugin.video.carbon-tv/addon.py</source>
-    <news>Version 2018.10.14[CR]- Fix for website changes[CR]Version 0.0.5[CR]- Implement setResolvedUrl which fixes 'Play From Here'[CR]Version 0.0.4[CR]- Added hack to mark videos watched[CR]Version 0.0.3[CR]- Fix for change in stream url format[CR]- Minor code cleanup and changes[CR]Version 0.0.2[CR]- Update for website changes (02-11-2017)[CR]Version 0.0.1[CR]- Initial release[CR]</news>
+    <news>Version 2018.10.15[CR]- Fix login[CR]- Code cleanup[CR]Version 2018.10.14[CR]- Fix for website changes[CR]Version 0.0.5[CR]- Implement setResolvedUrl which fixes 'Play From Here'[CR]Version 0.0.4[CR]- Added hack to mark videos watched[CR]Version 0.0.3[CR]- Fix for change in stream url format[CR]- Minor code cleanup and changes[CR]Version 0.0.2[CR]- Update for website changes (02-11-2017)[CR]Version 0.0.1[CR]- Initial release[CR]</news>
     <assets>
         <icon>resources/media/icon.png</icon>
         <fanart>resources/media/fanart.jpg</fanart>
