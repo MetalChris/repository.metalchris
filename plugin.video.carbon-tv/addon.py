@@ -3,8 +3,9 @@
 #
 # Written by MetalChris
 # Released under GPL(v2) or Later
+# 2018.12.01
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, xbmcplugin, sys, os
+import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys, os
 from urllib import urlopen
 from bs4 import BeautifulSoup
 import html5lib
@@ -23,7 +24,6 @@ usexbmc = selfAddon.getSetting('watchinxbmc')
 settings = xbmcaddon.Addon(id="plugin.video.carbon-tv")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
-confluence_views = [500,501,502,503,504,508]
 xbmc_monitor = xbmc.Monitor()
 __resource__   = xbmc.translatePath( os.path.join( _addon_path, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
 
@@ -42,20 +42,21 @@ addon_handle = int(sys.argv[1])
 download = settings.getSetting(id="download")
 username = settings.getSetting(id="username")
 password = settings.getSetting(id="password")
-views = settings.getSetting(id="views")
 log_notice = settings.getSetting(id="log_notice")
 if log_notice != 'false':
 	log_level = 2
 else:
 	log_level = 1
 xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
-confluence_views = [500,501,502,503,504,508,515]
 
 login_url = 'https://www.carbontv.com/users/login'
 shows_url = 'https://www.carbontv.com/shows'
 
 s = requests.Session()
-headers = {'User-Agent': ua}
+headers = {'User-Agent': ua, 'origin': 'https://www.carbontv.com'
+}
+
+xbmc.log('CarbonTV Version: 2018.12.01',level=log_level)
 
 #5
 def login(shows_url):
@@ -91,9 +92,11 @@ def cats(url):
 	r = s.get(shows_url, cookies=s.cookies.get_dict())
 	html = r.text.encode('utf-8')
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'navbar-item-login-signup'})
-	xbmc.log('SOUP: ' + str(striphtml(str(soup))),level=log_level)
-	if 'Signup/Login' in str(soup):
-		xbmc.log('STATUS: ' + 'Logged Out',level=log_level)
+	#xbmc.log('SOUP: ' + str(soup),level=log_level)
+	#check = soup[0].find('span').text.strip()
+	#xbmc.log('CHECK: ' + str(check),level=log_level)
+	#if 'Signup/Login' in str(soup):
+		#xbmc.log('STATUS: ' + 'Logged Out',level=log_level)
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'menu'})
 	for item in soup:
 		title = item.get('data-menu-name')
@@ -126,6 +129,7 @@ def shows(url):
 def seasons(url):
 	r = s.get(url, cookies=s.cookies.get_dict())
 	response = r.text.encode('utf-8')
+	url = url.split('?')[0]
 	season_number = BeautifulSoup(response,'html5lib')
 	if season_number.find('span',{'class':'season-number'}):
 		xbmc.log('FOUND', level=log_level)
@@ -367,7 +371,7 @@ xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
 	xbmc.log("Generate Main Menu",level=log_level)
-	login(url)
+	cats(url)
 elif mode == 4:
 	xbmc.log("Play Video",level=log_level)
 elif mode==10:
