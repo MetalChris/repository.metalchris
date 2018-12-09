@@ -75,7 +75,7 @@
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="3.1.8" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="3.1.9" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
@@ -661,9 +661,9 @@ The sanctuary houses the most diverse population of exotic cats in the world, wi
     </extension>
 </addon>
 
-<addon id="plugin.video.reuters" name="Reuters TV" version="0.0.3" provider-name="MetalChris">
+<addon id="plugin.video.reuters" name="Reuters TV" version="2018.12.08" provider-name="MetalChris">
     <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
+        <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
     <import addon="script.module.mechanize" version="0.2.6"/>
@@ -680,6 +680,25 @@ The sanctuary houses the most diverse population of exotic cats in the world, wi
         <summary lang="en">Reuters TV: Live Breaking News, US, World, Business, Finance</summary>
         <description lang="en">Keep up with the world’s events live and straight from the source with Reuters TV feeds from all over the world. From the International Space Station to St. Peter’s in Rome, we’re there.</description>
         <disclaimer lang="en">For support go to my github. No support without a full, unedited debug log.  No support at TVAddons or any other forum.</disclaimer>
+        <language>en</language>
+        <platform>all</platform>
+        <license>GPL(v2) or Later</license>
+        <forum></forum>
+        <website>http://www.reuters.com</website>
+        <email></email>
+        <source>https://raw.githubusercontent.com/MetalChris/repository.metalchris/master/plugin.video.reuters/addon.py</source>
+        <news>Version 2018.12.08[CR]- Fixes for website changes[CR]- Removed Categories[CR]- Added Featured stories[CR]- Version 0.0.3[CR]- Fixes for website changes[CR]Version 0.0.2[CR]- Fixes for website changes[CR]Version 0.0.1[CR]- Initial release[CR]</news>
+        <assets>
+            <icon>resources/media/icon.png</icon>
+            <fanart>resources/media/fanart.jpg</fanart>
+            <screenshot>resources/media/screenshot0312.png</screenshot>
+            <screenshot>resources/media/screenshot0322.png</screenshot>
+            <screenshot>resources/media/screenshot0352.png</screenshot>
+            <screenshot>resources/media/screenshot0332.png</screenshot>
+            <screenshot>resources/media/screenshot0362.png</screenshot>
+            <screenshot>resources/media/screenshot0372.png</screenshot>
+            <screenshot>resources/media/screenshot0382.png</screenshot>
+        </assets>
     </extension>
 </addon>
 

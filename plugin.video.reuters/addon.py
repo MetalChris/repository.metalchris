@@ -3,6 +3,7 @@
 #
 # Written by MetalChris
 # Released under GPL(v2) or Later
+# 2018.12.02
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
@@ -18,8 +19,15 @@ _addon_path = _addon.getAddonInfo('path')
 selfAddon = xbmcaddon.Addon(id='plugin.video.reuters')
 translation = selfAddon.getLocalizedString
 settings = xbmcaddon.Addon(id="plugin.video.reuters")
+
+log_notice = settings.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 QUALITY = settings.getSetting(id="quality")
-xbmc.log('QUALITY: ' + str(QUALITY))
+xbmc.log('QUALITY: ' + str(QUALITY),level=log_level)
 SITE = settings.getSetting(id="site")
 if SITE == '1':
 	edition = '?edition=US'
@@ -43,7 +51,7 @@ def CATEGORIES():
 	addDir('Live Stream', baseurl + 'live', 20, defaultimage)
 	addDir('Upcoming', baseurl + 'live', 25, defaultimage)
 	addDir('Top Stories', 'http://www.reuters.tv/data/json/' + edition + '&time=' + LENGTH, 10, defaultimage)
-	addDir('Categories', baseurl + 'categories' + edition, 30, defaultimage)
+	addDir('Featured', baseurl + 'featured' + edition, 30, defaultimage)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -52,25 +60,26 @@ def TOP(name,url):
 	opener = urllib2.build_opener()
 	f = opener.open(url)
 	html = f.read()
-	top_urls = re.compile('HLS","uri":"(.+?)"').findall(html)
+	top_urls = re.compile('HLS","uri":"(.+?)","entityType').findall(html)
+	xbmc.log('TOP_URLS: ' + str(top_urls),level=log_level)
 	## Attempt to Remove Ads
 	for url in top_urls:
-		#xbmc.log('URL: ' + str(url))
-		plist = str(re.findall(r'assets/(.*?)/web', url))[2:-2].split(',')
+		#xbmc.log('URL: ' + str(url),level=log_level)
+		plist = str(re.findall(r'assets/(.*?)/master', url))[2:-2].split(',')
 		for item in plist[1:-1]:
 			if item[:2] == '14':
 				plist.remove(item)
 			if item[:1] == 'm':
 				plist.remove(item)
 		playlist = str(plist)[1:-1].replace("'","").replace(' ','')
-		#xbmc.log('PLAYLIST: ' + str(playlist))
+		#xbmc.log('PLAYLIST: ' + str(playlist),level=log_level)
 		if QUALITY == '2':
 			res = '1920x1080'
 		elif QUALITY == '1':
 			res = '1280x720'
 		else:
 			res = '960x540'
-		no_ads = 'https://ajo.prod.reuters.tv/rest/v2/playlist/assets/' + playlist + '/web/resolution/' + res +'/codecs/ignored'
+		no_ads = 'https://22-cf-deb05f50f65540958a4bad40060cbbc7.vip2-dal1.dlvr1.net/6d0d214e-f63f-11e8-bc72-f166d0a6bbcf/rest/v2/playlist/assets/' + playlist + '/rendered/resolution/' + res +'/codecs/ignored.m3u8'
 		PLAY('Top Stories',no_ads)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
@@ -78,9 +87,9 @@ def TOP(name,url):
 #20
 def LIVE(name,url):
 	test = get_html('http://www.reuters.tv/liveNowIndicator')
-	xbmc.log('LIVE TEST: ' + str(test))
+	xbmc.log('LIVE TEST: ' + str(test),level=log_level)
 	if 'false' in test:
-		xbmc.log('NOT LIVE')
+		xbmc.log('NOT LIVE',level=log_level)
 		line1 = "No Live Content Currently Available"
 		xbmcgui.Dialog().ok(plugin, line1)
 		sys.exit()
@@ -88,7 +97,7 @@ def LIVE(name,url):
 	response = br.open(url)
 	html = response.get_data()
 	live_urls = re.compile('HLS","uri":"(.+?)"').findall(html)
-	#xbmc.log('LIVE_URLS: ' + str(len(live_urls)))
+	#xbmc.log('LIVE_URLS: ' + str(len(live_urls)),level=log_level)
 	titles = re.compile(',"title":"(.+?)"').findall(html)
 	for url, title in zip(live_urls, titles):
 		if 'churro' in url:
@@ -110,7 +119,7 @@ def LIVE(name,url):
 def UPCOMING(name,url):
 	html = get_html(url)
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'playlist'})
-	xbmc.log('SOUP LENGTH: ' + str(len(soup)))
+	xbmc.log('SOUP LENGTH: ' + str(len(soup)),level=log_level)
 	for item in soup:
 		live_time = item.find('span',{'class':'live-time'}).text
 		if 'ago' in live_time:
@@ -125,15 +134,8 @@ def UPCOMING(name,url):
 		image = defaultimage #'http:' + item.find('img')['src']
 		addDir2(title, url, mode, image)
 	jsob = re.compile('RTVJson = (.+?);\\n</script>').findall(str(html));i=0
-	#xbmc.log('JSOB: ' + str(len(jsob[-1])))
+	xbmc.log('JSOB: ' + str(len(jsob[-1])),level=log_level)
 	jdata = json.loads(jsob[-1])
-	#xbmc.log('JDATA: ' + str(len(jdata)))
-	#if 'LIVE_NOW' in jsob[-1]:
-		#xbmc.log('LIVE_NOW: YES')
-	#else:
-		#xbmc.log('LIVE_NOW: NO')
-	#if 'LIVE_UPCOMING' in jsob[-1]:
-		#xbmc.log('LIVE_UPCOMING: YES')
 	for item in jdata:
 		title = jdata['items'][i]['title'].encode('ascii','ignore')
 		status = jdata['items'][i]['type']
@@ -141,20 +143,25 @@ def UPCOMING(name,url):
 		image = defaultimage #'http:' + item.find('img')['src']
 		title = status.split('_')[-1] + ': ' + title
 		addDir2(title, stream, 99, defaultimage);i=i+1
-	xbmc.log('ITEMS: ' + str(i))
+	xbmc.log('ITEMS: ' + str(i),level=log_level)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #30
-def CATS(name,url):
+def FEATURED(name,url):
 	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'cat-video supercat'})
-	xbmc.log('SOUP LENGTH: ' + str(len(soup)))
-	for item in soup:
-		title = item.find('h3').text.title()
-		url = 'http://www.reuters.tv' + item.find('a')['href']
-		image = 'http:' + item.find('img')['src']
-		addDir(title, url, 40, image)
+	jsob = re.compile('RTVJson = (.+?);\\n</script>').findall(str(html));i=0
+	xbmc.log('JSOB LENGTH: ' + str(len(jsob)),level=log_level)
+	jdata = json.loads(jsob[-1])
+	json_data = json.dumps(jdata)
+	item_dict = json.loads(json_data)
+	xbmc.log('JSOB ITEMS: ' + str(len(item_dict['items'])),level=log_level)
+	total = int(len(item_dict['items']))
+	for i in range(total):
+		title = jdata['items'][i]['title'].encode('ascii','ignore')
+		url = jdata['items'][i]['resources'][0]['uri']
+		image = jdata['items'][i]['resources'][3]['uri']
+		addDir(title, url, 50, image);i=i+1
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
@@ -163,7 +170,7 @@ def VIDEOS(name,url):
 	response = br.open(url)
 	html = response.get_data()
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'cat-single-video'})
-	xbmc.log('SOUP LENGTH: ' + str(len(soup)))
+	xbmc.log('SOUP LENGTH: ' + str(len(soup)),level=log_level)
 	for item in soup:
 		title = item.find('h3').text.encode('ascii','ignore')#.title()
 		url = item.find('a')['href']#baseurl +
@@ -175,14 +182,30 @@ def VIDEOS(name,url):
 #50
 def VIDEO(name,url):
 	response = br.open(url)
-	html = response.get_data()
-	#vid = re.findall(r'<!--.*-->', html)
-	items=re.findall("https://ajo.prod.reuters.tv/rest/v2/playlist/assets/.*$",html,re.MULTILINE)
-	xbmc.log('ITEMS: ' + str(items[-1]))
-	xbmc.log('VID: ' + str(len(items)))
-	video_url = (items[0].split(',m'))[0] + '/web'
-	xbmc.log('VIDEO URL: ' + str(video_url))
-	PLAY(name, video_url)
+	jsob = response.get_data()
+	jdata = json.loads(jsob)
+	video_url = jdata['entity']['stream']['uri']
+	xbmc.log('VIDEO URL: ' + str(video_url),level=log_level)
+	## Attempt to Remove Ads
+	for url in video_url:
+		#xbmc.log('URL: ' + str(url),level=log_level)
+		plist = str(re.findall(r'assets/(.*?)/master', video_url))[2:-2].split(',')
+		xbmc.log('PLIST: ' + str(plist),level=log_level)
+		for item in plist[1:-1]:
+			if item[:2] == '14':
+				plist.remove(item)
+			if item[:1] == 'm':
+				plist.remove(item)
+		playlist = str(plist)[1:-1].replace("'","").replace(' ','').replace('"','')
+		xbmc.log('PLAYLIST: ' + str(playlist),level=log_level)
+		if QUALITY == '2':
+			res = '1920x1080'
+		elif QUALITY == '1':
+			res = '1280x720'
+		else:
+			res = '960x540'
+		no_ads = 'https://deb05f50f65540958a4bad40060cbbc7.dlvr1.net/rest/v2/playlist/assets/' + playlist + '/rendered/resolution/' + res +'/codecs/ignored.m3u8'
+	PLAY(name, no_ads)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
@@ -299,37 +322,35 @@ try:
 except:
 	pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-	print "Reuters Videos"
+	xbmc.log("Reuters Videos",level=log_level)
 	CATEGORIES()
 elif mode == 10:
-	print "Reuters Top Stories"
+	xbmc.log("Reuters Top Stories",level=log_level)
 	TOP(name,url)
 elif mode == 20:
-	print "Reuters Live"
+	xbmc.log("Reuters Live",level=log_level)
 	LIVE(name,url)
 elif mode == 25:
-	print "Reuters Upcoming"
+	xbmc.log("Reuters Upcoming",level=log_level)
 	UPCOMING(name,url)
 elif mode == 30:
-	print "Reuters Categories"
-	CATS(name,url)
+	xbmc.log("Reuters Featured",level=log_level)
+	FEATURED(name,url)
 elif mode == 40:
-	print "Reuters Videos"
+	xbmc.log("Reuters Videos",level=log_level)
 	VIDEOS(name,url)
 elif mode == 50:
-	print "Reuters Video"
+	xbmc.log("Reuters Video",level=log_level)
 	VIDEO(name,url)
 elif mode == 99:
-	print "Play Video"
+	xbmc.log("Play Video",level=log_level)
 	PLAY(name,url)
 
 
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-
