@@ -1,0 +1,8 @@
+Version 2018.12.25
+- Fix for unicode error in weather outlook
+
+Version 2018.12.24
+- Code cleanup
+
+Version 2018.12.23
+- Initial release.

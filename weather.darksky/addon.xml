@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="weather.darksky" name="DarkSky Weather" version="2018.12.25" provider-name="MetalChris">
+	<requires>
+		<import addon="xbmc.python" version="2.24.0"/>
+	</requires>
+	<extension point="xbmc.python.weather" library="addon.py"/>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Current Conditions and Forecast from DarkSky</summary>
+		<description lang="en">Weather forecast provided by DarkSky.  Requires a free API key from DarkSky.net</description>
+		<disclaimer lang="en"></disclaimer>
+		<license>GPL 2 or later</license>
+		<language></language>
+		<platform>all</platform>
+		<forum></forum>
+		<source></source>
+	</extension>
+</addon>
