@@ -58,7 +58,7 @@ socket.setdefaulttimeout(10)
 def log(txt):
 	if isinstance (txt,str):
 		txt = txt.decode("utf-8")
-	message = u'%s: %s' % (__addonid__, txt)
+	#message = u'%s: %s' % (__addonid__, txt)
 
 def set_property(name, value):
 	WEATHER_WINDOW.setProperty(name, value)
@@ -80,12 +80,12 @@ def location(loc):
 	query = find_location(loc)
 	data = json.loads(query)
 	total = len(data['Results'])
-	if total == 0:
-		dialog = xbmcgui.Dialog()
-		ok = dialog.ok('Kodi', 'No results found.')
-		pass
+	#if total == 0:
+		#dialog = xbmcgui.Dialog()
+		#ok = dialog.ok('Kodi', 'No results found.')
+		#pass
 	xbmc.log('TOTAL: ' + str(total),level=log_level)
-	cities = []; lls = []
+	#cities = []; lls = []
 	for i in range(total):
 		location = data['Results'][i]['name']
 		lat = data['Results'][i]['lat']
