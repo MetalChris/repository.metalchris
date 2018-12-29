@@ -26,6 +26,7 @@ WEATHER_CODES = { 'chanceflurries'    : '41',
                   'partlycloudyday'      : '30',
                   'partlycloudynight'      : '33',
                   'partlysunny'       : '34',
+                  'heavysleet'             : '18',
                   'modsleet'             : '18',
                   'modsleetswrsday'             : '18',
                   'modsleetswrsnight'             : '18',
@@ -84,4 +85,3 @@ WEATHER_CODES = { 'chanceflurries'    : '41',
                   'nt_tstorms'        : '47',
                   'nt_unknown'        : 'na',
                   'nt_'               : 'na'}
-

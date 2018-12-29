@@ -155,6 +155,8 @@ def get_weather(locid):
 		req = urllib2.Request(url)
 		req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:47.0) Gecko/20100101 Firefox/47.0')
 		req.add_header('Accept','application/json')
+		req.add_header('Cookie','intercom-id-kdi988e8=4c7539a4-e2c4-44ad-978f-68cb304e6731')
+		req.add_header('Host','api.weatherunlocked.com')
 		response = urllib2.urlopen(req)
 		data = response.read()
 		req.close()
@@ -170,6 +172,8 @@ def get_forecast(locid):
 		req = urllib2.Request(url)
 		req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:47.0) Gecko/20100101 Firefox/47.0')
 		req.add_header('Accept','application/json')
+		req.add_header('Cookie','intercom-id-kdi988e8=4c7539a4-e2c4-44ad-978f-68cb304e6731')
+		req.add_header('Host','api.weatherunlocked.com')
 		response = urllib2.urlopen(req)
 		fdata = response.read()
 		#xbmc.log(str(fdata))
@@ -225,7 +229,7 @@ def properties(data,fdata,loc,locid):
 		offset = 1
 	else:
 		offset = 0
-	for count in range(offset,(offset+6)):
+	for count in range(offset,(offset+5)):
 		xbmc.log('OFFSET: ' + str(offset),level=log_level)
 		set_property('Day%i.HighTemp'    % count, str(forecast['Days'][count+1]['temp_max_c']))
 		set_property('Day%i.LowTemp'     % count, str(forecast['Days'][count+1]['temp_min_c']))
