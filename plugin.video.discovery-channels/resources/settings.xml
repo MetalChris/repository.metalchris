@@ -2,30 +2,30 @@
 	    <category label="Channels">
         <setting type="lsep" label="Choose which channels are displayed in the main menu." />
         <setting type="sep" />
-            <setting id="dsc" type="bool"  label="30009"  default="true"/>
-            <setting id="ap" type="bool"  label="30010"  default="true"/>
-            <setting id="sci" type="bool"  label="30011"  default="true"/>
-            <setting id="idsc" type="bool"  label="30012"  default="true"/>
+            <setting id="dsc" type="bool"  label="30009"  default="False"/>
+            <setting id="ap" type="bool"  label="30010"  default="False"/>
+            <setting id="sci" type="bool"  label="30011"  default="False"/>
+            <setting id="idsc" type="bool"  label="30012"  default="False"/>
             <setting id="dahn" type="bool"  label="30013"  default="False"/>
             <setting id="dscl" type="bool"  label="30014"  default="False"/>
             <setting id="dest" type="bool"  label="30015"  default="False"/>
-            <setting id="vel" type="bool"  label="30016"  default="False"/>
-            <setting id="tlc" type="bool"  label="30017"  default="False"/>
-            <setting id="dsck" type="bool"  label="30018"  default="False"/>
+            <setting id="motor" type="bool"  label="30016"  default="False"/>
+            <setting id="diy" type="bool"  label="30017"  default="False"/>
+            <setting id="hgtv" type="bool"  label="30018"  default="False"/>
+            <setting id="food" type="bool"  label="30019"  default="False"/>
+            <setting id="trvl" type="bool"  label="30020"  default="False"/>
+            <setting id="cook" type="bool"  label="30021"  default="False"/>
         <setting type="sep" />
 	    </category>
         <category label="Views">
         <setting type="lsep" label="Confluence View Settings (Might not work with other skins)" />
         <setting type="sep" />
-        <setting id='force_views' type ="bool" label="32020" default="false"/>
+        <setting id='force_views' type ="bool" label="32020" default="False"/>
         <setting id="views" type="enum" label="32030" lvalues="32021|32022|32024|32025|32027" default="2" enable="!eq(-1,false)"/>
         <setting type="sep" />
         </category>
-        <category label="Advanced">
-        <setting type="lsep" label="Changing parser may improve speed." />
-        <setting type="sep" />
-            <setting id="parser" type="enum" label="30210" lvalues="30200|30205|30215" enable="!eq(3,false)" default="1"/>
-            <setting id="player" type="enum" label="30211" lvalues="30201|30202" enable="!eq(3,false)" default="1"/>
-        <setting type="sep" />
-    </category>
+	<category label="32117">
+		<setting id='log_notice' type ="bool" label="32118" default="false"/>
+	</category>
+		<setting id='first' type ="bool" label="" default="false"/>
 </settings>

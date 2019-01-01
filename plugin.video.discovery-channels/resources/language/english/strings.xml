@@ -13,10 +13,13 @@
     <string id="30013">American Heroes</string>
     <string id="30014">Discovery Life</string>
     <string id="30015">Destination America</string>
-    <string id="30016">Velocity</string>
-    <string id="30017">TLC</string>
-    <string id="30018">Discovery Kids</string>
-    <string id="30020">Force Views</string>
+    <string id="30016">Motor Trend</string>
+    <string id="30017">DIY Network</string>
+    <string id="30018">HGTV</string>
+    <string id="30019">Food Network</string>
+    <string id="30020">Travel Channel</string>
+    <string id="30021">Cooking Channel</string>
+    <string id="30120">Force Views</string>
     <string id="30200">Html5lib</string>
     <string id="30201">XBMC.PLAYER</string>
     <string id="30202">RESOLVE URL</string>
@@ -31,4 +34,6 @@
     <string id="32025">Media Info</string>
     <string id="32027">Media Info 3</string>
     <string id="32030">Confluence View</string>
+    <string id="32117">Kodi Log</string>
+    <string id="32118">Enable Log Notifications</string>
 </strings>
