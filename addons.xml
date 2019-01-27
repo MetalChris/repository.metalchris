@@ -75,7 +75,7 @@
   </extension>
 </addon>
 
-<addon id="repository.metalchris" name="MetalChris' Repository" version="3.2.3" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="3.2.4" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
@@ -150,7 +150,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.powernationtv" name="PowerNation TV" version="2018.10.03" provider-name="MetalChris, zymbiosis">
+<addon id="plugin.video.powernationtv" name="PowerNation TV" version="2019.01.27" provider-name="MetalChris, zymbiosis">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -174,13 +174,14 @@
         <website>http://www.powernationtv.com</website>
         <email></email>
         <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.powernationtv</source>
-        <news>Version 2018.10.03[CR]- Skip episodes that require a paid subscription[CR]- Add log notices option in settings[CR]Version 2018.04.24[CR]- Add option in settings to force views[CR]Version 2018.04.23[CR]- Fix for website changes (April 2018)[CR]Version 0.0.4[CR]- Fix for ascii errors[CR]Version 0.0.3[CR]- Fixes for website changes (April 3, 3017)[CR]Version 0.0.2 (Thanks to Zymbiosis!)[CR]- Unified all tabs to spaces for better cross-editor compatibility.[CR]- Skip "coming soon" episodes.[CR]-Add additional media information (description, season, episode, date).[CR]- Default sort by episode number.[CR]- Fix stream url to properly handle new and old shows while allowing auto stream quality selection (m3u8).[CR]Version 0.0.1[CR]- Initial Release[CR]</news>
+        <news>Version 2019.01.27[CR]- Fix for website changes[CR]Version 2018.10.03[CR]- Skip episodes that require a paid subscription[CR]- Add log notices option in settings[CR]Version 2018.04.24[CR]- Add option in settings to force views[CR]Version 2018.04.23[CR]- Fix for website changes (April 2018)[CR]Version 0.0.4[CR]- Fix for ascii errors[CR]Version 0.0.3[CR]- Fixes for website changes (April 3, 3017)[CR]Version 0.0.2 (Thanks to Zymbiosis!)[CR]- Unified all tabs to spaces for better cross-editor compatibility.[CR]- Skip "coming soon" episodes.[CR]-Add additional media information (description, season, episode, date).[CR]- Default sort by episode number.[CR]- Fix stream url to properly handle new and old shows while allowing auto stream quality selection (m3u8).[CR]Version 0.0.1[CR]- Initial Release[CR]</news>
     <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
         <screenshot>resources/media/screenshot01.png</screenshot>
         <screenshot>resources/media/screenshot02.png</screenshot>
         <screenshot>resources/media/screenshot03.png</screenshot>
+        <screenshot>resources/media/screenshot04.png</screenshot>
     </assets>
     </extension>
 </addon>
