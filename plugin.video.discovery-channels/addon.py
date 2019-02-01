@@ -117,11 +117,11 @@ def dsc_menu_new(url):
 	page = response.get_data()
 	dscjson = re.compile('window.__reactTransmitPacket = (.+?);</script>').findall(page)[0]
 	data = json.loads(dscjson)
-	adCustomerId = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['serverId'])
-	adNetworkId = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['networkId'])
-	adProfile = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['profile']['desktop']['vod'])
-	subSessionToken = str(data['application']['subSessionToken'])
-	apiClientId = str(data['application']['apiClientId'])
+	#adCustomerId = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['serverId'])
+	#adNetworkId = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['networkId'])
+	#adProfile = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['profile']['desktop']['vod'])
+	#subSessionToken = str(data['application']['subSessionToken'])
+	#apiClientId = str(data['application']['apiClientId'])
 	total = len(data['layout']['/']['contentBlocks']);i=0
 	xbmc.log('CONTENTBLOCKS: ' + str(total),level=log_level)
 	xbmc.log('DSCJSON: ' + str(len(dscjson)),level=log_level)
@@ -140,7 +140,7 @@ def dsc_menu_new(url):
 		slug = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['slug'])
 		show_name = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['show']['name'])
 		url = site + '/tv-shows/' + show + '/full-episodes/' + slug
-		adCaid = str(data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['adVideoId'])
+		#adCaid = str(data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['adVideoId'])
 		image = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['image']['links'][0]['href']).replace('{width}','700')#.replace('{height}','260')
 		#test_link(image)
 		description = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['description']['standard'])
