@@ -4,15 +4,13 @@
 # Written by MetalChris
 # Released under GPL(v2 or Later)
 
-#2019.01.31
+#2019.02.01
 
 import xbmcaddon, urllib, xbmcgui, xbmcplugin, urllib2, re, sys, os
 from bs4 import BeautifulSoup
 import html5lib
 import mechanize
 import cookielib
-import pickle
-from urllib import urlopen
 
 
 #LOGDEBUG
@@ -55,8 +53,8 @@ else:
 xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 plugin = 'PowerNation TV'
 
-headers = {'Host': 'www.powernationtv.com', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0', 'Referer': 'https://www.powernationtv.com/'
-}
+#headers = {'Host': 'www.powernationtv.com', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0', 'Referer': 'https://www.powernationtv.com/'
+#}
 
 
 def CATEGORIES():
@@ -69,8 +67,9 @@ def CATEGORIES():
 			continue
 		if not 'shows' in url:
 			continue
-		image = show.find('img')['data-pagespeed-lazy-src']
 		title = show.find('img')['alt'].strip()
+		#image = show.find('img')['data-pagespeed-lazy-src']
+		image = 'special://home/addons/plugin.video.powernationtv/resources/media/' + title + '.jpg'
 		if ('Shorts' in title) or ('Daily' in title):
 			continue
 		addDir(title, url, 10, image)
@@ -135,9 +134,8 @@ def INDEX(url):
 def PN_SHOW(url):
 	xbmc.log('PN_SHOW',level=log_level)
 	html = br.open(url).read(); murl = url
-	#xbmc.log('MURL: ' + str(murl),level=log_level)
+	xbmc.log('MURL: ' + str(murl),level=log_level)
 	soup = BeautifulSoup(html,'html5lib').find_all('li',{'class':'sublink'})#[1]
-	#xbmc.log('SOUP: ' + str(soup),level=log_level)
 	for sublink in soup:
 		url = murl + sublink.find('a')['href']
 		if not '-garage' in murl:
@@ -146,7 +144,6 @@ def PN_SHOW(url):
 		else:
 			link = url
 			mode = 25 #something else
-		#xbmc.log('LINK: ' + str(link),level=log_level)
 		image = defaultimage
 		year = sublink.find('a')['data-year']
 		title = sublink.find('a').text + ' ' + year
@@ -163,21 +160,19 @@ def PN_SHOW(url):
 def PN_LINK(url):
 	xbmc.log('PN_LINK',level=log_level)
 	html = br.open(url).read(); murl = url
-	#xbmc.log('MURL: ' + str(murl),level=log_level)
+	xbmc.log('MURL: ' + str(murl),level=log_level)
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'id':'episodes'})
 	for video in soup:
 		link = video.find('a')['href']
-		#xbmc.log('LINK: ' + str(link),level=log_level)
 		return link
 
 #25
 def PNG(name,url):
 	xbmc.log('PNG',level=log_level)
-	html = br.open(url).read(); murl = url
+	html = br.open(url).read()
 	code = url.split('?')[-1]
 	year = re.compile('year=(.+?)&').findall(code)[0]
 	month = re.compile('month=(.+?)#').findall(code)[0]
-	#xbmc.log('MURL: ' + str(murl),level=log_level)
 	soup = BeautifulSoup(html,'html5lib')
 	xbmc.log('SOUP: ' + str(len(soup)),level=log_level)
 	divTag = soup.find_all('div',{'id':'episodes' +year + month})
@@ -191,7 +186,6 @@ def PNG(name,url):
 		url = episode.find('a')['href']
 		surl = 'plugin://plugin.video.powernationtv?mode=20&url=' + urllib.quote_plus(url)
 		plot = episode.find('div',{'class':'description'}).text.encode('ascii','ignore').strip()
-		#xbmc.log('URL: ' + str(url),level=log_level)
 		#infolabels = {'plot': title, 'season': year, 'episode': '1'}
 		#addDir3(title, url, 20, defaultfanart, image, title)
 		li = xbmcgui.ListItem(title)
