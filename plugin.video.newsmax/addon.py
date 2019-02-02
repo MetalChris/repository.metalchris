@@ -41,12 +41,12 @@ confluence_views = [500,501,502,503,504,508,515]
 
 #10
 def index():
-		addDir2('Live', 'https://nmxlive.akamaized.net/hls/live/529965/Live_1/index.m3u8', 4, defaultimage)
-		#addDir2('Schedule', 'https://api.newsmaxtv.com/api/timeline/1011/schedule', 3, defaultimage)
-		addDir('Shows', 'http://www.newsmaxtv.com/shows/', 15, defaultimage)
-		addDir('Popular', getv.decode('base64'), 25, defaultimage)
-		addDir('Trending', getv.decode('base64'), 25, defaultimage)
-		xbmcplugin.endOfDirectory(addon_handle)
+	addDir2('Live', 'https://nmxlive.akamaized.net/hls/live/529965/Live_1/index.m3u8', 4, defaultimage)
+	#addDir2('Schedule', 'https://api.newsmaxtv.com/api/timeline/1011/schedule', 3, defaultimage)
+	addDir('Shows', 'http://www.newsmaxtv.com/shows/', 15, defaultimage)
+	addDir('Popular', getv.decode('base64'), 25, defaultimage)
+	addDir('Trending', getv.decode('base64'), 25, defaultimage)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #3

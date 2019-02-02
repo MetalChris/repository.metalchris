@@ -2,6 +2,13 @@
 
 <strings>
     <!-- Default strings -->
+    <string id="30001">Subscription Details</string>
+    <string id="30002">Paid Subscription</string>
+    <string id="30003">Enable Paid Account</string>
+    <string id="30200">User Account</string>
+    <string id="30201">Username</string>
+    <string id="30202">Password</string>
+    <string id="30203">Hide Login Message</string>
     <string id="32020">Force View</string>
     <string id="32021">Thumbnail</string>
     <string id="32022">List</string>
