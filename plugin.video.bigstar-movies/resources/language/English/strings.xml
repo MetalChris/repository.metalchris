@@ -2,6 +2,10 @@
 
 <strings>
     <!-- Default strings -->
+    <string id="30000">Enable Log Notices</string>
+    <string id="30003">Stream Quality</string>
+    <string id="30100">Highest</string>
+    <string id="30110">Display All</string>
     <string id="32001">Page</string>
 
     <!-- Root menu entries -->
@@ -21,4 +25,6 @@
     <string id="32028">Media Info</string>
     <string id="32029">Media Info 2</string>
     <string id="32030">Media Info 3</string>
+    <string id="32031">Confluence Views - May not work with other skins</string>
+    <string id="32032">Stream Bitrate Options</string>
 </strings>

@@ -1,8 +1,0 @@
-Version 0.0.3
-- Add quality option in settings
-
-Version 0.0.2
-- Code cleanup
-
-Version 0.0.1
-- Initial release.

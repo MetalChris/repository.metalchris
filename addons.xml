@@ -48,34 +48,11 @@
     <website></website>
     <email></email>
     <source></source>
+    <broken>Most videos now available via YouTube</broken>
   </extension>
 </addon>
 
-<addon id="plugin.video.animalist" name="Animalist" version="3.0.3" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Animalist</summary>
-    <description lang="en">Animalist, a Discovery Digital Network, is all about animals…from cats to dinosaurs! Animalist is your destination for all things animal on the web. From the exotic to the domestic, from the cute to the weird, we cover the whole animal kingdom.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-    <broken>Discovery has pulled the plug on this site. RIP Animalist.</broken>
-  </extension>
-</addon>
-
-<addon id="repository.metalchris" name="MetalChris' Repository" version="3.2.5" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="3.2.6" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>http://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
@@ -85,6 +62,7 @@
 		<summary>MetalChris' Kodi addons</summary>
 		<description>Support provided at forum.kodi.tv or via my github.  I will not provide support at TVaddons, or any other forum.  Please provide a full, unedited, debug log when requesting support.</description>
         <platform>all</platform>
+        <news>Remove broken addons that will not be fixed.</news>
     </extension>
 </addon>
 
@@ -438,28 +416,6 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.classic-tv" name="Free Classic TV Shows" version="0.0.2" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Free Classic TV Shows</summary>
-    <description lang="en">Public Domain Television Shows to Watch, Enjoy and Download.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-    <broken>Website is temporarily down for maintenance.  The add-on will be available when the site comes back.</broken>
-  </extension>
-</addon>
-
 <addon id="plugin.video.bigcatrescue" name="Big Cat Rescue" version="0.0.3" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -570,10 +526,9 @@ The sanctuary houses the most diverse population of exotic cats in the world, wi
     </extension>
 </addon>
 
-<addon id="plugin.video.bigstar-movies" name="BigStar Movies &amp; TV" version="1.1.5" provider-name="MetalChris">
+<addon id="plugin.video.bigstar-movies" name="BigStar Movies &amp; TV" version="2019.02.02" provider-name="MetalChris">
   <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="xbmc.python" version="2.20.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
@@ -584,11 +539,20 @@ The sanctuary houses the most diverse population of exotic cats in the world, wi
     <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
+    <license>GPL(v2) or Later</license>
+    <forum>https://forum.kodi.tv/showthread.php?tid=223279</forum>
+    <website>http://www.bigstar.tv/</website>
     <email></email>
-    <source></source>
+    <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.bigstar-movies</source>
+    <news>Version 2019.02.02[CR] - Fix for website changes[CR] - Added option to choose stream quality</news>
+    <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+        <screenshot>resources/media/screenshot001.png</screenshot>
+        <screenshot>resources/media/screenshot002.png</screenshot>
+        <screenshot>resources/media/screenshot003.png</screenshot>
+        <screenshot>resources/media/screenshot004.png</screenshot>
+    </assets>
   </extension>
 </addon>
 
@@ -771,29 +735,6 @@ The sanctuary houses the most diverse population of exotic cats in the world, wi
   </extension>
 </addon>
 
-<addon id="plugin.video.bigstar" name="BigStar Movies" version="0.1.4" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">BigStar Movies</summary>
-    <description lang="en">Stream movies instantly! Choose from thousands of independent, foreign and award-winning feature films and TV shows.</description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-    <broken>Please uninstall this version and install version 1.1.4 from my repo</broken>
-  </extension>
-</addon>
-
 <addon id="plugin.video.lifechurch" name="Life.Church" version="0.0.4" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -875,30 +816,6 @@ Watch a Message, do Church Online Live, get Involved. Our mission is to lead peo
   </extension>
 </addon>
 
-<addon id="plugin.video.asn"
-       name="American Sports Network" version="0.0.7" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">Watch videos and live events from the American Sports Network</summary>
-        <description lang="en">American Sports Network (“ASN”) is the home for sports fans to learn, be inspired and entertained, while celebrating the games, athletes, coaches and community across all platforms.
-
-ASN televises live games from multiple NCAA Division I college sports conferences, provides analysis from the game’s top experts, delves into the human side of competition and shows the best of today’s student-athletes.</description>
-        <disclaimer lang="en"></disclaimer>
-    <broken>I'm not going to fix this.</broken>
-    </extension>
-</addon>
-
 <addon id="plugin.video.fcc" name="Family Christian Center" version="0.0.2" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -924,31 +841,6 @@ ASN televises live games from multiple NCAA Division I college sports conference
   </extension>
 </addon>
 
-<addon id="plugin.video.fox" name="FOX" version="0.1.0" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Watch FREE full episodes of your favorite FOX shows.</summary>
-    <description lang="en">The Fox Broadcasting Company is an American English language commercial broadcast television network owned by Fox Entertainment Group, a subsidiary of 21st Century Fox.</description>
-    <disclaimer lang="en">Support provided at forum.kodi.tv or via my github.  I will not provide support at TVaddons, or any other forum.  Please provide a full, unedited, debug log when requesting support.</disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-    <broken>Fox keeps screwing around with their website.  I'm tired of fixing this one.</broken>
-  </extension>
-</addon>
-
 <addon id="plugin.video.cw" name="CW TV Network" version="0.0.3" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -969,65 +861,6 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <website>http://www.cwtv.com</website>
     <email></email>
     <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.how-stuff-works" name="How Stuff Works" version="3.0.7" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Watch Videos from HowStuffWorks.com</summary>
-    <description lang="en">How Stuff Works is an award-winning source of unbiased, reliable, easy-to-understand answers and explanations of how the world actually works. Today, our writers, editors, podcasters and video hosts share all the things we're most excited to learn about with nearly 30 million visitors to the site each month. </description>
-    <disclaimer lang="en"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-  </extension>
-</addon>
-
-<addon id="plugin.video.smithsonian-earth" name="Smithsonian Earth" version="2018.10.27" provider-name="MetalChris">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.mechanize" version="0.2.6"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Stream the most captivating nature and wildlife documentaries and videos shot in stunning Ultra HD (4K) on Smithsonian Earth.</summary>
-    <description lang="en">Smithsonian Earth is a commercial-free streaming site that offers unlimited access to nature and wildlife documentaries and videos shot in stunning 4K UHD resolution. Refreshed weekly, you'll never run out of things to discover.  Subscription costs $3.99 per month with a 30 day free trial.</description>
-    <disclaimer lang="en">For support go to my github. No support without a full, unedited debug log.  No support at TVAddons or any other forum.</disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license>GPL(v2) or Later</license>
-    <forum></forum>
-    <website>https://smithsonianearthtv.com/</website>
-    <email></email>
-    <source></source>
-    <news>v 2018.10.27[CR]- Update for 2018[CR]- Remove quality settings[CR]v 0.0.4[CR]- Fixes for website changes[CR]- Added infolabels[CR]v 0.0.3[CR]- Add quality option in settings[CR]v 0.0.2[CR]- Code cleanup[CR]v 0.0.1[CR]- Initial release</news>
-    <assets>
-        <icon>icon.png</icon>
-        <fanart>fanart.jpg</fanart>
-        <screenshot>resources/media/screenshot001.png</screenshot>
-        <screenshot>resources/media/screenshot002.png</screenshot>
-        <screenshot>resources/media/screenshot003.png</screenshot>
-        <screenshot>resources/media/screenshot004.png</screenshot>
-        <screenshot>resources/media/screenshot005.png</screenshot>
-        <screenshot>resources/media/screenshot006.png</screenshot>
-        <screenshot>resources/media/screenshot007.png</screenshot>
-        <screenshot>resources/media/screenshot008.png</screenshot>
-    </assets>
   </extension>
 </addon>
 
@@ -1055,28 +888,6 @@ ASN televises live games from multiple NCAA Division I college sports conference
     <email></email>
     <source></source>
   </extension>
-</addon>
-
-<addon id="plugin.video.bigsouth" name="Big South Sports" version="0.0.1" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">Big South Sports</summary>
-        <description lang="en">Watch live and on demand events from the Big South Conference, a collegiate athletic conference affiliated with the NCAA's Division I.</description>
-        <disclaimer lang="en"></disclaimer>
-        <broken>The Big South website is no longer offering streaming events.</broken>
-    </extension>
 </addon>
 
 <addon id="plugin.video.weathernation" name="WeatherNation TV" version="0.0.7" provider-name="MetalChris">
@@ -1151,52 +962,6 @@ PBC takes boxing back to its roots. This is boxing, pure and simple, where what�
     <email></email>
     <source></source>
   </extension>
-</addon>
-
-<addon id="plugin.video.120sports" name="120 Sports" version="0.0.4" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    <import addon="script.module.requests" version="2.9.1"/>
-    <import addon="script.module.pytz" version="2014.2"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">Up-to-the-moment commentary on all trending sports topics.</summary>
-        <description lang="en">120 Sports is the ultimate destination for up-to-the-moment commentary on all trending sports topics. The digital-only broadcast network offers 50 hours of live content, plus more than 1,200 on-demand video clips, each week.
-
-120 Sports is a first-of-its-kind network partnership involving multiple leagues and media properties created for the digital generation and the devices it uses most.</description>
-        <disclaimer lang="en"></disclaimer>
-    <broken>I'm not going to fix this.</broken>
-    </extension>
-</addon>
-
-<addon id="plugin.video.campus-insiders" name="Campus Insiders" version="0.1.0" provider-name="MetalChris">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.html5lib" version="0.999.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource"
-               library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <license>GPL 2.0 or Later</license>
-        <summary lang="en">College Sports.  All Day.  Every Day.</summary>
-        <description lang="en">Your source for college sports news and information.  Campus Insiders gives you a front row seat to all of the college sports action, now everyday can be Saturday!
-
-Delivering exclusive content, live streaming games, interviews and stories about your team, top headlines, and unlimited on demand content anytime you want it. </description>
-        <disclaimer lang="en"></disclaimer>
-    <broken>I'm not going to fix this.</broken>
-    </extension>
 </addon>
 
 <addon id="plugin.audio.internetarchive" name="Internet Archive [Audio]" version="3.1.0" provider-name="MetalChris">
@@ -1279,14 +1044,14 @@ Delivering exclusive content, live streaming games, interviews and stories about
   </extension>
 </addon>
 
-<addon id="plugin.video.msl" name="Mars Science Laboratory" version="0.0.6" provider-name="MetalChris">
+<addon id="plugin.video.msl" name="Mars Science Laboratory" version="2019.02.02" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video image</provides>
+    <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Exploration of the Planet Mars - missions, videos, images and information</summary>

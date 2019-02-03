@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.msl" name="Mars Science Laboratory" version="0.0.6" provider-name="MetalChris">
+<addon id="plugin.video.msl" name="Mars Science Laboratory" version="2019.02.02" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video image</provides>
+    <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Exploration of the Planet Mars - missions, videos, images and information</summary>

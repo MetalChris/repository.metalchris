@@ -1,7 +1,13 @@
 <settings>
 		<category label="General">
+		<setting label="32031" type="lsep"/>	
 		<setting id='enable_views' type ="bool" label="32020" default="false"/>
 		<setting id="movies_view" type="select" label="32021" lvalues="32023|32024|32025|32026|32027|32028|32029|32030" enable="!eq(-1,false)"/>
 		<setting id="tv_shows_view" type="select" label="32022" lvalues="32023|32024|32025|32028|32029|32030" enable="!eq(-2,false)"/>
+		<setting label="32032" type="lsep"/>
+		<setting id="quality" type="enum" label="30003" lvalues="30110|30100" enable="!eq(3,false)" default="1"/>
+		</category>
+		<category label="Kodi Log">
+		<setting id='log_notice' type ="bool" label="30000" default="false"/>
 		</category>
 </settings>
