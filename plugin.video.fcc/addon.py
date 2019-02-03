@@ -77,7 +77,7 @@ def live(name,url,iconimage):
 def vod(url):
 	addDir('All Sermons','http://www.fcclive.com/sermon-archives/1/',13,defaulticon)
 	addDir('Categories','http://www.fcclive.com/sermon-archives/',14,defaulticon)
-		xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #13
@@ -114,9 +114,9 @@ def categories(url):
 	xbmc.log(str(len(links)),level=log_level)
 	for title,link in zip(titles,links):
 		if 'Sermons' in title:
-		continue
+			continue
 		if 'Sermons' in link:
-		link = (link.split('"'))[-1]
+			link = (link.split('"'))[-1]
 		url = 'http://www.fcclive.com/page/1/?sermons-category=' + link
 		add_directory2(title,url,15,defaultfanart,defaultimage,plot='')
 		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[3])+")")
@@ -215,7 +215,7 @@ def s_streams(name,url):
 	listitem = xbmcgui.ListItem(name, thumbnailImage=thumbnail)
 	xbmc.Player().play( stream, listitem )
 	sys.exit()
-		xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 def striphtml(data):
@@ -224,24 +224,24 @@ def striphtml(data):
 
 
 def play(name,url,iconimage):
-		xbmc.log(str(url),level=log_level)
+	xbmc.log(str(url),level=log_level)
 	listitem = xbmcgui.ListItem(name, thumbnailImage=iconimage)
 	xbmc.Player().play( url, listitem )
 	sys.exit()
-		xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 def add_directory2(name,url,mode,fanart,thumbnail,plot):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&thumbnail=" + urllib.quote_plus(thumbnail)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-		liz.setInfo( type="Video", infoLabels={ "Title": name,
-												"plot": plot} )
-		if not fanart:
-			fanart=''
-		liz.setProperty('fanart_image',fanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
-		return ok
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&thumbnail=" + urllib.quote_plus(thumbnail)
+	ok=True
+	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
+	liz.setInfo( type="Video", infoLabels={ "Title": name,
+											"plot": plot} )
+	if not fanart:
+		fanart=''
+	liz.setProperty('fanart_image',fanart)
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
+	return ok
 
 def get_html(url):
 	req = urllib2.Request(url)
@@ -348,15 +348,15 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 
 
 def addDir2(name,url,mode,iconimage, fanart=True, infoLabels=False):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-		liz.setInfo( type="Video", infoLabels={ "Title": name } )
-		if not fanart:
-			fanart=defaultfanart
-		liz.setProperty('fanart_image',defaultfanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
-		return ok
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
+	ok=True
+	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+	liz.setInfo( type="Video", infoLabels={ "Title": name } )
+	if not fanart:
+		fanart=defaultfanart
+	liz.setProperty('fanart_image',defaultfanart)
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
+	return ok
 
 
 def addDirectoryItem2(name, isFolder=True, parameters={}):
@@ -410,22 +410,22 @@ if mode == None or url == None or len(url) < 1:
 elif mode == 4:
 	xbmc.log("Play Video",level=log_level)
 elif mode==10:
-		xbmc.log('FCC Live',level=log_level)
+	xbmc.log('FCC Live',level=log_level)
 	live(name,url,iconimage)
 elif mode==11:
-		xbmc.log('FCC VOD',level=log_level)
+	xbmc.log('FCC VOD',level=log_level)
 	vod(url)
 elif mode==13:
-		xbmc.log('FCC VOD ALL',level=log_level)
+	xbmc.log('FCC VOD ALL',level=log_level)
 	get_vod(url)
 elif mode==14:
-		xbmc.log('FCC VOD CATEGORIES',level=log_level)
+	xbmc.log('FCC VOD CATEGORIES',level=log_level)
 	categories(url)
 elif mode==15:
-		xbmc.log('FCC VOD SERMONS',level=log_level)
+	xbmc.log('FCC VOD SERMONS',level=log_level)
 	sermons(url)
 elif mode==30:
-		xbmc.log('FCC VOD ALL',level=log_level)
+	xbmc.log('FCC VOD ALL',level=log_level)
 	streams(name,url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
