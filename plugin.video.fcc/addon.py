@@ -46,7 +46,7 @@ log_level = 2
 def cats():
 	addDir2('Live Webcast','https://api.streamspot.com/broadcaster/cb6e72ee89?apiKey=73d4c9e8-2320-4800-a379-6ef591eae4c1',10,defaultimage)
 	addDir('Archived Sermons','http://www.fcclive.com/sermon-archives/page/1/',11,defaultimage)
-		xbmcplugin.endOfDirectory(addon_handle)
+	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #10
