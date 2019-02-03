@@ -250,7 +250,7 @@ def EPISODES(episodes,s_num):
 				pass
 			elif (season != s_num):
 				continue
-			infolabels = {'plot': plot, 'season': season, 'episode':episode}
+			#infolabels = {'plot': plot, 'season': season, 'episode':episode}
 			surl = 'plugin://plugin.video.powernationtv?mode=20&url=' + urllib.quote_plus(url)
 			li = xbmcgui.ListItem(title)
 			li.setProperty('IsPlayable', 'true')
@@ -333,7 +333,7 @@ def IFRAME(name,url):
 		sys.exit()
 		pass
 	stream = re.compile('hls_url":"(.+?)"').findall(page)[0].replace('\\','').replace('https','http')
-	listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
+	#listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
 	xbmc.log('STREAM: ' + str(stream),level=log_level)
 	PLAY(name,stream)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
