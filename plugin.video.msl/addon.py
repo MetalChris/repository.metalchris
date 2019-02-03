@@ -101,7 +101,7 @@ def get_videos(url):
 	#xbmc.log('TOTAL: ' + str(total),level=log_level)
 	for i in range(total):
 		title = data['items'][i]['title']
-		image = media_base + data['items'][i]['list_image_src']
+		#image = media_base + data['items'][i]['list_image_src']
 		#url = media_base + data['items'][i]['video_items'][0]['file_src']
 		url = media_base + data['items'][i]['downloadable_items'][0]['file_src']
 		#xbmc.log('URL: ' + str(url),level=log_level)
