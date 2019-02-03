@@ -4,9 +4,16 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
+#02.02.2019
+
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, xbmcplugin, sys
 from bs4 import BeautifulSoup
 import html5lib
+import mechanize
+import json
+
+br = mechanize.Browser()
+br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')]
 
 artbase = 'special://home/addons/plugin.video.msl/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -18,16 +25,23 @@ usexbmc = selfAddon.getSetting('watchinxbmc')
 settings = xbmcaddon.Addon(id="plugin.video.msl")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
-download = settings.getSetting(id="download")
+
+log_notice = _addon.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 
 plugin = "Mars Science Laboratory"
 
 defaultimage = 'special://home/addons/plugin.video.msl/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.msl/resources/media/fanart.jpg'
 defaulticon = 'special://home/addons/plugin.video.msl/icon.png'
-baseurl = 'http://mars.jpl.nasa.gov/multimedia'
-pic_base = 'http://mars.nasa.gov/multimedia/images/'
-media_base = 'http://mars.nasa.gov'
+baseurl = 'https://mars.jpl.nasa.gov/multimedia'
+api_url = 'https://mars.nasa.gov/api/v1/resources/?page=0&per_page=25&order=pub_date+desc&search=&condition_1=1%3Ais_in_resource_list&category=53%3A'
+pic_base = 'https://mars.nasa.gov/multimedia/images/'
+media_base = 'https://mars.nasa.gov'
 
 local_string = xbmcaddon.Addon(id='plugin.video.msl').getLocalizedString
 addon_handle = int(sys.argv[1])
@@ -35,10 +49,35 @@ pluginhandle = int(sys.argv[1])
 confluence_views = [500,501,502,503,504,508,515]
 window_id = xbmcgui.getCurrentWindowId()
 
-
 def cats():
+	html = get_html('https://mars.nasa.gov/multimedia/videos/')
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'react_grid_list'})
+	for item in soup:
+		response = item.get('data-react-props')
+	#xbmc.log('SOUP: ' + str(soup),level=log_level)
+	#response = re.compile('\[ \[ (.+?) \] \]').findall(str(soup))
+	#xbmc.log('RESPONSE: ' + str(response),level=log_level)
+	data = json.loads(response)
+	#xbmc.log('DATA: ' + str(data),level=log_level)
+	filters = data['filters']
+	filters = filters[16:-11]
+	#xbmc.log('FILTERS: ' + str(filters),level=log_level)
+	response = re.compile('\[ (.+?) \]').findall(str(filters))
+	#xbmc.log('RESPONSE: ' + str(response[1]),level=log_level)
+	for item in response:
+		#xbmc.log('ITEM: ' + str(item),level=log_level)
+		title = item.split(',')[0].replace('"','')
+		if title == 'All series':
+			continue
+		addDir(title, api_url + item.split(',')[1], 100, defaultimage)
+	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+
+
+
+
+def old_cats():
 	if window_id == 10025:
-		addDir('All Videos', baseurl + '/videos/?searchTerm=All', 636, defaultimage)
+		addDir('All Videos', baseurl + '/videos/', 636, defaultimage)
 		addDir('Rovers', baseurl, 631, defaultimage)
 		addDir('Orbiters', baseurl, 632, defaultimage)
 	else:
@@ -50,6 +89,31 @@ def cats():
 		addDir('Best of Opportunity', pic_base + '?t=385', 5, defaultimage)
 		addDir('Best of Spirit', pic_base + '?t=384', 5, defaultimage)
 		addDir('Best of MRO', pic_base + '?t=512', 5, defaultimage)
+
+
+#100
+def get_videos(url):
+	response = get_html(url)
+	data = json.loads(response)
+	total = data['total']
+	if total > 25:
+		total = 25
+	#xbmc.log('TOTAL: ' + str(total),level=log_level)
+	for i in range(total):
+		title = data['items'][i]['title']
+		image = media_base + data['items'][i]['list_image_src']
+		#url = media_base + data['items'][i]['video_items'][0]['file_src']
+		url = media_base + data['items'][i]['downloadable_items'][0]['file_src']
+		#xbmc.log('URL: ' + str(url),level=log_level)
+		#url = 'plugin://plugin.video.msl?mode=20&url=' + urllib.quote_plus(jurl)
+		li = xbmcgui.ListItem(title)
+		li.setProperty('IsPlayable', 'true')
+		li.setInfo(type="Video", infoLabels={"mediatype":"video","label":title,"title":title,"genre":"NASA"})
+		li.setArt({'thumb':defaultimage,'fanart':defaultfanart})
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
+	#xbmc.log('IMAGE: ' + str(image),level=log_level)
+	#xbmc.log('URL: ' + str(url),level=log_level)
+	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 #5
@@ -84,8 +148,11 @@ def orbiters():
 
 #636
 def msl_videos(url):
-	response = get_html(url)
-	soup = BeautifulSoup(response,'html5lib').find_all('li')
+	#br.set_handle_robots( False )
+	#response = br.open(url)
+	#page = response.get_data()
+	page = get_html(url)
+	soup = BeautifulSoup(page,'html5lib').find_all('li')
 	QUALITY = settings.getSetting(id="quality")
 	if QUALITY !='0':
 		mode = 637
@@ -93,8 +160,8 @@ def msl_videos(url):
 		mode = 640
 	for item in soup[30:]:
 		title = item.find('h2').text.encode('utf-8')
-		image = 'http://mars.nasa.gov' + re.compile('url\\((.+?)\\)').findall(str(item))[-1] # 'http://mars.nasa.gov' + item.find('img')['src']
-		#xbmc.log(str(image))
+		image = 'https://mars.nasa.gov' + re.compile('url\\((.+?)\\)').findall(str(item))[-1] # 'https://mars.nasa.gov' + item.find('img')['src']
+		#xbmc.log(str(image),level=log_level)
 		url = (baseurl + item.find('a')['href']).replace('..','')#image.replace('.jpg','-1280.mp4')
 		description = item.find('div',{'class':'listTextLabel'}).text.encode('utf-8')
 		add_directory2(title, url, mode, image, image, plot=description)
@@ -109,8 +176,8 @@ def msl_videos(url):
 def source(url):
 	response = get_html(url)
 	soup = BeautifulSoup(response,'html5lib').find_all('div',{'class':'flowplayer is-splash'})
-	url = 'http://mars.nasa.gov' + re.compile('src="(.+?)"').findall(str(soup))[-1]
-	image = 'http://mars.nasa.gov' + re.compile("url\\(\\'(.+?)\\'\\)").findall(str(soup))[-1]
+	url = re.compile('src="(.+?)"').findall(str(soup))[-1]
+	image = 'https://mars.nasa.gov' + re.compile("url\\(\\'(.+?)\\'\\)").findall(str(soup))[-1]
 	listitem = xbmcgui.ListItem(name, thumbnailImage=image)
 	xbmc.Player().play(url, listitem )
 	sys.exit()
@@ -130,8 +197,8 @@ def files(name,url):
 		elements.append(title)
 		links.append(url.encode('utf-8'))
 	ret = xbmcgui.Dialog().select('Select Quality',elements)
-	xbmc.log(str(ret))
-	url = 'http://mars.nasa.gov' + links[ret]
+	xbmc.log(str(ret),level=log_level)
+	url = 'https://mars.nasa.gov' + links[ret]
 	image = url.split('-')[0] + '.jpg'
 	listitem = xbmcgui.ListItem(name, thumbnailImage=image)
 	xbmc.Player().play(url, listitem )
@@ -151,20 +218,22 @@ def play(url):
 
 
 def add_directory2(name,url,mode,fanart,thumbnail,plot):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-		liz.setInfo(type="Video", infoLabels={ "Title": name,
-												"plot": plot} )
-		if not fanart:
-			fanart=''
-		liz.setProperty('fanart_image',fanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
-		return ok
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+	ok=True
+	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
+	liz.setInfo(type="Video", infoLabels={ "Title": name,
+											"plot": plot} )
+	if not fanart:
+		fanart=''
+	liz.setProperty('fanart_image',fanart)
+	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=40)
+	return ok
 
 def get_html(url):
 	req = urllib2.Request(url)
+	req.add_header('Host','mars.jpl.nasa.gov')
 	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
+	#req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
 
 	try:
 		response = urllib2.urlopen(req)
@@ -240,44 +309,47 @@ try:
 except:
 	pass
 
-xbmc.log("Mode: " + str(mode))
-xbmc.log("URL: " + str(url))
-xbmc.log("Name: " + str(name))
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-	xbmc.log("Generate Main Menu")
+	xbmc.log("Generate Main Menu",level=log_level)
 	cats()
 elif mode == 4:
-	xbmc.log("Play Video")
+	xbmc.log("Play Video",level=log_level)
 elif mode == 5:
-	xbmc.log( "Mars Science Laboratory Photo Albums")
+	xbmc.log( "Mars Science Laboratory Photo Albums",level=log_level)
 	get_albums(url)
 elif mode == 10:
-	xbmc.log( "Mars Science Laboratory Photos")
+	xbmc.log( "Mars Science Laboratory Photos",level=log_level)
 	get_photos(name,url)
 elif mode == 80:
-	xbmc.log( "Download File")
+	xbmc.log( "Download File",level=log_level)
 	downloader(name,url)
+elif mode == 100:
+	xbmc.log( "Get Videos",level=log_level)
+	get_videos(url)
 elif mode==631:
-	xbmc.log("Mars Rovers")
+	xbmc.log("Mars Rovers",level=log_level)
 	rovers()
 elif mode==632:
-	xbmc.log("Mars Orbiters")
+	xbmc.log("Mars Orbiters",level=log_level)
 	orbiters()
 elif mode==634:
-	xbmc.log("Mars Science Laboratory Categories")
+	xbmc.log("Mars Science Laboratory Categories",level=log_level)
 	cats()
 elif mode==636:
-	xbmc.log("Mars Science Laboratory Videos")
+	xbmc.log("Mars Science Laboratory Videos",level=log_level)
 	msl_videos(url)
 elif mode==637:
-	xbmc.log("Mars Science Laboratory Sources")
+	xbmc.log("Mars Science Laboratory Sources",level=log_level)
 	source(url)
 elif mode==638:
-	xbmc.log("Play Video")
+	xbmc.log("Play Video",level=log_level)
 	play(url)
 elif mode==640:
-	xbmc.log("Mars Science Laboratory Files")
+	xbmc.log("Mars Science Laboratory Files",level=log_level)
 	files(name, url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
