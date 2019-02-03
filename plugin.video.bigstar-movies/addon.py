@@ -4,8 +4,11 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
+#2019.02.02
+
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
-import simplejson as json
+#import simplejson as json
+import json
 
 artbase = 'special://home/addons/plugin.video.bigstar-movies/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -30,15 +33,21 @@ defaulticon = 'special://home/addons/plugin.video.bigstar-movies/icon.png'
 local_string = xbmcaddon.Addon(id='plugin.video.bigstar-movies').getLocalizedString
 addon_handle = int(sys.argv[1])
 views = settings.getSetting(id="enable_views")
-xbmc.log('VIEWS: ' + str(views))
 if views == 'false':
 	m_view = 0
 	t_view = 0
 else:
 	m_view = settings.getSetting(id="movies_view")
 	t_view = settings.getSetting(id="tv_shows_view")
-xbmc.log('T_VIEW: ' + str(t_view))
-xbmc.log('M_VIEW: ' + str(m_view))
+log_notice = settings.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
+xbmc.log('VIEWS: ' + str(views),level=log_level)
+xbmc.log('T_VIEW: ' + str(t_view),level=log_level)
+xbmc.log('M_VIEW: ' + str(m_view),level=log_level)
 
 
 def CATEGORIES():
@@ -67,7 +76,7 @@ def bigstar_genres(url):
 
 #141
 def bigstar_movies(url):
-	print 'URL= ' + str(url)
+	xbmc.log('URL= ' + str(url),level=log_level)
 	page = re.compile('page/(.+?)/limit').findall(url)[0]
 	page = int(page) + 1
 	response = urllib2.urlopen(url)
@@ -78,11 +87,27 @@ def bigstar_movies(url):
 		title = item["title"].encode('utf-8')
 		image = item["cover_large"]
 		fanart = item["imageUrl1"]
-		desc = item["desc"]
+		plot = item["desc"]
+		director = item["director"]
+		writer = item["writer"]
+		cast = '[' + item["cast"].replace('"','') + ']'
+		#xbmc.log('CAST: ' + str(cast),level=log_level)
+		rating = ["maturity"]
+		duration = ['duration_seconds']
+		infoLabels = {'title' : title, 'director': director, 'writer': writer, 'cast': cast, 'mpaa': rating, 'plot': plot, 'duration': duration}
 		tv = str(item["hasEpisodes"])
 		if 'True' in tv:
 			continue
-		add_directory(title, item_page, 150, fanart , image, plot=desc)
+		url = 'plugin://plugin.video.bigstar-movies?mode=150&url=' + urllib.quote_plus(item_page)
+		#add_directory(title, item_page, 150, fanart , image, plot=desc)
+		li = xbmcgui.ListItem(title)
+		li.setInfo(type="Video", infoLabels={"mediatype":"video","label":title,'title' : title, 'director': director, 'writer': writer, 'rating': rating, 'plot': plot})#, 'season': season, 'episode':episode})
+		li.addStreamInfo('video', { 'mpaa': str(rating), 'duration' : unicode(duration) })
+		li.setProperty('IsPlayable', 'True')
+		li.setArt({'thumb':image,'fanart':defaultfanart})
+		#li.setCast(cast)
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
+		#add_directory(title, item_page, 150, fanart , image, infoLabels)
 		xbmcplugin.setContent(addon_handle, 'movies')
 	next_page = url.rsplit('/', 6)[0]
 	next_page = str(next_page) + '/' + str(page) + '/limit/30/os/web/device'
@@ -94,16 +119,31 @@ def bigstar_movies(url):
 
 #150
 def get_stream(url):
+	QUALITY = settings.getSetting(id="quality")
 	response = urllib2.urlopen(url)
 	jgdata = json.load(response)
-	stream = jgdata["items"]["film"]["hls"]
+	#item_dict = json.load(jgdata)
+	streams = len(jgdata["items"]["film"]["streams"]);links = [];rqs = []
+	xbmc.log('STREAMS: ' + str(streams),level=log_level)
+	for i in range(streams):
+	#xbmc.log('STREAMS: ' + str(len(item_dict["items"]["film"]["streams"])),level=log_level)
+	#stream = jgdata["items"]["film"]["hls"]
+		stream = jgdata["items"]["film"]["streams"][i]["url"]
+		rq = jgdata["items"]["film"]["streams"][i]["readableQuality"]
+		links.append(stream)
+		rqs.append(rq)
+	if QUALITY =='0':
+		xbmc.log('STREAMS: ' + str(links),level=log_level)
+		ret = xbmcgui.Dialog().select('Select Quality',rqs)
+		xbmc.log(str(ret),level=log_level)
+		stream = links[ret]
 	play(stream)
 
 
 #142
 def bigstar_tv(url):
 	add_directory2('Search','http://www.bigstar.tv/mobile/movies/q/', 145, defaultfanart ,defaultimage,plot='')
-	print 'URL= ' + str(url)
+	xbmc.log('URL= ' + str(url),level=log_level)
 	page = re.compile('page/(.+?)/limit').findall(url)[0]
 	page = int(page) + 1
 	next_page = url.rsplit('/', 6)[0]
@@ -111,10 +151,10 @@ def bigstar_tv(url):
 	response = urllib2.urlopen(url)
 	jgdata = json.load(response)
 	for item in jgdata["films"]:
-		title = item["title"]
+		title = item["title"].encode('utf-8')
 		image = item["cover_large"]
 		fanart = item["imageUrl1"]
-		desc = item["desc"]
+		desc = item["desc"].encode('utf-8')
 		plot = desc
 		show = item["id"]
 		url = 'http://www.bigstar.tv/mobile/movies/boxset/' + str(show) + '/os/web/device'
@@ -128,17 +168,34 @@ def bigstar_tv(url):
 
 #143
 def bigstar_episodes(url):
-	print 'Episode URL= ' + str(url)
+	xbmc.log('Episode URL= ' + str(url),level=log_level)
 	response = urllib2.urlopen(url)
 	jgdata = json.load(response)
 	for item in jgdata["films"]:
 		film_id = item["id"]
 		item_page = 'http://www.bigstar.tv/mobile/stream/film/' + str(film_id) + '/ads/1/type/0/version/2/mobileStreams/1/hls/1/os/web/device/75d6a6c6349cfecb9420d6119c51e1ec/lan/default'
-		title = item["title"]
+		title = item["title"].encode('utf-8')
 		#image = item["cover_large"]
 		fanart = item["imageUrl1"]
-		desc = item["desc"]
-		add_directory(title, item_page, 150, fanart , fanart, plot=desc)
+		plot = item["desc"].encode('utf-8')
+		director = item["director"]
+		writer = item["writer"]
+		cast = '[' + item["cast"].replace('"','') + ']'
+		#xbmc.log('CAST: ' + str(cast),level=log_level)
+		rating = ["maturity"]
+		duration = ['duration_seconds']
+		infoLabels = {'title' : title, 'director': director, 'writer': writer, 'cast': cast, 'mpaa': rating, 'plot': plot, 'duration': duration}
+		#add_directory(title, item_page, 150, fanart , fanart, infoLabels)
+		url = 'plugin://plugin.video.bigstar-movies?mode=150&url=' + urllib.quote_plus(item_page)
+		#add_directory(title, item_page, 150, fanart , image, plot=desc)
+		li = xbmcgui.ListItem(title)
+		li.setInfo(type="Video", infoLabels={"mediatype":"video","label":title,'title' : title, 'director': director, 'writer': writer, 'rating': rating, 'plot': plot})#, 'season': season, 'episode':episode})
+		li.addStreamInfo('video', { 'mpaa': str(rating), 'duration' : unicode(duration) })
+		li.setProperty('IsPlayable', 'True')
+		li.setArt({'thumb':fanart,'fanart':defaultfanart})
+		#li.setCast(cast)
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
+		#add_directory(title, item_page, 150, fanart , image, infoLabels)
 		xbmcplugin.setContent(addon_handle, 'episodes')
 	#if views != 'false':
 	xbmc.executebuiltin("Container.SetViewMode("+str(t_views[int(t_view)])+")")
@@ -151,20 +208,20 @@ def bigstar_search(url):
 	keyb.doModal()
 	if (keyb.isConfirmed()):
 		search = keyb.getText().replace(' ','+')
-		print 'search= ' + search
+		xbmc.log('search= ' + str(search),level=log_level)
 		url = url + search
-		print url
+		xbmc.log('URL:' + str(url),level=log_level)
 		response = urllib2.urlopen(url)
 		jgdata = json.load(response)
 	for item in jgdata["films"]:
 		film_id = item["id"]
 		item_page = 'http://www.bigstar.tv/mobile/stream/film/' + str(film_id) + '/ads/1/type/0/version/2/mobileStreams/1/hls/1/os/web/device/75d6a6c6349cfecb9420d6119c51e1ec/lan/default'
-		title = item["title"]
+		title = item["title"].encode('utf-8')
 		image = item["cover_large"]
 		fanart = item["imageUrl1"]
-		desc = item["desc"]
+		desc = item["desc"].encode('utf-8')
 		tv = str(item["hasEpisodes"])
-		print 'TV= ' + str(tv)
+		xbmc.log('TV= ' + str(tv),level=log_level)
 		if 'True' in tv:
 			continue
 		add_directory(title, item_page, 150, fanart , image, plot=desc)
@@ -180,9 +237,9 @@ def bigstar_tvsearch(url):
 	keyb.doModal()
 	if (keyb.isConfirmed()):
 		search = keyb.getText()
-		print 'search= ' + search
+		xbmc.log('search= ' + str(search),level=log_level)
 		url = url + search
-		print url
+		xbmc.log('URL: ' + str(url),level=log_level)
 		response = urllib2.urlopen(url)
 		jgdata = json.load(response)
 	for item in jgdata["films"]:
@@ -190,7 +247,7 @@ def bigstar_tvsearch(url):
 		image = item["cover_large"]
 		desc = item["desc"]
 		tv = str(item["hasEpisodes"])
-		print 'TV= ' + str(tv)
+		xbmc.log('TV= ' + str(tv),level=log_level)
 		if 'False' in tv:
 			continue
 		plot = desc
@@ -220,7 +277,7 @@ def play(url):
 	return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
 
-def add_directory(name,url,mode,fanart,thumbnail,plot):
+def add_directory(name,url,mode,fanart,thumbnail,infoLabels=True):
 	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
 	ok=True
 	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
@@ -318,38 +375,38 @@ try:
 except:
 	pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-	print "Generate Main Menu"
+	xbmc.log("Generate Main Menu",level=log_level)
 	bigstar_genres(url)
 elif mode == 1:
-	print "Indexing Videos"
+	xbmc.log("Indexing Videos",level=log_level)
 	INDEX(url)
 elif mode == 4:
-	print "Play Video"
+	xbmc.log("Play Video",level=log_level)
 elif mode==140:
-	print "BigStar Genres"
+	xbmc.log("BigStar Genres",level=log_level)
 	bigstar_genres(url)
 elif mode==141:
-	print "BigStar Movies"
+	xbmc.log("BigStar Movies",level=log_level)
 	bigstar_movies(url)
 elif mode==142:
-	print "BigStar TV"
+	xbmc.log("BigStar TV",level=log_level)
 	bigstar_tv(url)
 elif mode==143:
-	print "BigStar Episodes"
+	xbmc.log("BigStar Episodes",level=log_level)
 	bigstar_episodes(url)
 elif mode == 144:
-	print "BigStar Search"
+	xbmc.log("BigStar Search",level=log_level)
 	bigstar_search(url)
 elif mode == 145:
-	print "BigStar TV Search"
+	xbmc.log("BigStar TV Search",level=log_level)
 	bigstar_tvsearch(url)
 elif mode == 150:
-	print "BigStar Get Stream"
+	xbmc.log("BigStar Get Stream",level=log_level)
 	get_stream(url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
