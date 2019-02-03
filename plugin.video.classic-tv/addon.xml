@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.classic-tv" name="Free Classic TV Shows" version="0.0.2" provider-name="MetalChris">
+<addon id="plugin.video.classic-tv" name="Free Classic TV Shows" version="0.0.1" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
@@ -17,6 +17,6 @@
     <website></website>
     <email></email>
     <source></source>
-    <broken>Website is temporarily down for maintenance.  The add-on will be available when the site comes back.</broken>
+    <broken>Website no longer streams video</broken>
   </extension>
 </addon>

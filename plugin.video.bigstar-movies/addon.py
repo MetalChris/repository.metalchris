@@ -94,7 +94,7 @@ def bigstar_movies(url):
 		#xbmc.log('CAST: ' + str(cast),level=log_level)
 		rating = ["maturity"]
 		duration = ['duration_seconds']
-		infoLabels = {'title' : title, 'director': director, 'writer': writer, 'cast': cast, 'mpaa': rating, 'plot': plot, 'duration': duration}
+		#infoLabels = {'title' : title, 'director': director, 'writer': writer, 'cast': cast, 'mpaa': rating, 'plot': plot, 'duration': duration}
 		tv = str(item["hasEpisodes"])
 		if 'True' in tv:
 			continue
@@ -104,7 +104,7 @@ def bigstar_movies(url):
 		li.setInfo(type="Video", infoLabels={"mediatype":"video","label":title,'title' : title, 'director': director, 'writer': writer, 'rating': rating, 'plot': plot})#, 'season': season, 'episode':episode})
 		li.addStreamInfo('video', { 'mpaa': str(rating), 'duration' : unicode(duration) })
 		li.setProperty('IsPlayable', 'True')
-		li.setArt({'thumb':image,'fanart':defaultfanart})
+		li.setArt({'thumb':image,'fanart':fanart})
 		#li.setCast(cast)
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
 		#add_directory(title, item_page, 150, fanart , image, infoLabels)
@@ -184,7 +184,7 @@ def bigstar_episodes(url):
 		#xbmc.log('CAST: ' + str(cast),level=log_level)
 		rating = ["maturity"]
 		duration = ['duration_seconds']
-		infoLabels = {'title' : title, 'director': director, 'writer': writer, 'cast': cast, 'mpaa': rating, 'plot': plot, 'duration': duration}
+		#infoLabels = {'title' : title, 'director': director, 'writer': writer, 'cast': cast, 'mpaa': rating, 'plot': plot, 'duration': duration}
 		#add_directory(title, item_page, 150, fanart , fanart, infoLabels)
 		url = 'plugin://plugin.video.bigstar-movies?mode=150&url=' + urllib.quote_plus(item_page)
 		#add_directory(title, item_page, 150, fanart , image, plot=desc)
