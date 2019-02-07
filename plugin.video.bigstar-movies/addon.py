@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-#2019.02.02
+#2019.02.05
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 #import simplejson as json
@@ -78,7 +78,7 @@ def bigstar_genres(url):
 def bigstar_movies(url):
 	xbmc.log('URL= ' + str(url),level=log_level)
 	page = re.compile('page/(.+?)/limit').findall(url)[0]
-	page = int(page) + 1
+	page = int(page) + 1; nurl = url
 	response = urllib2.urlopen(url)
 	jgdata = json.load(response)
 	for item in jgdata["films"]:
@@ -109,8 +109,9 @@ def bigstar_movies(url):
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
 		#add_directory(title, item_page, 150, fanart , image, infoLabels)
 		xbmcplugin.setContent(addon_handle, 'movies')
-	next_page = url.rsplit('/', 6)[0]
+	next_page = nurl.rsplit('/', 6)[0]
 	next_page = str(next_page) + '/' + str(page) + '/limit/30/os/web/device'
+	xbmc.log('NEXT_PAGE: ' + str(next_page),level=log_level)
 	add_directory2('Next Page>>', next_page, 141, defaultfanart, artbase + 'big-star.png',plot='')
 	#if views != 'false':
 	xbmc.executebuiltin("Container.SetViewMode("+str(m_views[int(m_view)])+")")
