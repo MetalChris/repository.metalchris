@@ -4,9 +4,9 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-#Version 2019.03.16
+#Version 2019.03.17
 
-import urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, os, sys, json
+import urllib2, xbmcaddon, xbmcgui, re, os, sys, json
 
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
@@ -24,6 +24,10 @@ alert_dialog = _addon.getSetting(id="alert_dialog")
 alert_sound = _addon.getSetting(id="alert_sound")
 log_notice = settings.getSetting(id="log_notice")
 
+defaultimage = 'special://home/addons/service.darksky_alerts/icon.png'
+defaulticon = 'special://home/addons/service.darksky_alerts/icon.png'
+ip_url = 'https://ifconfig.me'
+
 if log_notice != 'false':
 	log_level = 2
 else:
@@ -31,16 +35,12 @@ else:
 xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 
 if darksky_api != '':
-	xbmc.log('DARKSKY_API FOUND',level=log_level)
+	xbmc.log('DARKSKY API KEY FOUND',level=log_level)
 else:
 	xbmcgui.Dialog().notification('DarkSky Weather Alerts', 'DarkSky API Key Not Found', defaultimage, 5000, False)
 	sys.exit()
 
 xbmc.log('DarkSky Alerts Version %s Started: %s' % (_version, sys.argv),level=log_level)
-
-defaultimage = 'special://home/addons/service.darksky_alerts/icon.png'
-defaulticon = 'special://home/addons/service.darksky_alerts/icon.png'
-ip_url = 'https://ifconfig.me'
 
 local_string = xbmcaddon.Addon(id='service.darksky_alerts').getLocalizedString
 window_id = xbmcgui.getCurrentWindowId()
@@ -84,7 +84,7 @@ while not monitor.abortRequested():
 		#if xbmc.Player().isPlaying():
 			#xbmc.Player().pause()
 		if alert_sound != 'false':
-			xbmc.playSFX('special://home/addons/weather.darksky/resources/media/alert.wav')
+			xbmc.playSFX('special://home/addons/weather.darksky/resources/alert.wav')
 		if alert_dialog != 'false':
 			xbmcgui.Dialog().ok('DarkSky Weather Alert', alert_txt)
 		if alert_textbox != 'false':
