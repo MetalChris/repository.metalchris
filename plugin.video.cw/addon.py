@@ -4,9 +4,11 @@
 # Written by MetalChris
 # Released under GPL(v2 or later)
 
+#2019.02.16
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
-import simplejson as json
+#import simplejson as json
+import json
 import mechanize
 
 artbase = 'special://home/addons/plugin.video.cw/resources/media/'
@@ -35,6 +37,13 @@ br.addheaders = [('Host', 'www.cwtv.com')]
 br.addheaders = [('User-agent', ua)]
 xbmc.log('USER AGENT: ' + str(ua))
 
+log_notice = settings.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
+
 plugin = "CW TV Network"
 
 defaultimage = 'special://home/addons/plugin.video.cw/icon.png'
@@ -59,11 +68,11 @@ def sites():
 def shows(name,url):
 	br.open('http://www.cwtv.com/')
 	response = br.open('http://www.cwtv.com/feed/mobileapp/shows?api_version=3')
-	xbmc.log('RESPONSE: ' + str(response.code))
+	xbmc.log('RESPONSE: ' + str(response.code),level=log_level)
 	page = response.get_data()
 	jdata = json.loads(page)
 	count = jdata['count']
-	xbmc.log('COUNT: ' + str(count))
+	xbmc.log('COUNT: ' + str(count),level=log_level)
 	for i in range(count):
 		if 'Network' in name:
 			if (jdata['items'][i]['airtime'] == '') or (jdata['items'][i]['airtime'] == 'COMING SOON') or (jdata['items'][i]['schedule'] == 'coming-soon'):
@@ -87,10 +96,10 @@ def shows(name,url):
 #30
 def get_json(name,url,iconimage):
 	show = url.rpartition('/')[-1]
-	xbmc.log('SHOW: ' + str(show))
+	xbmc.log('SHOW: ' + str(show),level=log_level)
 	jurl = 'http://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
 	response = br.open(jurl)
-	response = br.open(jurl)
+	#response = br.open(jurl)
 	jdata = json.load(response); i = 0
 	if 'network' in jdata['videos'][0]['show_type']:
 		add_directory2('Show Clips',url,31,defaultfanart,iconimage,plot='Watch video clips from this show.')
@@ -114,6 +123,7 @@ def get_stuff(jdata,i):
 	duration = jdata['videos'][i]['duration_secs']
 	#url = 'https://www.cwtv.com/ioshlskeys/videos' + (image.split('thumbs')[-1]).split('_CWtv')[0] + '.m3u8'
 	mpx_url = jdata['videos'][i]['mpx_url']
+	xbmc.log('MPX_URL: ' + str(mpx_url),level=log_level)
 	url = get_m3u8(mpx_url)
 	li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
 	li.setProperty('fanart_image', image)
@@ -125,13 +135,25 @@ def get_stuff(jdata,i):
 
 
 def get_m3u8(url):
+	QUALITY = settings.getSetting(id="quality")
+	xbmc.log('QUALITY: ' + str(QUALITY),level=log_level)
+	res = ['360', '540', '720', '1080', '']
+	xbmc.log('RESOLUTION: ' + str(res[int(QUALITY)]),level=log_level)
 	html = get_html(url)
 	#xbmc.log('HTML: ' + str(html))
 	m3u8_url = re.compile('video src="(.+?)" ').findall(str(html))[0]
 	data = get_html(m3u8_url)
-	streams = re.findall(r'https.*m3u8', str(data), flags=re.MULTILINE)
-	xbmc.log('M3U8: ' + str(streams))
-	return streams[-1]
+	#xbmc.log('M3U8_DATA: ' + str(data),level=log_level)
+	streams = re.findall(r'https.*m3u8', str(data), flags=re.MULTILINE);links = [];rqs = []
+	xbmc.log('LENGTH: ' + str(len(streams)),level=log_level)
+	for stream in streams:
+		if res[int(QUALITY)] == '':
+			return m3u8_url
+		if res[int(QUALITY)] in stream:
+			return stream
+	#xbmc.log('STREAMS: ' + str(streams),level=log_level)
+	#return streams[-1]
+	return m3u8_url
 
 
 def get_html(url):
@@ -248,26 +270,26 @@ try:
 except:
 	pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-	print "Generate Main Menu"
+	xbmc.log("Generate Main Menu",level=log_level)
 	sites()
 elif mode == 4:
-	print "Play Video"
+	xbmc.log("Play Video",level=log_level)
 elif mode==533:
-	print "CW TV Network Main Menu"
+	xbmc.log("CW TV Network Main Menu",level=log_level)
 	sites()
 elif mode==633:
-	print "CW TV Network Main Menu"
+	xbmc.log("CW TV Network Main Menu",level=log_level)
 	shows(name,url)
 elif mode==30:
-	print "CW TV Episodes JSON"
+	xbmc.log("CW TV Episodes JSON",level=log_level)
 	get_json(name,url,iconimage)
 elif mode==31:
-	print "CW TV Clips JSON"
+	xbmc.log("CW TV Clips JSON",level=log_level)
 	get_clips(url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

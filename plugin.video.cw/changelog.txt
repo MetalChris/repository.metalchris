@@ -1,4 +1,10 @@
-Version 0.0.2
+Version 2019.02.16
+ - Add ability to choose bitrate
+
+Version 2019.02.11
+ - Updates to addon settings
+
+Version 0.0.3
 - Fixes for website changes 09/10/2018
 
 Version 0.0.2

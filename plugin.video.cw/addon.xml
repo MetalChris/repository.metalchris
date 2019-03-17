@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.cw" name="CW TV Network" version="0.0.3" provider-name="MetalChris">
+<addon id="plugin.video.cw" name="CW TV Network" version="2019.02.16" provider-name="MetalChris">
   <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="xbmc.python" version="2.20.0"/>
     <import addon="script.module.mechanize" version="0.2.6"/>
-    <import addon="script.module.simplejson" version="3.3.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
@@ -16,8 +15,18 @@
     <platform>all</platform>
     <license>GPL(v2 or later)</license>
     <forum></forum>
-    <website>http://www.cwtv.com</website>
+    <website>https://www.cwtv.com/</website>
     <email></email>
-    <source></source>
+    <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.cw</source>
+    <news>Version 2019.02.16[CR] - Add ability to choose bitrate[CR]Version 2019.02.11[CR] - Updates to addon settings[CR]Version 0.0.3[CR] - Fixes for website changes 09/10/2018[CR]Version 0.0.2[CR] - Fixes for website changes 09/24/2017[CR]Version 0.0.1[CR] - Initial release.</news>
+    <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+        <screenshot>resources/media/screenshot001.png</screenshot>
+        <screenshot>resources/media/screenshot002.png</screenshot>
+        <screenshot>resources/media/screenshot003.png</screenshot>
+        <screenshot>resources/media/screenshot004.png</screenshot>
+        <screenshot>resources/media/screenshot005.png</screenshot>
+    </assets>
   </extension>
 </addon>

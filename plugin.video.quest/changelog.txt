@@ -1,6 +1,0 @@
-Version 0.0.2
-- Sort videos by show title
-- Separate shows into categories 'All Shows', 'Just In', and 'Last Chance'
-
-Version 0.0.1
-- Initial release.

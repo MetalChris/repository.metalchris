@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<category label="32119">
+		<setting id='alert_textbox' type ="bool" label="32120" default="false"/>
+		<setting id='alert_notification' type ="bool" label="32121" default="false"/>
+		<setting id='alert_dialog' type ="bool" label="32123" default="true"/>
+		<setting id='alert_sound' type ="bool" label="32122" default="true"/>
+	</category>
+	<category label="32117">
+		<setting id='log_notice' type ="bool" label="32118" default="false"/>
+	</category>
+</settings>
