@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-#Version 2019.03.17
+#Version 2019.03.18
 
 import urllib2, xbmcaddon, xbmcgui, re, os, sys, json
 
@@ -86,10 +86,13 @@ while not monitor.abortRequested():
 		#if xbmc.Player().isPlaying():
 			#xbmc.Player().pause()
 		if alert_sound != 'false':
-			xbmc.playSFX('special://home/addons/weather.darksky/resources/alert.wav')
+			xbmc.playSFX('special://home/addons/service.darksky_alerts/resources/alert.wav')
 		if alert_dialog != 'false':
 			xbmcgui.Dialog().ok('DarkSky Weather Alert', alert_txt)
 		if alert_textbox != 'false':
 			xbmcgui.Dialog().textviewer('DarkSky Weather Alert', alert_txt)
 		if alert_notification != 'false':
 			xbmcgui.Dialog().notification('DarkSky Weather Alert', alert_txt, defaultimage, 30000, False)
+		if monitor.waitForAbort(1800):
+			xbmc.log('Abort Requested - Shutting Down DarkSky Alerts', level=xbmc.LOGNOTICE)
+			break
