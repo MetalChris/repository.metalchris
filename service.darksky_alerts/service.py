@@ -23,6 +23,8 @@ alert_notification = _addon.getSetting(id="alert_notification")
 alert_dialog = _addon.getSetting(id="alert_dialog")
 alert_sound = _addon.getSetting(id="alert_sound")
 log_notice = settings.getSetting(id="log_notice")
+local_string = xbmcaddon.Addon(id='service.darksky_alerts').getLocalizedString
+window_id = xbmcgui.getCurrentWindowId()
 
 defaultimage = 'special://home/addons/service.darksky_alerts/icon.png'
 defaulticon = 'special://home/addons/service.darksky_alerts/icon.png'
