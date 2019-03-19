@@ -64,9 +64,6 @@ def get_html(url):
 monitor = xbmc.Monitor()
 
 while not monitor.abortRequested():
-	if monitor.waitForAbort(1800):
-		xbmc.log('Abort Requested - Shutting Down DarkSky Alerts', level=xbmc.LOGNOTICE)
-		break
 	html = get_html(ip_url)
 	ip = re.compile('ip_address">(.+?)</').findall(html)[0]
 	response = get_html('https://ipinfo.io/' + ip + '/json')
@@ -93,6 +90,6 @@ while not monitor.abortRequested():
 			xbmcgui.Dialog().textviewer('DarkSky Weather Alert', alert_txt)
 		if alert_notification != 'false':
 			xbmcgui.Dialog().notification('DarkSky Weather Alert', alert_txt, defaultimage, 30000, False)
-		if monitor.waitForAbort(1800):
-			xbmc.log('Abort Requested - Shutting Down DarkSky Alerts', level=xbmc.LOGNOTICE)
-			break
+	if monitor.waitForAbort(1800):
+		xbmc.log('Abort Requested - Shutting Down DarkSky Alerts', level=xbmc.LOGNOTICE)
+		break

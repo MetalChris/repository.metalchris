@@ -1,7 +1,3 @@
-Version 2019.03.18
-- Move sleep command
-- Correct location of alert.wav file
-
 Version 2019.03.17
 - Move alert.wav file location
 
