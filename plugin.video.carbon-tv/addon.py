@@ -3,7 +3,7 @@
 #
 # Written by MetalChris
 # Released under GPL(v2) or Later
-# 2018.12.01
+# 2019.04.29
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys, os
 from urllib import urlopen
@@ -119,6 +119,8 @@ def shows(url):
 	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'show'})
 	for item in soup:
 		title = item.find('div',{'class':'show-name truncate'}).string.encode('utf-8').strip()
+		if title == 'Chevy':
+			continue
 		image = item.find('img',{'class':'show-thumb'})['src']
 		url = 'http://www.carbontv.com' + item.find('a')['href']
 		add_directory2(title,url,20,defaultfanart,image,plot='')
@@ -134,7 +136,9 @@ def seasons(url):
 	if season_number.find('span',{'class':'season-number'}):
 		xbmc.log('FOUND', level=log_level)
 		soup = BeautifulSoup(response,'html5lib').find_all('div',{'tabindex':'0'})
-		seasons = BeautifulSoup(str(soup),'html5lib').find_all('li')
+		#xbmc.log('TABINDEX: ' + str(soup), level=log_level)
+		#seasons = BeautifulSoup(str(soup),'html5lib').find_all('li')
+		seasons = BeautifulSoup(str(soup),'html5lib').find_all('div',{'class':'menu-item'})
 		for season in seasons:
 			season = season.text
 			title = 'Season ' + season
@@ -155,17 +159,37 @@ def videos(url):
 	r = s.get(url, cookies=s.cookies.get_dict())
 	response = r.text.encode('utf-8')
 	jsob = re.compile('"content">\n(.+?)</').findall(response)[0]
+	#xbmc.log('JSOB: ' + str(jsob),level=log_level)
 	data = json.loads(str(jsob))
-	total = (data['currentCount']); titles = []
+	item_dict = json.loads(str(jsob))
+	total_items = len(item_dict['items'])
+	xbmc.log('TOTAL ITEMS: ' + str(total_items),level=log_level)
+	total = (data['currentCount']); titles = [];mp4s = [];res=[]
 	xbmc.log('TOTAL: ' + str(total),level=log_level)
-	for i in range(total):
+	for i in range(total_items):
+		if data['items'][i]['video_type'] == 'sponsored':
+			continue
 		title = (data['items'][i]['name']).encode('utf-8')
 		if title in titles:
 			continue
 		titles.append(title)
 		dtitle = re.sub('[^0-9a-zA-Z]+', '_', title)
-		embed_code = data['items'][i]['embed_code']
-		downloadUrl = 'http://cdnapi.kaltura.com/p/1897241/sp/189724100/playManifest/entryId/' + embed_code + '/format/download/protocol/http/flavorParamIds/0'
+		embed_code = data['items'][i]['legacy_id']
+		#streams = re.search(r'https.*\n', str(item_dict), flags=re.MULTILINE)
+		for key, value in data['items'][i].items():
+			if 'mp4' in key:
+				#xbmc.log('KEY: ' + str(key.split('_')[1]),level=log_level)
+				mp4s.append(str(value.replace("u'","'")))
+				res.append(int(str(key.split('_')[1].replace('p','').replace("u'","'"))))
+		highest = max(res)
+		xbmc.log('RES: ' + str(res),level=log_level)
+		xbmc.log('MP4S: ' + str(mp4s),level=log_level)
+		xbmc.log('HIGHEST: ' + str(highest),level=log_level)
+		x = res.index(highest)
+		xbmc.log('X: ' + str(x),level=log_level)
+		downloadUrl = mp4s[x]
+		#downloadUrl = 'http://cdnapi.kaltura.com/p/1897241/sp/189724100/playManifest/entryId/' + embed_code + '/format/download/protocol/http/flavorParamIds/0'
+		#url = 'http://www.carbontv.com' + data['items'][i]['path']
 		url = 'http://www.carbontv.com' + data['items'][i]['path']
 		duration = data['items'][i]['duration']
 		runtime = (duration/1000)
@@ -181,7 +205,7 @@ def videos(url):
 		li.setInfo(type="video", infoLabels={ 'Title': title, 'Plot': '', 'season': season, 'episode': episode })
 		li.addContextMenuItems([('Download File', 'XBMC.RunPlugin(%s?mode=80&url=%s&name=%s)' % (sys.argv[0], downloadUrl,dtitle))])
 		xbmcplugin.addDirectoryItem(handle=addon_handle, url=purl, listitem=li, isFolder=False)
-		xbmcplugin.setContent(addon_handle, 'episodes')
+		xbmcplugin.setContent(addon_handle, 'episodes');mp4s = [];res=[]
 	xbmcplugin.addSortMethod(addon_handle, xbmcplugin.SORT_METHOD_EPISODE)
 	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
@@ -193,19 +217,20 @@ def streams(name,url,iconimage):
 	soup = BeautifulSoup(html,'html5lib')
 	link = soup.find("meta",  property="og:video:url")['content']
 	xbmc.log('LINK: ' + str(link),level=log_level)
-	key = link.split('=')[-1]
+	key = link.split('-')[0]
 	xbmc.log('KEY: ' + str(key),level=log_level)
-	r = s.get(link, cookies=s.cookies.get_dict())
-	response = r.text.encode('utf-8')
-	response = get_html(link)
-	jsob = re.compile('window.kalturaIframePackageData =(.+?);\n').findall(response)[0]
-	data = json.loads(str(jsob))
-	item_dict = json.loads(str(jsob))
-	dataUrl = ((data['entryResult']['meta']['dataUrl']).split('format')[0])
-	xbmc.log('DATAURL: ' + str(dataUrl),level=log_level)
-	flavorParamsIds = data['entryResult']['meta']['flavorParamsIds']
-	xbmc.log('FLAVORID: ' + str(flavorParamsIds),level=log_level)
-	stream = dataUrl + 'flavorIds/' + flavorParamsIds + '/format/applehttp/protocol/https/a.m3u8'
+	#r = s.get(link, cookies=s.cookies.get_dict())
+	#response = r.text.encode('utf-8')
+	#response = get_html(link)
+	#jsob = re.compile('window.kalturaIframePackageData =(.+?);\n').findall(response)[0]
+	#data = json.loads(str(jsob))
+	#item_dict = json.loads(str(jsob))
+	#dataUrl = ((data['entryResult']['meta']['dataUrl']).split('format')[0])
+	#xbmc.log('DATAURL: ' + str(dataUrl),level=log_level)
+	#flavorParamsIds = data['entryResult']['meta']['flavorParamsIds']
+	#xbmc.log('FLAVORID: ' + str(flavorParamsIds),level=log_level)
+	#stream = dataUrl + 'flavorIds/' + flavorParamsIds + '/format/applehttp/protocol/https/a.m3u8'
+	stream = key.replace('players','manifests') + '.m3u8'
 	xbmc.log('STREAM: ' + str(stream),level=log_level)
 	listitem = xbmcgui.ListItem(name, path=stream, thumbnailImage=iconimage)
 	listitem.setProperty('IsPlayable', 'true')
