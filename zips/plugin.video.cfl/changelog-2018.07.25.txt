@@ -1,0 +1,21 @@
+Version 2018.07.25
+- Switch to Mechanize
+- Add OpenSSL
+
+Version 0.1.5
+- Revived for 2018
+
+Version 0.1.4
+- Broken
+
+Version 0.1.3
+- Fixes for 2017 Season
+
+Version 0.1.2
+- Fix for minor website change
+
+Version 0.1.1
+- Updated for 2016 website changes
+
+Version 0.0.1
+- Initial release.
