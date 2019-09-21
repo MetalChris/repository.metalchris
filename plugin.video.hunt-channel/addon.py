@@ -7,9 +7,6 @@
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, re, sys
 from bs4 import BeautifulSoup
 import html5lib
-import json
-import datetime
-from pytz import timezone
 
 artbase = 'special://home/addons/plugin.video.hunt-channel/resources/media/'
 _addon = xbmcaddon.Addon()
@@ -21,244 +18,77 @@ usexbmc = selfAddon.getSetting('watchinxbmc')
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 confluence_views = [500,501,502,503,504,508]
+settings = xbmcaddon.Addon(id="plugin.video.hunt-channel")
+
+log_notice = settings.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 
 plugin = "Hunt Channel"
+name = "Hunt Channel"
 
 defaultimage = 'special://home/addons/plugin.video.hunt-channel/icon.png'
 defaultfanart = 'special://home/addons/plugin.video.hunt-channel/fanart.jpg'
 defaulticon = 'special://home/addons/plugin.video.hunt-channel/icon.png'
+iconimage = 'special://home/addons/plugin.video.hunt-channel/icon.png'
 baseurl = 'http://www.huntchannel.tv'
-schedule = 'special://home/addons/plugin.video.hunt-channel/resources/media/schedule.json'
 
 local_string = xbmcaddon.Addon(id='plugin.video.hunt-channel').getLocalizedString
 addon_handle = int(sys.argv[1])
-confluence_views = [500,501,502,503,504,508,515]
-
-headers = {
-	'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:51.0) Gecko/20100101 Firefox/51.0',
-	'Referer': 'http://www.huntchannel.tv/shows/'
-}
-
-now = datetime.datetime.now(timezone('US/Eastern'))
-now_minus_30 = now + datetime.timedelta(minutes = -30)
-if now.hour >12:
-	hour = now.hour - 12
-elif now.hour < 1:
-	hour = '12'
-else:
-	hour = now.hour
-if now.minute < 29:
-	minute = '00'
-else:
-	minute = '30'
-showday = now.strftime("%A")
-#xbmc.log(str(showday))
-today = int(now.strftime("%w"))
-if today <1:
-	today = 7
-#xbmc.log(str(today))
-nowstring = str(hour) + ':' + minute + ' ' + now.strftime("%p")
-#xbmc.log(str(nowstring))
-program = 'No Info Currently Available'
-
-
-def prog():
-	html = get_html('http://www.huntchannel.tv/schedule')
-	rows = BeautifulSoup(html,'html5lib').find_all('tr')
-	match = 0
-	for row in rows[1:45]:
-		row_split = (str(row)).split('</td>')
-		row_list = striphtml(str(row_split)).replace('\'','').replace('[','').replace(']','').split(',')
-		if nowstring == row_list[0]:
-			match = 1
-			xbmc.log('==========================MATCH')
-			program = str(row_list[today]).replace("\\","'")
-			#xbmc.log(str(program))
-			#xbmc.log(str(row_list))
-			break
-
-		elif match <1:
-			program = 'No Info Currently Available'
-	#xbmc.log(str(match))
-	cats(program)
-
-
-#10
-def cats(program):
-	addDir2('Live Stream' + ': ' + program,'http://www.huntchannel.tv/',12,defaultimage)
-	addDir('On Demand','http://www.huntchannel.tv/shows/',100,defaultimage)
-	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #12
-def get_live(name,url,iconimage):
-	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'style':'position: relative; padding-bottom: 10%; overflow: hidden;'})
-	xbmc.log('SOUP Length: ' + str(len(soup)))
-	i_url = str(re.compile('src="(.+?)"').findall(str(soup)))[2:-2].replace('html','js')
-	xbmc.log('IFRAME: ' + str(i_url))
-	html = get_html(i_url)
-	source = re.compile("container.offsetHeight, '(.+?)'").findall(html)
-	#source = re.compile('source0.src = (.+?);').findall(html)#[0]
-	xbmc.log('SOURCE: ' + str(source))
-	m3u8 = str(re.compile("'[^']*'").findall(str(source)))[3:-3]
-	xbmc.log('M3U8: ' + str(m3u8))
-	listitem = xbmcgui.ListItem('Hunt Channel' + ' ' + name, thumbnailImage=defaulticon)
-	listitem.setProperty('mimetype', 'video/x-mpegurl')
-	#PLAY(name,m3u8)
-	xbmc.Player().play( m3u8, listitem )
-	sys.exit()
-	xbmcplugin.endOfDirectory(addon_handle)
-
-
-#21
-def sc_videos(name,url):
-	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('p')
-	xbmc.log('SOUP: ' + str(len(soup)))
-	for p in soup:
-		if p.find('script'):
-			j_url = p.find('script')['src']
-	j_html = get_html(j_url)
-	huntjson = re.compile('playlist_videos = (.+?);\\n').findall(j_html)[0]
-	hdata = json.loads(huntjson)
-	item_dict = json.loads(huntjson)
-	total = len(item_dict)
-	xbmc.log('TOTAL: ' + str(total))
-	if total > 25:
-		total = 25
-	for i in range(total):
-		v_id = str(hdata[i]['id'])
-		title = unicode(hdata[i]['title']).encode('utf-8', errors='ignore')
-		image = (hdata[i]['thumbnail']).replace('https','http').replace('_200x150','').split('?')[0]
-		url = 'https://player.zype.com/embed/' + v_id + '.js?api_key=HNkh1fiq8f4D4_AIdWM6Gdk5Cw7G9FNLKzmNTokdOWLxIckLp3ddL5aYBic4KMWw&amp;autoplay=false&amp;info%5Bplaylist_id%5D=59ee659a1c4f96151b000226'
-		add_directory(title,url,22,defaultfanart,image,plot='')
-	xbmcplugin.setContent(addon_handle, 'episodes')
-	xbmcplugin.endOfDirectory(addon_handle)
-
-
-#22
-def sc_streams(name,url):
-	html = get_html(url)
-	stream_link = re.compile("container.offsetHeight, '(.+?)'").findall(html)
-	streams = []
-	for stream in stream_link:
-		if 'mp4' in stream:
-			streams.append(stream)
-			xbmc.log('STREAM: ' + str(stream))
-	stream = get_redirected_url(stream)
-	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
-	xbmc.Player().play( stream.replace('https','http'), listitem )
-	sys.exit()
-
-
-def get_redirected_url(url):
-	opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
-	request = opener.open(url)
-	return request.url
-
-
-#100
-def more(url):
-	count = 0
-	html = get_html(url)
-	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'inner-entry'})
-	xbmc.log('SOUP: ' + str(len(soup)))
-	for title in soup:
-		count = count + 1
-		show = title.find('h1').text.encode('utf-8')
-		url = title.find('a')['href']
-		#image = title.find('img')['src']
-		if title.find('img'):
-			image = title.find('img')['src']
-		else:
-			image = defaultimage
-		add_directory2(show,url,21,defaultfanart,image,plot='')
-	if count > 99:
-		next_page = 'http://www.huntchannel.tv/shows/page/2/'
-		add_directory2('Next Page',next_page,100,defaultfanart,defaultimage,plot='')
+def get_live(name,baseurl,iconimage):
+	html = get_html(baseurl)
+	soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'sqs-block-content'})
+	xbmc.log('SOUP Length: ' + str(len(soup)),level=log_level)
+	items = re.compile('src="(.+?)"').findall(str(soup))
+	xbmc.log('ITEMS Length: ' + str(len(items)),level=log_level)
+	for url in items:
+		if 'zype' in url:
+			m3u8 = 'plugin://plugin.video.hunt-channel?mode=99&url=' + urllib.quote_plus(url)
+			li = xbmcgui.ListItem("Live Stream")
+			li.setProperty('IsPlayable', 'true')
+			li.setInfo(type="Video", infoLabels={"mediatype":"video","label":name,"title":name,"genre":"Sports"})
+			li.setArt({'thumb':defaultimage,'fanart':defaultfanart})
+			xbmcplugin.addDirectoryItem(handle=addon_handle, url=m3u8, listitem=li, isFolder=False)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #99
-def PLAY(name,url):
-	listitem = xbmcgui.ListItem(path=url)
-	xbmc.log('### SETRESOLVEDURL ###')
+def PLAY(name,url,iconimage):
+	html = get_html(url)
+	source = re.compile("container.offsetHeight, '(.+?)'").findall(html)
+	xbmc.log('SOURCE: ' + str(source),level=log_level)
+	m3u8 = str(re.compile("'[^']*'").findall(str(source)))[3:-3]
+	xbmc.log('M3U8: ' + str(m3u8),level=log_level)
+	listitem = xbmcgui.ListItem(path = m3u8)
+	xbmc.log(('### SETRESOLVEDURL ###'),level=log_level)
 	listitem.setProperty('IsPlayable', 'true')
 	xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
-	xbmc.log('URL: ' + str(url), level=xbmc.LOGDEBUG)
+	xbmc.log('URL: ' + str(url),level=log_level)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
-def striphtml(data):
-	p = re.compile(r'<.*?>')
-	return p.sub('', data)
-
-
 def play(name,url,iconimage):
-	xbmc.log(str(url))
+	xbmc.log(str(url),level=log_level)
 	listitem = xbmcgui.ListItem(name, thumbnailImage=iconimage)
 	xbmc.Player().play( url, listitem )
 	sys.exit()
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
-def hplay(name,url,iconimage):
-	xbmc.log(str(url))
-	listitem = xbmcgui.ListItem(name, thumbnailImage=defaultimage)
-	xbmc.Player().play( url, listitem )
-	sys.exit()
-	xbmcplugin.endOfDirectory(addon_handle)
-
-
-def add_directory(name,url,mode,fanart,thumbnail,plot):
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)# + "&thumbnail=" + urllib.quote_plus(thumbnail)
-	ok=True
-	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-	liz.setInfo( type="Video", infoLabels={ "Title": name,
-											"plot": plot} )
-	if not fanart:
-		fanart=''
-	liz.setProperty('fanart_image',fanart)
-	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False, totalItems=100)
-	return ok
-
-
-def add_directory2(name,url,mode,fanart,thumbnail,plot):
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)# + "&thumbnail=" + urllib.quote_plus(thumbnail)
-	ok=True
-	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
-	liz.setInfo( type="Video", infoLabels={ "Title": name,
-											"plot": plot} )
-	if not fanart:
-		fanart=''
-	liz.setProperty('fanart_image',fanart)
-	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True, totalItems=100)
-	return ok
-
 def get_html(url):
-	xbmc.log('URL: ' + str(url))
+	xbmc.log('URL: ' + str(url),level=log_level)
 	req = urllib2.Request(url)
 	#req.add_header('Host','content.jwplatform.com')
 	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0')
 
 	try:
 		response = urllib2.urlopen(req, timeout=30)
-		html = response.read()
-		response.close()
-	except urllib2.HTTPError:
-		response = False
-		html = False
-	return html
-
-def get_iframe(url):
-	req = urllib2.Request(url)
-	req.add_header('Host', 'player.vimeo.com')
-	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0')
-	req.add_header('Referer', 'http://huntchannel.tv/')
-
-	try:
-		response = urllib2.urlopen(req)
 		html = response.read()
 		response.close()
 	except urllib2.HTTPError:
@@ -342,29 +172,23 @@ try:
 except:
 	pass
 
-xbmc.log("Mode: " + str(mode))
-xbmc.log("URL: " + str(url))
-xbmc.log("Name: " + str(name))
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-	xbmc.log("Generate Main Menu")
-	prog()
+	xbmc.log(("Generate Main Menu"),level=log_level)
+	get_live(name,baseurl,iconimage)
 elif mode == 4:
-	xbmc.log("Play Video")
+	xbmc.log(("Play Video"),level=log_level)
 elif mode==10:
-	xbmc.log('Hunt Channel Categories')
-	cats(program)
+	xbmc.log(('Hunt Channel Categories'),level=log_level)
+	cats()
 elif mode==12:
-	xbmc.log('Hunt Channel Live')
-	get_live(name,url,iconimage)
-elif mode==21:
-	xbmc.log("Hunt Channel Videos")
-	sc_videos(name,url)
-elif mode==22:
-	xbmc.log("Hunt Channel Videos")
-	sc_streams(name,url)
-elif mode==100:
-	xbmc.log("Hunt Channel Shows")
-	more(url)
+	xbmc.log(('Hunt Channel Live'),level=log_level)
+	get_live(name,baseurl,iconimage)
+elif mode==99:
+	xbmc.log(('Hunt Channel Play Stream'),level=log_level)
+	PLAY(name,url,iconimage)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

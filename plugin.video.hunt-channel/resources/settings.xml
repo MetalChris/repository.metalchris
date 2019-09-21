@@ -1,0 +1,6 @@
+<settings>
+        <category label="Kodi Log">
+        <setting label="Enable this option before creating a log to report problems." type="lsep"/>
+        <setting id='log_notice' type ="bool" label="30000" default="false"/>
+        </category>
+</settings>

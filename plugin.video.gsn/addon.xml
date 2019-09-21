@@ -3,7 +3,7 @@
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-        <import addon="script.module.html5lib" version="0.999.0"/> 
+        <import addon="script.module.html5lib" version="0.999.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource"
                library="addon.py">
@@ -15,5 +15,6 @@
         <summary lang="en">Global Sportsman's Network</summary>
         <description lang="en">Global Sportsman's Network is a place where the every day outdoorsman can go to watch videos, and read articles.</description>
         <disclaimer lang="en"></disclaimer>
+        <broken>This website has gone offline.</broken>
     </extension>
 </addon>
