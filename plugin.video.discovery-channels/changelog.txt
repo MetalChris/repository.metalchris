@@ -1,3 +1,6 @@
+Version 3.3.1
+- Fix for website changes (November 09, 2019)
+
 Version 3.3.0
 - Fix for website changes (December 31, 2018)
 

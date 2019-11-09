@@ -4,7 +4,7 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-#02012019
+#11092019
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, htmllib, platform, re, sys, os
 import requests
@@ -61,7 +61,7 @@ def channels():
 	xbmc.log(str(platform.release()),level=log_level)
 	dsc = settings.getSetting(id="dsc")
 	if dsc!='false':
-		addDir2('Discovery Channel', 'https://www.discovery.com', 25, artbase + 'discovery.png')
+		addDir2('Discovery Channel', 'https://go.discovery.com', 25, artbase + 'discovery.png')
 	ap = settings.getSetting(id="ap")
 	if ap!='false':
 		addDir2('Animal Planet', 'https://www.animalplanet.com', 25, artbase + 'animalplanet.jpg')
@@ -75,11 +75,11 @@ def channels():
 	if dahn!='false':
 		addDir2('American Heroes', 'https://www.ahctv.com/', 25, artbase + 'ahctv.jpg')
 	motor = settings.getSetting(id="motor")
-	if motor!='false':
-		addDir2('Motor Trend', 'https://watch.motortrend.com', 25, artbase + 'motortrend.png')
+	#if motor!='false':
+		#addDir2('Motor Trend', 'https://watch.motortrend.com', 25, artbase + 'motortrend.png')
 	diy = settings.getSetting(id="diy")
 	if diy!='false':
-		addDir2('DIY Network', 'https://watch.diynetwork.com/', 25, artbase + 'diynetwork.png')
+		addDir2('DIY Network', 'https://watch.diynetwork.com/', 30, artbase + 'diynetwork.png')
 	dest = settings.getSetting(id="dest")
 	if dest!='false':
 		addDir2('Destination America', 'https://www.destinationamerica.com/', 25, artbase + 'destinationamerica.jpg')
@@ -88,16 +88,16 @@ def channels():
 		addDir2('Discovery Life', 'https://www.discoverylife.com', 25, artbase + 'discoverylife.jpg')
 	hgtv = settings.getSetting(id="hgtv")
 	if hgtv!='false':
-		addDir2('HGTV', 'https://watch.hgtv.com/', 25, artbase + 'hgtv.png')
+		addDir2('HGTV', 'https://watch.hgtv.com/', 30, artbase + 'hgtv.png')
 	food = settings.getSetting(id="food")
 	if food!='false':
-		addDir2('Food Network', 'https://watch.foodnetwork.com/', 25, artbase + 'foodnetwork.png')
+		addDir2('Food Network', 'https://watch.foodnetwork.com/', 30, artbase + 'foodnetwork.png')
 	trvl = settings.getSetting(id="trvl")
 	if trvl!='false':
-		addDir2('Travel Channel', 'https://watch.travelchannel.com/', 25, artbase + 'travelchannel.png')
+		addDir2('Travel Channel', 'https://watch.travelchannel.com/', 30, artbase + 'travelchannel.png')
 	cook = settings.getSetting(id="cook")
 	if cook!='false':
-		addDir2('Cooking Channel', 'https://watch.cookingchanneltv.com/', 25, artbase + 'cookingchanneltv.png')
+		addDir2('Cooking Channel', 'https://watch.cookingchanneltv.com/', 30, artbase + 'cookingchanneltv.png')
 	if force_views != 'false':
 		xbmc.executebuiltin("Container.SetViewMode(500)")
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
@@ -117,36 +117,83 @@ def dsc_menu_new(url):
 		CookieJar.set_cookie(cookie)
 	CookieJar.save(ignore_discard=True)
 	page = response.get_data()
-	dscjson = re.compile('window.__reactTransmitPacket = (.+?);</script>').findall(page)[0]
+	#dscjson = re.compile('window.__reactTransmitPacket = (.+?);</script>').findall(page)[0]
+	dscjson = re.compile('type="application/json">(.+?)</script>').findall(page)[0]
+	xbmc.log('DSCJSON: ' + str(len(dscjson)),level=log_level)
 	data = json.loads(dscjson)
-	#adCustomerId = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['serverId'])
-	#adNetworkId = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['networkId'])
-	#adProfile = str(data['application']['videoConfig']['verizon']['ssdai']['freeWheel']['profile']['desktop']['vod'])
-	#subSessionToken = str(data['application']['subSessionToken'])
-	#apiClientId = str(data['application']['apiClientId'])
-	total = len(data['layout']['/']['contentBlocks']);i=0
+	total = len(data['layout']['contentBlocks']);i=0
 	xbmc.log('CONTENTBLOCKS: ' + str(total),level=log_level)
 	xbmc.log('DSCJSON: ' + str(len(dscjson)),level=log_level)
 	for contentBlock in range(total):
-		if ((data['layout']['/']['contentBlocks'][i]['label']['line1']) == 'Unlocked') or ((data['layout']['/']['contentBlocks'][i]['label']['line1']) == 'Unlocked Episodes') or ((data['layout']['/']['contentBlocks'][i]['label']['line1']) == 'Stream for Free'):
+		if 'unlocked' in (data['layout']['contentBlocks'][i]['contentLocationTag']):
 			xbmc.log('UNLOCKED: ' + str(i),level=log_level)
 			value = i
 		else:
 			i=i+1
-	total = len(data['layout']['/']['contentBlocks'][value]['content']['items']);i=0
+	total = len(data['layout']['contentBlocks'][value]['content']['items']);i=0
 	xbmc.log('EPISODES: ' + str(total),level=log_level)
 	for title in range(total):
-		title = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['name'])
+		title = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['name'])
 		title = unicode(title).encode('utf-8')
-		show = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['show']['slug'])
-		slug = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['slug'])
-		show_name = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['show']['name'])
+		show = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['show']['slug'])
+		slug = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['slug'])
+		show_name = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['show']['name'])
 		url = site + '/tv-shows/' + show + '/full-episodes/' + slug
-		#adCaid = str(data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['adVideoId'])
-		image = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['image']['links'][0]['href']).replace('{width}','700')#.replace('{height}','260')
+		image = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['image']['links'][0]['href']).replace('{width}','700')#.replace('{height}','260')
 		#test_link(image)
-		description = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['description']['standard'])
-		runtime = (data['layout']['/']['contentBlocks'][value]['content']['items'][i]['item']['duration'])
+		description = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['description']['standard'])
+		runtime = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['duration'])
+		duration = GetInHMS(runtime)
+		plot = '[I]' + show_name + ':  [/I]' + description
+		add_directory3(title, url, 50, artbase + 'fanart2.jpg', image, site, plot=plot + ' (' + duration.replace('00:','') + ') ')# + expiry)
+		xbmcplugin.setContent(addon_handle, 'episodes')
+		i = i + 1
+	#if not 'tlc.com' in site:
+		#addDir('Find More Episodes From ' + name, url, 80, iconimage, artbase + 'fanart2.jpg')
+		#addDir(name +' Video Clips Sorted by Show', site, 533, iconimage, artbase + 'fanart2.jpg')
+	if force_views != 'false':
+		xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[int(settings.getSetting(id="views"))])+")")
+	xbmcplugin.endOfDirectory(addon_handle)
+
+#30
+def diy_menu_new(url):
+	site = 'https://www.' + (iconimage.rsplit('/', 1)[-1]).split('.')[0] + '.com'
+	if ('motortrend' in site) or ('diy' in site) or ('hgtv' in site) or ('food' in site) or ('travel' in site) or ('cook' in site):
+		site = site.replace('www','watch')
+	xbmc.log('SITE: ' + str(site),level=log_level)
+	br.set_handle_robots( False )
+	br.set_cookiejar(CookieJar)
+	response = br.open(url)
+	for cookie in CookieJar:
+		#xbmc.log('COOKIE: ' + str(cookie),level=log_level)
+		CookieJar.set_cookie(cookie)
+	CookieJar.save(ignore_discard=True)
+	page = response.get_data()
+	dscjson = re.compile('type="application/json">(.+?)</script>').findall(page)[0]
+	xbmc.log('DSCJSON: ' + str(len(dscjson)),level=log_level)
+	data = json.loads(dscjson)
+	total = len(data['layout']['contentBlocks']);i=0
+	xbmc.log('CONTENTBLOCKS: ' + str(total),level=log_level)
+	xbmc.log('DSCJSON: ' + str(len(dscjson)),level=log_level)
+	for contentBlock in range(total):
+		if 'Stream for Free' in (data['layout']['contentBlocks'][i]['label']['line1']) or 'Free Episodes' in (data['layout']['contentBlocks'][i]['label']['line1']):
+			xbmc.log('UNLOCKED: ' + str(i),level=log_level)
+			value = i
+		else:
+			i=i+1
+	total = len(data['layout']['contentBlocks'][value]['content']['items']);i=0
+	xbmc.log('EPISODES: ' + str(total),level=log_level)
+	for title in range(total):
+		title = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['name'])
+		title = unicode(title).encode('utf-8')
+		show = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['show']['slug'])
+		slug = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['slug'])
+		show_name = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['show']['name'])
+		url = site + '/tv-shows/' + show + '/full-episodes/' + slug
+		image = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['image']['links'][0]['href']).replace('{width}','700')#.replace('{height}','260')
+		#test_link(image)
+		description = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['description']['standard'])
+		runtime = (data['layout']['contentBlocks'][value]['content']['items'][i]['item']['duration'])
 		duration = GetInHMS(runtime)
 		plot = '[I]' + show_name + ':  [/I]' + description
 		add_directory3(title, url, 50, artbase + 'fanart2.jpg', image, site, plot=plot + ' (' + duration.replace('00:','') + ') ')# + expiry)
@@ -444,6 +491,9 @@ elif mode==80:
 elif mode==25:
 	xbmc.log("DSC Menu",level=log_level)
 	dsc_menu_new(url)
+elif mode==30:
+	xbmc.log("DIY Menu",level=log_level)
+	diy_menu_new(url)
 elif mode==31:
 	xbmc.log("Discovery Shows",level=log_level)
 	discovery_shows_new(name,url)

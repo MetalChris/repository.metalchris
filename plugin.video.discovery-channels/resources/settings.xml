@@ -9,7 +9,6 @@
             <setting id="dahn" type="bool"  label="30013"  default="False"/>
             <setting id="dscl" type="bool"  label="30014"  default="False"/>
             <setting id="dest" type="bool"  label="30015"  default="False"/>
-            <setting id="motor" type="bool"  label="30016"  default="False"/>
             <setting id="diy" type="bool"  label="30017"  default="False"/>
             <setting id="hgtv" type="bool"  label="30018"  default="False"/>
             <setting id="food" type="bool"  label="30019"  default="False"/>
