@@ -74,7 +74,7 @@ def channels():
 	dahn = settings.getSetting(id="dahn")
 	if dahn!='false':
 		addDir2('American Heroes', 'https://www.ahctv.com/', 25, artbase + 'ahctv.jpg')
-	motor = settings.getSetting(id="motor")
+	#motor = settings.getSetting(id="motor")
 	#if motor!='false':
 		#addDir2('Motor Trend', 'https://watch.motortrend.com', 25, artbase + 'motortrend.png')
 	diy = settings.getSetting(id="diy")
@@ -211,11 +211,6 @@ def diy_menu_new(url):
 def get_clips_new(name,url,site):
 	for cookie in CookieJar:
 		xbmc.log('COOKIE LENGTH: ' + str(len(str(cookie))),level=log_level)
-		#CookieJar.set_cookie(cookie)
-		##if cookie.name == "eosAn":# and not cookie.is_expired():
-			##auth = 'Bearer ' +  re.compile('%2522%253A%2522(.+?)%2522%252C%2522').findall(str(cookie.value))[0]
-			##xbmc.log('AUTH: ' + str(auth),level=log_level)
-	#site = url.split('/')[2]
 	xbmc.log('SITE: ' + str(site),level=log_level)
 	br.set_handle_robots( False )
 	br.addheaders = [('Host', 'api.discovery.com')]
@@ -228,10 +223,6 @@ def get_clips_new(name,url,site):
 	xbmc.log('HEADERS: ' + str(request.header_items()),level=log_level)
 	for cookie in CookieJar:
 		xbmc.log('COOKIE LENGTH: ' + str(len(str(cookie))),level=log_level)
-		#if len(str(cookie)) < 500:
-			#xbmcgui.Dialog().notification(name, 'Currently Unavailable.  Try Again Later', iconimage, 5000, False)
-			#xbmc.log('NO COOKIE NO STREAM',level=log_level)
-			#sys.exit()
 		CookieJar.set_cookie(cookie)
 		if cookie.name == "eosAn":# and not cookie.is_expired():
 			auth = 'Bearer ' +  re.compile('%2522%253A%2522(.+?)%2522%252C%2522').findall(str(cookie.value))[0]
