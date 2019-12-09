@@ -16,6 +16,7 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=223279</forum>
     <website>http://www.bigstar.tv/</website>
     <email></email>
+    <broken>Website no longer exists.</broken>
     <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.bigstar-movies</source>
     <news>Version 2019.02.05[CR] - Fix for pagination error[CR]Version 2019.02.02[CR] - Fix for website changes[CR] - Added option to choose stream quality</news>
     <assets>
