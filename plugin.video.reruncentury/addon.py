@@ -4,80 +4,113 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-import urllib, urllib2, xbmc, xbmcplugin, xbmcaddon, xbmcgui, string, htmllib, os, platform, random, calendar, re, xbmcplugin, sys
-import HTMLParser
+# 2020.04.12
+
+import urllib, urllib2, xbmc, xbmcplugin, xbmcaddon, xbmcgui, htmllib, calendar, re, sys
+from bs4 import BeautifulSoup
+import html5lib
 
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
 selfAddon = xbmcaddon.Addon(id='plugin.video.reruncentury')
 translation = selfAddon.getLocalizedString
 usexbmc = selfAddon.getSetting('watchinxbmc')
+settings = xbmcaddon.Addon(id="plugin.video.reruncentury")
+log_notice = settings.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 
-#defaultvideo = 'special://home/addons/plugin.video.nhl-rewind/icon.png'
-#defaulticon = 'special://home/addons/plugin.video.nhl-rewind/icon.png'
-defaultfanart=''
-
-
+defaultimage = 'special://home/addons/plugin.video.reruncentury/icon.png'
+defaultfanart = 'special://home/addons/plugin.video.reruncentury/fanart.jpg'
+defaulticon = 'special://home/addons/plugin.video.reruncentury/icon.png'
+addon_handle = int(sys.argv[1])
 
 def CATEGORIES():
-        mode = 1
+    mode = 1
+    addDir('Top Shows (More than 40 Episodes)', 'http://www.reruncentury.com/', 2, '')
+    addDir('More Shows (More than 10 Episodes)', 'http://www.reruncentury.com/', 5, '')
+    addDir('All Shows (Alphabetical)', 'http://www.reruncentury.com/ia/', 3, '')
 
 
-        addDir('Top Shows (More than 40 Episodes)', 'http://www.reruncentury.com/', 2, '')
-        addDir('More Shows (More than 10 Episodes)', 'http://www.reruncentury.com/', 5, '')
-        addDir('All Shows (Alphabetical)', 'http://www.reruncentury.com/ia/', 3, '')
-
-
+#2
 def top_shows(url):
-        addon_handle = int(sys.argv[1])
-        html = get_html(url)
-        html_parser = HTMLParser.HTMLParser()
-        match=re.compile('<dd><a href="(.+?)"><img align=middle width=144 height=99 hspace=12 src="(.+?)">(.+?)</a>').findall(html)
-        for url,thumbnail,name in match: 
-            print 'name=' + name
-            print 'purl=' + str(url)
-            addDir(name, url,6,thumbnail)
-        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+    html = get_html(url)
+    soup = BeautifulSoup(html,'html5lib').find_all('div',{'class':'cellMain i20px'})
+    xbmc.log('SOUP: ' + str(soup),level=log_level)
+    for titles in soup:
+        title = titles.find('a').text
+        xbmc.log('TITLE: ' + str(title),level=log_level)
+        url = 'https://www.reruncentury.com' + titles.find('a')['href']
+        xbmc.log('URL: ' + str(url),level=log_level)
+        thumbnail = titles.find('img')['src']
+        addDir(title, url, 6, thumbnail)
+    xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
+
+#3
 def all_shows(url):
-        addon_handle = int(sys.argv[1])
-        html = get_html(url)
-        html_parser = HTMLParser.HTMLParser()
-        shows = re.compile ('<dd><a href="(.+?)">(.+?)</a>').findall(html)
-        for url, name in shows:
-            url = 'http://www.reruncentury.com' + str(url)
-            addDir(name, url,6,'')
-        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
-            
+    html = get_html(url)
+    shows = re.compile ('<a href="(.+?)">(.+?)</a>').findall(html)
+    for url, title in shows:
+        url = 'https://www.reruncentury.com' + str(url)
+        if not '/series/pd/' in url:
+            continue
+        addDir(title, url, 6, '')
+    xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+
+
+#5
 def more_shows(url):
-        addon_handle = int(sys.argv[1])
-        html = get_html(url)
-        html_parser = HTMLParser.HTMLParser()
-        shows = re.compile ('<br><a href="(.+?)">(.+?)</a>').findall(html)
-        for url, name in shows:
-            url = 'http://www.reruncentury.com' + str(url)
-            addDir(name, url,6,'')
-        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+    html = get_html(url)
+    shows = re.compile ('<br><a href="(.+?)">(.+?)</a>').findall(html)
+    for url, name in shows:
+        url = 'http://www.reruncentury.com' + str(url)
+        addDir(name, url,6,'')
+    xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
+
+#6
 def get_episodes(url):
-        addon_handle = int(sys.argv[1])
+    html = get_html(url)
+    soup = BeautifulSoup(html,'html5lib').find_all('div',{'style':'width:300px'})
+    for episodes in soup:
+        title = episodes.find('a').text
+        xbmc.log('TITLE: ' + str(title),level=log_level)
+        rurl = 'https://www.reruncentury.com' + episodes.find('a')['href']
+        xbmc.log('URL: ' + str(url),level=log_level)
+        thumbnail = episodes.find('img')['src']
+        url = 'plugin://plugin.video.reruncentury?mode=20&url=' + urllib.quote_plus(rurl)
+        li = xbmcgui.ListItem(title)
+        li.setProperty('IsPlayable', 'true')
+        li.setInfo(type="Video", infoLabels={"mediatype":"video","label":title,"title":title,"genre":"TV"})
+        li.setArt({'thumb':thumbnail,'fanart':defaultfanart})
+        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
+        xbmcplugin.setContent(addon_handle, 'episodes')
+    xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
-        page = get_html(url)
-        episodes = re.compile('<a href="(.+?)"><nobr>(.+?)</n').findall(page)
-        print 'episodes=' + str(episodes)
-        for purl, name in episodes:
-            print 'name=' + name
-            print 'purl=' + purl
-            purl = str(purl)
-            page = get_html(purl)
-            image = str(re.compile('poster="(.+?)"').findall(page))[2:-2]
-            streamUrl = str(re.compile('<source src="(.+?)" type="video/mp4').findall(page))[2:-2]
-            print 'image=' + str(image)
-            print 'streamUrl=' + str(streamUrl)
-            li = xbmcgui.ListItem(name, iconImage=image, thumbnailImage=image)
-            li.setProperty('fanart_image', defaultfanart)
-            xbmcplugin.addDirectoryItem(handle=addon_handle, url=streamUrl, listitem=li, totalItems=100)
-        xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+#20
+def get_stream(name,url):
+    html = get_html(url)
+    soup = BeautifulSoup(html,'html5lib').find_all('video')#,{'type':'video/mp4'})
+    xbmc.log('SOUP: ' + str(soup),level=log_level)
+    for video in soup:
+        url = video.find('source')['src']
+        xbmc.log('URL: ' + str(url),level=log_level)
+    PLAY(name,url)
+    xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
+
+#99
+def PLAY(name,url):
+    addon_handle = int(sys.argv[1])
+    listitem = xbmcgui.ListItem(path=url)
+    xbmc.log(('### SETRESOLVEDURL ###'),level=log_level)
+    listitem.setProperty('IsPlayable', 'true')
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+    xbmc.log('URL: ' + str(url), level=log_level)
+    xbmcplugin.endOfDirectory(addon_handle)
 
 def get_html(url):
     req = urllib2.Request(url)
@@ -91,6 +124,7 @@ def get_html(url):
         response = False
         html = False
     return html
+
 
 def get_params():
     param = []
@@ -111,37 +145,10 @@ def get_params():
     return param
 
 
-def addLink(name, url, mode, iconimage, fanart=False, infoLabels=True):
-    u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
-    ok = True
-    liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-    liz.setInfo(type="Video", infoLabels={"Title": name})
-    liz.setProperty('IsPlayable', 'true')
-    if not fanart:
-        fanart=defaultfanart
-    liz.setProperty('fanart_image',fanart)
-    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz,isFolder=False)
-    return ok
-
-def add_item( action="" , title="" , plot="" , url="" ,thumbnail="" , folder=True ):
-    _log("add_item action=["+action+"] title=["+title+"] url=["+url+"] thumbnail=["+thumbnail+"] folder=["+str(folder)+"]")
-
-    listitem = xbmcgui.ListItem( title, iconImage="DefaultVideo.png", thumbnailImage=thumbnail )
-    listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot } )
-    
-    if url.startswith("plugin://"):
-        itemurl = url
-        listitem.setProperty('IsPlayable', 'true')
-        xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem)
-    else:
-        itemurl = '%s?action=%s&title=%s&url=%s&thumbnail=%s&plot=%s' % ( sys.argv[ 0 ] , action , urllib.quote_plus( title ) , urllib.quote_plus(url) , urllib.quote_plus( thumbnail ) , urllib.quote_plus( plot ))
-        xbmcplugin.addDirectoryItem( handle=int(sys.argv[1]), url=itemurl, listitem=listitem, isFolder=folder)
-        return ok
-
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
     ok = True
-    liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+    liz = xbmcgui.ListItem(name, iconImage=defaulticon, thumbnailImage=iconimage)
     liz.setInfo(type="Video", infoLabels={"Title": name})
     liz.setProperty('IsPlayable', 'true')
     if not fanart:
@@ -151,24 +158,11 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
     return ok
 
 
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=False):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        if not fanart:
-            fanart=defaultfanart
-        liz.setProperty('fanart_image',fanart)
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-        return ok
-
 def unescape(s):
     p = htmllib.HTMLParser(None)
     p.save_bgn()
     p.feed(s)
     return p.save_end()
-
-	
 
 
 params = get_params()
@@ -190,46 +184,36 @@ try:
 except:
     pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-    print "Generate Main Menu"
+    xbmc.log(("Generate Main Menu"),level=log_level)
     CATEGORIES()
 elif mode == 1:
-    print "Indexing Videos"
+    xbmc.log(("Indexing Videos"),level=log_level)
     INDEX(url)
 elif mode == 2:
-	print "Indexing Top Shows"
+	xbmc.log(("Indexing Top Shows"),level=log_level)
 	top_shows(url)
 elif mode == 3:
-	print "Get All Shows"
+	xbmc.log(("Get All Shows"),level=log_level)
 	all_shows(url)
 elif mode == 4:
-    print "Play Video"
+    xbmc.log(("Play Video"),level=log_level)
 elif mode == 5:
-	print "Get More Shows"
+	xbmc.log(("Get More Shows"),level=log_level)
 	more_shows(url)
 elif mode == 6:
-	print "Get Episodes"
+	xbmc.log(("Get Episodes"),level=log_level)
 	get_episodes(url)
-elif mode == 7:
-	print "Indexing by Season"
-	tnd_seasons(url)
-elif mode == 8:
-	print "Get Items by Season"
-	get_tnd_seasons(url)
-elif mode == 9:
-	print "Indexing by Season"
-	ff_seasons(url)
-elif mode == 10:
-	print "Get Items by Season"
-	get_ff_seasons(url)
-
-elif mode==20:
-        print "Genres"
-        movie_genres(url)
+elif mode == 20:
+	xbmc.log(("Get Stream"),level=log_level)
+	get_stream(name,url)
+elif mode == 99:
+	xbmc.log("Play Video", level=log_level)
+	PLAY(name,url)
 
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

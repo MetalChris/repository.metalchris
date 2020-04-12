@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.reruncentury" name="RerunCentury" version="0.0.2" provider-name="MetalChris">
+<addon id="plugin.video.reruncentury" name="RerunCentury" version="2020.04.12" provider-name="MetalChris">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
-	<import addon="script.module.beautifulsoup" version="3.2.1"/>
+        <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+        <import addon="script.module.html5lib" version="0.999.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource"
                library="addon.py">
@@ -11,8 +12,20 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <license>GPL 2.0</license>
-        <summary lang="en">RerunCentury</summary>
+        <summary lang="en">Free Videos and 20th Century TV</summary>
         <description lang="en">Free Videos and 20th Century TV | Watch public domain episodes from nearly 200 classic TV shows. Links to legal videos.</description>
-        <disclaimer lang="en"></disclaimer>
+        <disclaimer lang="en">For support go to my github. No support without a full, unedited debug log.  No support at TVAddons or any other forum.</disclaimer>
+        <language></language>
+        <platform>all</platform>
+        <license>GPL(v2) or Later</license>
+        <forum></forum>
+        <website>http://www.reruncentury.com</website>
+        <email></email>
+        <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.reruncentury</source>
+        <news>v.2020.04.12[CR]- Fixes for website changes and code cleanup.</news>
+        <assets>
+            <icon>icon.png</icon>
+            <icon>fanart.jpg</icon>
+        </assets>
     </extension>
 </addon>
