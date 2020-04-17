@@ -4,8 +4,9 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
+#04.16.2020
+
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys
-from bs4 import BeautifulSoup
 import simplejson as json
 import mechanize
 import html5lib
@@ -20,10 +21,16 @@ selfAddon = xbmcaddon.Addon(id='plugin.video.space')
 self = xbmcaddon.Addon(id='plugin.video.space')
 translation = selfAddon.getLocalizedString
 usexbmc = selfAddon.getSetting('watchinxbmc')
-#settings = xbmcaddon.Addon(id="plugin.video.space")
-#views = settings.getSetting(id="views")
+settings = xbmcaddon.Addon(id="plugin.video.space")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
+
+log_notice = settings.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 
 plugin = "Space.com"
 
@@ -41,59 +48,39 @@ confluence_views = [500,501,502,503,504,508,515]
 #630
 def cats():
 	br.set_handle_robots( False )
-	response = br.open('http://www.space.com/news?type=video')
+	response = br.open('https://videos.space.com/')
 	page = response.get_data()
-	soup = BeautifulSoup(page,'html5lib').find_all('ul',{'id':'filter-categories'})
-	cats = BeautifulSoup(str(soup),'html5lib').find_all('li')
-	for item in cats:
-		title = item.find('a').text.encode('utf-8').replace('&amp;','&').strip()
-		url = baseurl + 'news?type=video&section=' + item.find('a')['data-slug']
-		if 'all-sections' in url:
-			url = baseurl + 'news?type=video'
-		addDir(title, url, 633, defaulticon, defaultfanart)
-	#if views != 'false':
-		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[6])+")")
+	playlists = re.compile('playlistId": "(.+?)"').findall(page)
+	xbmc.log('PLAYLISTS: ' + str(playlists),level=log_level)
+	for playlistId in range(len(playlists)):
+		jurl = 'https://content.jwplatform.com/v2/playlists/' + str(playlists[playlistId])
+		jgresponse = get_html(jurl)
+		jgdata = json.loads(jgresponse)
+		title = (jgdata['title']).encode('utf-8')
+		image = defaultimage
+		addDir(title, jurl, 633, image, defaultfanart)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
 #633
 def videos(url):
-	next_url = url.split('?')
 	br.set_handle_robots( False )
 	response = br.open(url)
 	page = response.get_data()
-	soup = BeautifulSoup(page,'html5lib').find_all('li',{'class':'search-item line pure-g'})
-	for item in soup:
-		title = item.find('h2').text.encode('utf-8').replace('&amp;','&').strip()
-		url = baseurl + item.find('a')['href']
-		image = item.find('img')['src']
-		plot = item.find('p',{'class':'mod-copy'}).text.strip()
-		infoLabels = {"Title": name,"plot": plot}
-		addDir2(title, url, 636, image, defaultfanart)
-	if 'class="next"' in page:
-		count = int((re.compile('rel="next" href="(.+?)"').findall(page)[0])[-1:])
-		next_page = next_pre + str(count) + '?' + next_url[1]
-		addDir('Load More Videos', next_page, 633, defaultimage, defaultfanart)
-	#if views != 'false':
-		#xbmc.executebuiltin("Container.SetViewMode("+str(confluence_views[0])+")")
-	xbmcplugin.setContent(addon_handle, content="videos")
-	xbmcplugin.endOfDirectory(addon_handle)
-
-
-#636
-def stream(name,url,iconimage):
-	br.set_handle_robots( False )
-	response = br.open(url)
-	page = response.get_data()
-	key = re.compile('video_id":"(.+?)"').findall(str(page))
-	jurl = 'http://player.ooyala.com/sas/player_api/v2/authorization/embed_code/None/' + key[0] + '?device=html5&domain=www.spacemag.com'
-	#'http://player.ooyala.com/player/all/' + key[0] + '_6000.m3u8'
-	jgresponse = get_html(jurl)
-	jgdata = json.loads(jgresponse)
-	url = (jgdata["authorization_data"][key[0]]["streams"][3]["url"]["data"]).decode('base64')
-	play(name,url,iconimage)
-	xbmcplugin.endOfDirectory(addon_handle)
-
+	jsob = json.loads(page)
+	total = len(jsob['playlist'])
+	xbmc.log('TOTAL: ' + str(total),level=log_level)
+	for title in range(total):
+		name = (jsob['playlist'][title]['title']).encode('utf-8')
+		jurl = (jsob['playlist'][title]['sources'][0]['file'])
+		image = (jsob['playlist'][title]['image'])
+		url = 'plugin://plugin.video.space?mode=99&url=' + urllib.quote_plus(jurl)
+		li = xbmcgui.ListItem(name)
+		li.setProperty('IsPlayable', 'true')
+		li.setInfo(type="Video", infoLabels={"mediatype":"video","label":name,"title":name,"genre":"Space"})
+		li.setArt({'thumb':image,'fanart':defaultfanart})
+		xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=False)
+	xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
 
 def striphtml(data):
@@ -101,10 +88,13 @@ def striphtml(data):
 	return p.sub('', data)
 
 
-def play(name,url,iconimage):
-	item = xbmcgui.ListItem(name, path=url, thumbnailImage=iconimage)
-	xbmc.Player().play( url, item )
-	sys.exit()
+#99
+def PLAY(name,url):
+	listitem = xbmcgui.ListItem(path=url)
+	xbmc.log(('### SETRESOLVEDURL ###'),level=log_level)
+	listitem.setProperty('IsPlayable', 'true')
+	xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+	xbmc.log('URL: ' + str(url), level=log_level)
 	xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -114,9 +104,7 @@ def remove_non_ascii_1(text):
 
 def get_html(url):
 	req = urllib2.Request(url)
-	req.add_header('Host', 'player.ooyala.com')
 	req.add_header('User-Agent','User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')
-	#req.add_header('Referer', 'http://www.space.com/news?type=video')
 	req.add_header('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
 
 	try:
@@ -160,19 +148,6 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
 	return ok
 
-
-def addDir2(name,url,mode,iconimage, fanart=False, infoLabels=True):
-		u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
-		ok=True
-		liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-		liz.setInfo( type="Video", infoLabels={ "Title": name } )
-		if not fanart:
-			fanart=defaultfanart
-		liz.setProperty('fanart_image',fanart)
-		ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
-		return ok
-
-
 params = get_params()
 url = None
 name = None
@@ -201,21 +176,24 @@ try:
 except:
 	pass
 
-xbmc.log("Mode: " + str(mode))
-xbmc.log("URL: " + str(url))
-xbmc.log("Name: " + str(name))
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-	xbmc.log("Generate Space.com Main Menu")
+	xbmc.log(("Generate Space.com Main Menu"),level=log_level)
 	cats()
 elif mode==630:
-	xbmc.log("Space.com Categories")
+	xbmc.log(("Space.com Categories"),level=log_level)
 	cats()
 elif mode==633:
-	xbmc.log("Space.com Videos")
+	xbmc.log(("Space.com Videos"),level=log_level)
 	videos(url)
 elif mode==636:
-	xbmc.log("Space.com Stream")
-	stream(name,url,iconimage)
+	xbmc.log(("Space.com Stream"),level=log_level)
+	play(name,url,iconimage)
+elif mode == 99:
+	xbmc.log("Play Video", level=log_level)
+	PLAY(name,url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

@@ -1,0 +1,5 @@
+<settings>
+        <category label="Logging">
+        <setting id='log_notice' type ="bool" label="30000" default="false"/>
+        </category>
+</settings>
