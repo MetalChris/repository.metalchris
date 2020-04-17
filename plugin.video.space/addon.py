@@ -4,12 +4,11 @@
 # Written by MetalChris
 # Released under GPL(v2) or Later
 
-#04.16.2020
+#04.17.2020
 
 import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys
 import simplejson as json
 import mechanize
-import html5lib
 
 br = mechanize.Browser()
 br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:44.0) Gecko/20100101 Firefox/44.0')]

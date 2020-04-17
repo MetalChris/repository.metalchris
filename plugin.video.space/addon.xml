@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.space" name="Space.com" version="2020.04.16" provider-name="MetalChris">
+<addon id="plugin.video.space" name="Space.com" version="2020.04.17" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.simplejson" version="3.3.0"/>
@@ -19,7 +19,7 @@
     <website>http://www.space.com</website>
     <email></email>
     <source>https://github.com/MetalChris/repository.metalchris/tree/master/plugin.video.space</source>
-    <news>Version 2020.04.16 - Fix for website changes.</news>
+    <news>Version 2020.04.17 - Fix for website changes.</news>
     <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
