@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.metalchris" name="MetalChris' Repository" version="3.4.1" provider-name="MetalChris">
+<addon id="repository.metalchris" name="MetalChris' Repository" version="3.4.2" provider-name="MetalChris">
     <extension point="xbmc.addon.repository" name="Official MetalChris Repository">
         <info compressed="false">https://raw.github.com/MetalChris/repository.metalchris/master/addons.xml</info>
         <checksum>https://raw.github.com/MetalChris/repository.metalchris/master/addons.xml.md5</checksum>
@@ -9,6 +9,6 @@
 		<summary>MetalChris' Kodi addons</summary>
 		<description>Support provided at forum.kodi.tv or via my github.  I will not provide support at TVaddons, or any other forum.  Please provide a full, unedited, debug log when requesting support.</description>
         <platform>all</platform>
-        <news>Update Space.com</news>
+        <news>Update Internet Archive [Video]</news>
     </extension>
 </addon>
