@@ -23,6 +23,14 @@ settings = xbmcaddon.Addon(id="plugin.audio.internetarchive")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 baseurl = 'https://archive.org/'
+audiourl = 'https://archive.org/details/audio'
+
+log_notice = settings.getSetting(id="log_notice")
+if log_notice != 'false':
+	log_level = 2
+else:
+	log_level = 1
+xbmc.log('LOG_NOTICE: ' + str(log_notice),level=log_level)
 
 plugin = "Internet Archive [Audio]"
 
@@ -39,10 +47,10 @@ pluginhandle = int(sys.argv[1])
 
 #60
 def ia_categories():
-		data = urllib2.urlopen(baseurl).read()
+		data = urllib2.urlopen(audiourl).read()
 		add_directory2('Search', baseurl, 65, artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
 		soup = BeautifulSoup(data,'html.parser')
-		for item in soup.find_all(attrs={'class': 'row toprow fivecolumns audio'}):
+		for item in soup.find_all(attrs={'class': 'collection-title C C2'}):
 			for link in item.find_all('a'):
 				l = link.get('href')
 				title = link.get('title')
@@ -71,7 +79,9 @@ def ia_categories():
 					else:
 						mode = 62
 				url = url + '&page=1'
-				#print 'IA URL= ' + str(url)
+				title = title.strip()
+				xbmc.log('TITLE: ' + str(title),level=log_level)
+				#xbmc.log('IA URL= ' + str(url),level=log_level)
 				add_directory2(title,url, mode,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
 		xbmcplugin.setContent(pluginhandle, 'episodes')
 
@@ -79,7 +89,7 @@ def ia_categories():
 #61
 def ia_sub_cat(url):
 		url = url.replace('?&page=1','')
-		#print 'IA Audio Sub_Cat URL= ' + str(url)
+		#xbmc.log('IA Audio Sub_Cat URL= ' + str(url),level=log_level)
 		data = urllib2.urlopen(url).read()
 		soup = BeautifulSoup(data,'html.parser')
 		for item in soup.find_all(attrs={'class': 'collection-title'}):
@@ -103,28 +113,28 @@ def ia_sub_cat(url):
 #62
 def ia_sub2_audio(name,url):
 		page = (url)[-1]
-		#print 'page= ' + str(page)
+		#xbmc.log('page= ' + str(page),level=log_level)
 		thisurl = url[:-7]
-		#print 'thisurl= ' + str(thisurl)
+		#xbmc.log('thisurl= ' + str(thisurl),level=log_level)
 		req = urllib2.Request(url)
 		try: data = urllib2.urlopen(req, timeout = 5)
 		except urllib2.HTTPError , e:
-			print 'Error Type= ' + str(type(e))    #not catch
-			print 'Error Args= ' + str(e.args)
+			xbmc.log('Error Type= ' + str(type(e)),level=log_level)    #not catch
+			xbmc.log('Error Args= ' + str(e.args),level=log_level)
 			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
 			#dialog = xbmcgui.Dialog()
 			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
 			return
 		except urllib2.URLError , e:
-			print 'Error Type= ' + str(type(e))
-			print 'Error Args= ' + str(e.args)
+			xbmc.log('Error Type= ' + str(type(e)),level=log_level)
+			xbmc.log('Error Args= ' + str(e.args),level=log_level)
 			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
 			#dialog = xbmcgui.Dialog()
 			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
 			return
 		#except socket.timeout , e:
-			#print 'Error Type= ' + str(type(e))
-			#print 'Error Args= ' + str(e.args)
+			#xbmc.log('Error Type= ' + str(type(e)),level=log_level)
+			#xbmc.log('Error Args= ' + str(e.args),level=log_level)
 			#line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
 			#dialog = xbmcgui.Dialog()
 			#xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
@@ -132,14 +142,14 @@ def ia_sub2_audio(name,url):
 		try: soup = BeautifulSoup(data,'html.parser').find_all('div',{'class': 'item-ttl'})
 		except SSLError:
 			e = sys.exc_info()[1]
-			print 'ERROR: ' + str(e)
-			print 'Error Type= ' + str(type(e))    #not catch
-			print 'Error Args= ' + str(e.args)
+			xbmc.log('ERROR: ' + str(e),level=log_level)
+			xbmc.log('Error Type= ' + str(type(e)),level=log_level)    #not catch
+			xbmc.log('Error Args= ' + str(e.args),level=log_level)
 			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
 			#dialog = xbmcgui.Dialog()
 			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
 			return
-		xbmc.log('SOUP:' + str(len(soup)))
+		xbmc.log(('SOUP:' + str(len(soup))),level=log_level)
 		for item in soup:
 			l = item.find('a')['href']
 			purl = 'https://archive.org' + l
@@ -150,7 +160,7 @@ def ia_sub2_audio(name,url):
 		page = str(int(page) + 1)
 		#thisurl = thisurl.replace('?','')
 		url = thisurl + '&page=' + page
-		print 'IA Next Page URL= ' + str(url)
+		xbmc.log('IA Next Page URL= ' + str(url),level=log_level)
 		add_next('Next Page', url, 62,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
 		xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
@@ -183,28 +193,28 @@ def ia_audio_files(url):
 #64
 def ia_live_audio(name,url):
 		page = (url)[-1]
-		#print 'page= ' + str(page)
+		#xbmc.log('page= ' + str(page),level=log_level)
 		thisurl = url[:-7]
-		#print 'thisurl= ' + str(thisurl)
+		#xbmc.log('thisurl= ' + str(thisurl),level=log_level)
 		req = urllib2.Request(url)
 		try: data = urllib2.urlopen(req, timeout = 5)
 		except urllib2.HTTPError , e:
-			print 'Error Type= ' + str(type(e))    #not catch
-			print 'Error Args= ' + str(e.args)
+			xbmc.log('Error Type= ' + str(type(e)),level=log_level)    #not catch
+			xbmc.log('Error Args= ' + str(e.args),level=log_level)
 			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
 			#dialog = xbmcgui.Dialog()
 			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
 			return
 		except urllib2.URLError , e:
-			print 'Error Type= ' + str(type(e))
-			print 'Error Args= ' + str(e.args)
+			xbmc.log('Error Type= ' + str(type(e)),level=log_level)
+			xbmc.log('Error Args= ' + str(e.args),level=log_level)
 			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
 			#dialog = xbmcgui.Dialog()
 			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
 			return
 		#except socket.timeout , e:
-			#print 'Error Type= ' + str(type(e))
-			#print 'Error Args= ' + str(e.args)
+			#xbmc.log('Error Type= ' + str(type(e)),level=log_level)
+			#xbmc.log('Error Args= ' + str(e.args),level=log_level)
 			#line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
 			#dialog = xbmcgui.Dialog()
 			#xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
@@ -212,14 +222,14 @@ def ia_live_audio(name,url):
 		try: soup = BeautifulSoup(data,'html.parser').find_all('div',{'class': 'collection-title'})
 		except SSLError:
 			e = sys.exc_info()[1]
-			print 'ERROR: ' + str(e)
-			print 'Error Type= ' + str(type(e))    #not catch
-			print 'Error Args= ' + str(e.args)
+			xbmc.log('ERROR: ' + str(e),level=log_level)
+			xbmc.log('Error Type= ' + str(type(e)),level=log_level)    #not catch
+			xbmc.log('Error Args= ' + str(e.args),level=log_level)
 			line1 = str(e.args).partition("'")[-1].rpartition("'")[0]
 			#dialog = xbmcgui.Dialog()
 			xbmcgui.Dialog().ok(addonname, line1, 'Please Try Again')
 			return
-		xbmc.log('SOUP:' + str(len(soup)))
+		xbmc.log(('SOUP:' + str(len(soup))),level=log_level)
 		for item in soup:
 			l = item.find('a')['href']
 			purl = 'https://archive.org' + l
@@ -230,7 +240,7 @@ def ia_live_audio(name,url):
 		page = str(int(page) + 1)
 		#thisurl = thisurl.replace('?','')
 		url = thisurl + '&page=' + page
-		print 'IA Next Page URL= ' + str(url)
+		xbmc.log('IA Next Page URL= ' + str(url),level=log_level)
 		add_next('Next Page', url, 64,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
 		xbmcplugin.endOfDirectory(addon_handle, cacheToDisc=True)
 
@@ -238,11 +248,21 @@ def ia_live_audio(name,url):
 #81
 def lineage(url):
 		html = get_html(url)
-		lineage = str(re.compile('Lineage</span> <span class="value">(.+?)</span>').findall(html))[2:-2]
-		lineage = lineage.replace('&gt;','>').replace('&amp;','&')
-		if len(lineage) < 5:
-			lineage = 'Not Available'
-		xbmcgui.Dialog().ok('Lineage', lineage)
+		xbmc.log('Lineage URL: ' + str(url),level=log_level)
+		soup = BeautifulSoup(html,'html.parser').find_all('dl',{'class': 'metadata-definition'})
+		#xbmc.log('SOUP: ' + str(soup),level=log_level)
+		for item in soup:
+			match = item.find('dt')
+			if 'Lineage' in match:
+				xbmc.log('Lineage Found: ' + str(match),level=log_level)
+				lineage = item.find('dd').text
+				xbmc.log('Lineage dd: ' + str(lineage),level=log_level)
+		#lineage = str(re.compile('Lineage</dt>\n<dd class="">"(.+?)"</').findall(str(html)))[2:-2]
+		#xbmc.log('Lineage: ' + str(lineage),level=log_level)
+		#lineage = lineage.replace('&gt;','>').replace('&amp;','&')
+				if len(lineage) < 5:
+					lineage = 'Not Available'
+				xbmcgui.Dialog().ok('Lineage', lineage)
 
 
 #82
@@ -254,7 +274,7 @@ def desc(url):
 
 def play(name,url):
     url = url.replace(' ','%20')
-    print url
+    xbmc.log(url,level=log_level)
     listitem = xbmcgui.ListItem(name, thumbnailImage = defaultimage)
     xbmc.Player().play( url, listitem )
     sys.exit()
@@ -266,7 +286,7 @@ def ia_search():
 		keyb.doModal()
 		if (keyb.isConfirmed()):
 			search = keyb.getText()
-			print 'search= ' + search
+			xbmc.log('search= ' + search,level=log_level)
 			url = 'https://archive.org/search.php?query=%28' + search + '%29%20AND%20mediatype%3A%28audio%29&page=1'
 			#url = 'https://archive.org/search.php?query=' + search + '&and[]=mediatype%3A%22audio%22&page=1'
 			ia_sub2_audio(name,url)
@@ -277,9 +297,9 @@ def ia_search():
 
 def ia_search_audio(url):
 		page = (url)[-1]
-		#print 'page= ' + str(page)
+		#xbmc.log('page= ' + str(page),level=log_level)
 		thisurl = url[:-7]
-		#print 'thisurl= ' + str(thisurl)
+		#xbmc.log('thisurl= ' + str(thisurl),level=log_level)
 		data = urllib2.urlopen(url).read()
 		soup = BeautifulSoup(data,'html.parser')
 		for item in soup.find_all(attrs={'class': 'item-ttl C C2'}):
@@ -306,7 +326,7 @@ def ia_search_audio(url):
 		page = str(int(page) + 1)
 		thisurl = thisurl.replace('?','')
 		url = thisurl + '&page=' + page
-		print 'IA Next Page URL= ' + str(url)
+		xbmc.log('IA Next Page URL= ' + str(url),level=log_level)
 		add_next('Next Page', url, 66,  artbase + 'internetarchive.jpg', artbase + 'ia.png',plot='')
 
 		xbmcplugin.endOfDirectory(addon_handle)
@@ -314,7 +334,7 @@ def ia_search_audio(url):
 
 #80
 def downloader(url):
-		xbmc.log('DOWNLOAD')
+		xbmc.log(('DOWNLOAD'),level=log_level)
 		path = addon.getSetting('download')
 		if path == "":
 			xbmc.executebuiltin("XBMC.Notification(%s,%s,10000,%s)"
@@ -327,21 +347,21 @@ def downloader(url):
 		file_name = url.split('/')[-1]
 		dlsn = settings.getSetting(id="status")
 		bsize = settings.getSetting(id="bsize")
-		#print 'bfr Size= ' + str(bsize)
+		#xbmc.log('bfr Size= ' + str(bsize),level=log_level)
 		ret = xbmcgui.Dialog().yesno("Internet Archive [Audio]", 'Download Selected File?', str(file_name))
 		if ret == False:
-			return ia_sub2_video
+			return #ia_sub2_video
 		else:
 			xbmcgui.Dialog().notification('IA [Audio]', 'Download Started.', xbmcgui.NOTIFICATION_INFO, 5000)
-		print 'URL: ' + str(url)
-		print 'Filename: ' + str(file_name)
-		print 'Download Location: ' + str(download)
+		xbmc.log('URL: ' + str(url),level=log_level)
+		xbmc.log('Filename: ' + str(file_name),level=log_level)
+		xbmc.log('Download Location: ' + str(download),level=log_level)
 		u = urllib2.urlopen(url)
 		f = open(download+file_name, 'wb')
 		meta = u.info()
 		file_size = float(meta.getheaders("Content-Length")[0])
 		file_sizeMB = float(file_size/(1024*1024))
-		print "Downloading: %s %s MB" % (file_name, "%.2f" % file_sizeMB)
+		xbmc.log("Downloading: %s %s MB" % (file_name, "%.2f" % file_sizeMB),level=log_level)
 		file_size_dl = 0
 		block_sz = int(bsize)
 		while True:
@@ -359,7 +379,7 @@ def downloader(url):
 				break
 		f.close()
 		xbmcgui.Dialog().notification('IA [Audio]', 'Download Completed.', xbmcgui.NOTIFICATION_INFO, 5000)
-		print 'Download Completed'
+		xbmc.log('Download Completed',level=log_level)
 
 
 def add_directory2(name,url,mode,fanart,thumbnail,plot):
@@ -494,50 +514,50 @@ try:
 except:
 	pass
 
-print "Mode: " + str(mode)
-print "URL: " + str(url)
-print "Name: " + str(name)
+xbmc.log("Mode: " + str(mode),level=log_level)
+xbmc.log("URL: " + str(url),level=log_level)
+xbmc.log("Name: " + str(name),level=log_level)
 
 if mode == None or url == None or len(url) < 1:
-	print "Generate Main Menu"
+	xbmc.log("Generate Main Menu",level=log_level)
 	ia_categories()
 elif mode == 1:
-	print "Indexing Audio"
+	xbmc.log("Indexing Audio",level=log_level)
 	index(url)
 elif mode == 4:
-	print "Play Audio"
+	xbmc.log("Play Audio",level=log_level)
 elif mode == 6:
-	print "Get Episodes"
+	xbmc.log("Get Episodes",level=log_level)
 	get_episodes(url)
 elif mode == 60:
-	print "Get IA Audio Categories"
+	xbmc.log("Get IA Audio Categories",level=log_level)
 	ia_video(url)
 elif mode == 61:
-	print "Get IA Audio Sub Categories"
+	xbmc.log("Get IA Audio Sub Categories",level=log_level)
 	ia_sub_cat(url)
 elif mode == 62:
-	print "Get IA Audio Sub2 Categories"
+	xbmc.log("Get IA Audio Sub2 Categories",level=log_level)
 	ia_sub2_audio(name,url)
 elif mode == 63:
-	print "Get Audio Files"
+	xbmc.log("Get Audio Files",level=log_level)
 	ia_audio_files(url)
 elif mode == 64:
-	print "Get IA Audio Live Categories"
+	xbmc.log("Get IA Audio Live Categories",level=log_level)
 	ia_live_audio(name,url)
 elif mode == 65:
-	print "IA Search"
+	xbmc.log("IA Search",level=log_level)
 	ia_search()
 elif mode == 66:
-	print "IA Search Audio"
+	xbmc.log("IA Search Audio",level=log_level)
 	ia_search_audio(url)
 elif mode == 80:
-   print "IA Download File"
+   xbmc.log("IA Download File",level=log_level)
    downloader(url)
 elif mode == 81:
-   print "IA Lineage"
+   xbmc.log("IA Lineage",level=log_level)
    lineage(url)
 elif mode == 82:
-   print "IA Description"
+   xbmc.log("IA Description",level=log_level)
    desc(url)
 
 

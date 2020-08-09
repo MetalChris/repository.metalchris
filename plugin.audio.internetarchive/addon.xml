@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.audio.internetarchive" name="Internet Archive [Audio]" version="3.1.0" provider-name="MetalChris">
+<addon id="plugin.audio.internetarchive" name="Internet Archive [Audio]" version="3.1.1" provider-name="MetalChris">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup4" version="4.2.0"/>
@@ -8,9 +8,9 @@
     <provides>audio</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Choose from thousands of recordings ranging from alternative news programming, to music, to Old Time Radio shows, to book and poetry readings.</summary>
+    <summary lang="en">Internet Archive</summary>
     <description lang="en">Internet Archive is a non-profit digital library.  Choose from thousands of recordings ranging from alternative news programming, to Grateful Dead concerts, to Old Time Radio shows, to book and poetry readings, to original music uploaded by our users.</description>
-    <disclaimer lang="en">Support provided at forum.kodi.tv or via my github.  I will not provide support at TVaddons, or any other forum.  Please provide a full, unedited, debug log when requesting support.</disclaimer>
+    <disclaimer lang="en"></disclaimer>
     <language></language>
     <platform>all</platform>
     <license></license>

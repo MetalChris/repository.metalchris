@@ -4,4 +4,7 @@
             <setting id="status" type="bool"  label="30012"  default="True"/>
             <setting label="30013" type="slider" id="bsize" default="524288" range="32768,32768,2097152" option="int" />
 	</category>
+	<category label="Logging">
+	        <setting id='log_notice' type ="bool" label="30060" default="false"/>
+	</category>
 </settings>
