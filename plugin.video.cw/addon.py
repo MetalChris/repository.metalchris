@@ -4,17 +4,18 @@
 # Written by MetalChris
 # Released under GPL(v2 or later)
 
-#2019.02.16
+#2021.11.26
 
-import urllib, urllib2, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
+import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
 #import simplejson as json
+import xbmcvfs
 import json
 import mechanize
 
 artbase = 'special://home/addons/plugin.video.cw/resources/media/'
 _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
-addon_path_profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
+addon_path_profile = xbmcvfs.translatePath(_addon.getAddonInfo('profile'))
 selfAddon = xbmcaddon.Addon(id='plugin.video.cw')
 self = xbmcaddon.Addon(id='plugin.video.cw')
 translation = selfAddon.getLocalizedString
@@ -23,7 +24,7 @@ settings = xbmcaddon.Addon(id="plugin.video.cw")
 addon = xbmcaddon.Addon()
 addonname = addon.getAddonInfo('name')
 confluence_views = [500,501,502,503,504,508]
-__resource__   = xbmc.translatePath( os.path.join( _addon_path, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
+__resource__   = xbmcvfs.translatePath( os.path.join( _addon_path, 'resources', 'lib' ).encode("utf-8") )
 
 sys.path.append(__resource__)
 
@@ -59,15 +60,15 @@ force_views = settings.getSetting(id="force_views")
 
 #533
 def sites():
-	addDir('CW TV Network', 'http://www.cwtv.com/shows/', 633, defaultimage)
-	addDir('CW Seed', 'http://www.cwseed.com/shows/', 633, artbase + 'seed.png', artbase + 'seed.jpg')
+	addDir('CW TV Network', 'https://www.cwtv.com/shows/', 633, defaultimage)
+	addDir('CW Seed', 'https://www.cwseed.com/shows/', 633, artbase + 'seed.png', artbase + 'seed.jpg')
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #633
 def shows(name,url):
-	br.open('http://www.cwtv.com/')
-	response = br.open('http://www.cwtv.com/feed/mobileapp/shows?api_version=3')
+	br.open('https://www.cwtv.com/')
+	response = br.open('https://www.cwtv.com/feed/mobileapp/shows?api_version=3')
 	xbmc.log('RESPONSE: ' + str(response.code),level=log_level)
 	page = response.get_data()
 	jdata = json.loads(page)
@@ -83,8 +84,8 @@ def shows(name,url):
 				continue
 		title = jdata['items'][i]['title']
 		plot = striphtml(str(jdata['items'][i]['description']))
-		url = 'http://www.cwtv.com/shows/' + jdata['items'][i]['slug']
-		image = 'http://images.cwtv.com/images/cw/show-hub/' + jdata['items'][i]['slug'] + '.png'
+		url = 'https://www.cwtv.com/shows/' + jdata['items'][i]['slug']
+		image = 'https://images.cwtv.com/images/cw/show-hub/' + jdata['items'][i]['slug'] + '.png'
 		add_directory2(title,url,30,defaultfanart,image,plot)
 		xbmcplugin.setContent(addon_handle, 'episodes')
 	if force_views != 'false':
@@ -97,7 +98,7 @@ def shows(name,url):
 def get_json(name,url,iconimage):
 	show = url.rpartition('/')[-1]
 	xbmc.log('SHOW: ' + str(show),level=log_level)
-	jurl = 'http://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
+	jurl = 'https://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
 	response = br.open(jurl)
 	#response = br.open(jurl)
 	jdata = json.load(response); i = 0
@@ -125,7 +126,7 @@ def get_stuff(jdata,i):
 	mpx_url = jdata['videos'][i]['mpx_url']
 	xbmc.log('MPX_URL: ' + str(mpx_url),level=log_level)
 	url = get_m3u8(mpx_url)
-	li = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
+	li = xbmcgui.ListItem(title)
 	li.setProperty('fanart_image', image)
 	li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Episode": ep, "Premiered": airdate})
 	li.addStreamInfo('video', { 'duration': duration })
@@ -157,14 +158,14 @@ def get_m3u8(url):
 
 
 def get_html(url):
-	req = urllib2.Request(url)
+	req = urllib.request.Request(url)
 	req.add_header('User-Agent','Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0')
 
 	try:
-		response = urllib2.urlopen(req)
+		response = urllib.request.urlopen(req)
 		html = response.read()
 		response.close()
-	except urllib2.HTTPError:
+	except urllib.error.HTTPError:
 		response = False
 		html = False
 	return html
@@ -174,7 +175,7 @@ def get_html(url):
 #31
 def get_clips(url):
 	show = url.rpartition('/')[-1]
-	url = 'http://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
+	url = 'https://www.cwtv.com/feed/mobileapp/videos?show=' + show + '&api_version=3'
 	response = br.open(url)
 	jdata = json.load(response); i = 0
 	count = len(jdata['videos'])
@@ -212,9 +213,9 @@ def get_params():
 	return param
 
 def add_directory2(name,url,mode,fanart,thumbnail,plot,showcontext=False):
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(thumbnail)
+	u=sys.argv[0]+"?url="+urllib.parse.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.parse.quote_plus(name) + "&iconimage=" + urllib.parse.quote_plus(thumbnail)
 	ok=True
-	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
+	liz=xbmcgui.ListItem(name)
 	liz.setInfo( type="Video", infoLabels={ "Title": name,
 											"plot": plot} )
 	if not fanart:
@@ -225,9 +226,9 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot,showcontext=False):
 
 
 def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
-	u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&iconimage=" + urllib.quote_plus(iconimage)
+	u = sys.argv[0] + "?url=" + urllib.parse.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.parse.quote_plus(name) + "&iconimage=" + urllib.parse.quote_plus(iconimage)
 	ok = True
-	liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+	liz = xbmcgui.ListItem(name)
 	liz.setInfo(type="Video", infoLabels={"Title": name})
 	liz.setProperty('IsPlayable', 'true')
 	if not fanart:
@@ -254,15 +255,15 @@ cookie = None
 iconimage = None
 
 try:
-	url = urllib.unquote_plus(params["url"])
+	url = urllib.parse.unquote_plus(params["url"])
 except:
 	pass
 try:
-	name = urllib.unquote_plus(params["name"])
+	name = urllib.parse.unquote_plus(params["name"])
 except:
 	pass
 try:
-	iconimage = urllib.unquote_plus(params["iconimage"])
+	iconimage = urllib.parse.unquote_plus(params["iconimage"])
 except:
 	pass
 try:

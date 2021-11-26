@@ -1,0 +1,91 @@
+# Kodi Media Center language file
+# Addon Name: CW TV Network
+# Addon id: plugin.video.cw
+# Addon Provider: MetalChris
+msgid ""
+msgstr ""
+"Project-Id-Version: Kodi Addons\n"
+"Report-Msgid-Bugs-To: https://github.com/MetalChris/repository.metalchris\n"
+"Last-Translator: matthuisman\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Enable Log Notices"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Stream Quality"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Highest"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Display All"
+msgstr ""
+
+msgctxt "#32003"
+msgid "Stream Quality"
+msgstr ""
+
+msgctxt "#32004"
+msgid "360p"
+msgstr ""
+
+msgctxt "#32005"
+msgid "540p"
+msgstr ""
+
+msgctxt "#32006"
+msgid "720p"
+msgstr ""
+
+msgctxt "#32007"
+msgid "1080p"
+msgstr ""
+
+msgctxt "#32008"
+msgid "HLS"
+msgstr ""
+
+msgctxt "#32020"
+msgid "Force View"
+msgstr ""
+
+msgctxt "#32021"
+msgid "Thumbnail"
+msgstr ""
+
+msgctxt "#32022"
+msgid "List"
+msgstr ""
+
+msgctxt "#32024"
+msgid "Media Info 2"
+msgstr ""
+
+msgctxt "#32025"
+msgid "Media Info"
+msgstr ""
+
+msgctxt "#32027"
+msgid "Media Info 3"
+msgstr ""
+
+msgctxt "#32030"
+msgid "Confluence View"
+msgstr ""
+
+msgctxt "#32032"
+msgid "Stream Bitrate Options"
+msgstr ""
+
+msgctxt "#32200"
+msgid "Html5lib"
+msgstr ""
