@@ -4,10 +4,9 @@
 # Written by MetalChris
 # Released under GPL(v2 or later)
 
-#2021.11.26
+#2023.06.13
 
-import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
-#import simplejson as json
+import urllib.request, urllib.parse, urllib.error, xbmcplugin, xbmcaddon, xbmcgui, re, sys, os
 import xbmcvfs
 import json
 import mechanize
@@ -61,7 +60,7 @@ force_views = settings.getSetting(id="force_views")
 #533
 def sites():
 	addDir('CW TV Network', 'https://www.cwtv.com/shows/', 633, defaultimage)
-	addDir('CW Seed', 'https://www.cwseed.com/shows/', 633, artbase + 'seed.png', artbase + 'seed.jpg')
+	addDir('CW Seed', 'https://www.cwtv.com/shows/', 633, artbase + 'seed.png', artbase + 'seed.jpg')
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -127,6 +126,7 @@ def get_stuff(jdata,i):
 	xbmc.log('MPX_URL: ' + str(mpx_url),level=log_level)
 	url = get_m3u8(mpx_url)
 	li = xbmcgui.ListItem(title)
+	li.setArt({'icon': image, 'thumb': image})
 	li.setProperty('fanart_image', image)
 	li.setInfo(type="Video", infoLabels={"Title": title, "Plot": description, "Episode": ep, "Premiered": airdate})
 	li.addStreamInfo('video', { 'duration': duration })
@@ -169,7 +169,6 @@ def get_html(url):
 		response = False
 		html = False
 	return html
-
 
 
 #31
@@ -216,6 +215,8 @@ def add_directory2(name,url,mode,fanart,thumbnail,plot,showcontext=False):
 	u=sys.argv[0]+"?url="+urllib.parse.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.parse.quote_plus(name) + "&iconimage=" + urllib.parse.quote_plus(thumbnail)
 	ok=True
 	liz=xbmcgui.ListItem(name)
+	liz.setArt({'icon': "DefaultFolder.png"})
+	liz.setArt({'thumb': iconimage})
 	liz.setInfo( type="Video", infoLabels={ "Title": name,
 											"plot": plot} )
 	if not fanart:
@@ -229,6 +230,8 @@ def addDir(name, url, mode, iconimage, fanart=False, infoLabels=True):
 	u = sys.argv[0] + "?url=" + urllib.parse.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.parse.quote_plus(name) + "&iconimage=" + urllib.parse.quote_plus(iconimage)
 	ok = True
 	liz = xbmcgui.ListItem(name)
+	liz.setArt({'icon': "DefaultFolder.png"})
+	liz.setArt({'thumb': iconimage})
 	liz.setInfo(type="Video", infoLabels={"Title": name})
 	liz.setProperty('IsPlayable', 'true')
 	if not fanart:
